@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "990370977404",
+    "project_id": "cybermart-aa494",
+    "storage_bucket": "cybermart-aa494.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:990370977404:android:294981ba7d835836cbdbf9",
+        "android_client_info": {
+          "package_name": "com.vdsl.cybermart"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC09FBwPhopGDcpZ4JC9DHPRSm0Jh4k1ds"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
