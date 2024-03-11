@@ -34,6 +34,7 @@ dependencies {
     implementation("com.google.firebase:firebase-analytics")
     implementation("com.google.firebase:firebase-auth")
     implementation("com.google.firebase:firebase-messaging")
+    implementation("com.google.firebase:firebase-database")
 
 
     implementation("androidx.appcompat:appcompat:1.6.1")
