@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="75dp"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_marginHorizontal="10dp"
+    android:orientation="vertical"
+    app:cardCornerRadius="7dp"
+    android:id="@+id/cardView"
+    >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:id="@+id/linearLayout"
+        >
+
+        <ImageView
+            android:background="@drawable/border1"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:src="@drawable/clothes_nightwear_outfit_svgrepo_com"
+            android:id="@+id/img_clothes"
+            />
+
+        <TextView
+
+            android:id="@+id/title_clothes"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:padding="2dp"
+            android:textSize="10sp"
+            android:text="Clothes"
+            android:textColor="@android:color/black"
+            />
+    </LinearLayout>
+</androidx.cardview.widget.CardView>
