@@ -1,4 +1,4 @@
-package com.vdsl.cybermart.Plash_Screen;
+package com.vdsl.cybermart.PlashScreen;
 
 import android.os.Bundle;
 
@@ -10,7 +10,7 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.vdsl.cybermart.R;
 
-public class Welcome extends AppCompatActivity {
+public class WelcomeActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

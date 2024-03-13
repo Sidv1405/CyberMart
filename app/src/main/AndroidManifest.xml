@@ -16,16 +16,16 @@
             android:name=".MainActivity"
             android:exported="false" />
         <activity
-            android:name=".Login_SignUp_Forget_Reset.Activity.Forget_Pass_Activity"
+            android:name=".LoginSignUpForgetReset.Activity.ForgotPassActivity"
             android:exported="false" />
         <activity
-            android:name=".Login_SignUp_Forget_Reset.Sign_Up_Activity"
+            android:name=".LoginSignUpForgetReset.SignUpActivity"
             android:exported="false" />
         <activity
-            android:name=".Login_SignUp_Forget_Reset.Activity.LoginActivity"
+            android:name=".LoginSignUpForgetReset.Activity.LoginActivity"
             android:exported="false" />
         <activity
-            android:name=".Plash_Screen.Welcome"
+            android:name=".PlashScreen.WelcomeActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
