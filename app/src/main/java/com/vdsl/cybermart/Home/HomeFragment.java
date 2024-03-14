@@ -1,4 +1,4 @@
-package com.vdsl.cybermart;
+package com.vdsl.cybermart.Home;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -15,22 +15,17 @@ import com.vdsl.cybermart.Category.Category;
 import com.vdsl.cybermart.Category.CategoryAdapter;
 import com.vdsl.cybermart.Category.Category_Element;
 import com.vdsl.cybermart.Category.Category_ElementAdapter;
-import com.vdsl.cybermart.databinding.ActivityMainBinding;
+import com.vdsl.cybermart.R;
 import com.vdsl.cybermart.databinding.FragmentHomeBinding;
-import com.vdsl.cybermart.databinding.FragmentNotifyBinding;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class Home_Fragment extends Fragment {
+public class HomeFragment extends Fragment {
     FragmentHomeBinding binding;
 
     CategoryAdapter adapter;
     Category_ElementAdapter elementAdapter;
-
-    Home_Fragment() {
-
-    }
 
     @Nullable
     @Override
