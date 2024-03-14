@@ -1,21 +1,20 @@
 package com.vdsl.cybermart;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.os.Bundle;
 import android.view.View;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.vdsl.cybermart.Category.Category;
 import com.vdsl.cybermart.Category.CategoryAdapter;
 import com.vdsl.cybermart.Category.Category_Element;
 import com.vdsl.cybermart.Category.Category_ElementAdapter;
 import com.vdsl.cybermart.Favourite.Favourite_Fragment;
+import com.vdsl.cybermart.Person.Fragment_Profile;
 import com.vdsl.cybermart.Notify.Notify_Fragment;
-import com.vdsl.cybermart.Person.Person_Fragment;
 import com.vdsl.cybermart.databinding.ActivityMainBinding;
 
 import java.util.ArrayList;
@@ -62,6 +61,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void onClickListenerNavBottom() {
         binding.navBottom.setOnItemSelectedListener(item -> {
+
             if (item.getItemId() == R.id.nav_bot_home) {
                 General.loadFragment(getSupportFragmentManager(), new Notify_Fragment(), null);
                 translayout();
@@ -78,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
 //                translayout();
 //                loadFragment(billFragment);
             }else if (item.getItemId() == R.id.nav_bot_member) {
-                General.loadFragment(getSupportFragmentManager(), new Person_Fragment(), null);
+                General.loadFragment(getSupportFragmentManager(), new Fragment_Profile(), null);
                 translayout();
             }
             /*binding.tbMain.setTitle(item.getTitle());*/

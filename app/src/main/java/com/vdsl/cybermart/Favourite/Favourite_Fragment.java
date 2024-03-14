@@ -8,7 +8,6 @@ import android.view.ViewGroup;
 import androidx.fragment.app.Fragment;
 
 import com.vdsl.cybermart.databinding.FragmentFavouriteBinding;
-import com.vdsl.cybermart.databinding.FragmentNotifyBinding;
 
 public class Favourite_Fragment extends Fragment {
     FragmentFavouriteBinding binding;
