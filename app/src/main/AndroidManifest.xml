@@ -16,13 +16,13 @@
             android:name=".Cart.Cart_Activity"
             android:exported="false" />
         <activity
-            android:name=".LoginSignUpForgetReset.Activity.LoginActivity"
-            android:exported="false" />
-        <activity
             android:name=".PlashScreen.WelcomeActivity"
             android:exported="false" />
         <activity
             android:name=".MainActivity"
+            android:exported="false" />
+        <activity
+            android:name=".LoginSignUpForgetReset.Activity.LoginActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

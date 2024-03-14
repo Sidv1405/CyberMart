@@ -14,64 +14,11 @@
         >
 
 
-        <RelativeLayout
-            android:id="@+id/bgr_dash_board_parent"
-            android:layout_width="match_parent"
-            android:layout_height="200dp"
-            >
-            <RelativeLayout
-                android:id="@+id/bgr_dash_board"
-                android:layout_width="match_parent"
-                android:layout_height="200dp"
-                android:background="#FFFFFF">
-
-            </RelativeLayout>
-
-            <ImageButton
-                android:layout_marginVertical="10dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/shopping_cart_svg"
-                app:backgroundTint="@color/cardview_light_background"
-                android:layout_alignParentEnd="true"
-                />
-
-            <androidx.appcompat.widget.SearchView
-                android:layout_marginVertical="10dp"
-                android:id="@+id/searchview"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="right"
-                app:defaultQueryHint="Nội dung tìm kiếm"
-                app:iconifiedByDefault="true"
-                app:searchIcon="@drawable/search_svg"/>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentBottom="true"
-                android:layout_alignBottom="@id/searchview"
-                android:layout_marginTop="50dp"
-                android:id="@+id/layout_dashboard"
-                >
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/rcv_category"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
-
-            </LinearLayout>
-        </RelativeLayout>
-
         <androidx.fragment.app.FragmentContainerView
             android:id="@+id/frag_container_main"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_above="@id/nav_bottom"
-            android:layout_below="@id/layout_dashboard"
             android:layout_weight="1"
             tools:ignore="NotSibling" />
 

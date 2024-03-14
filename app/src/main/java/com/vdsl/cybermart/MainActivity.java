@@ -30,47 +30,30 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        binding = ActivityMainBinding.inflate(getLayoutInflater());
+        binding = ActivityMainBinding.inflate(getLayoutInflater()); // Initialize binding
         setContentView(binding.getRoot());
-        adapter = new CategoryAdapter(this);
-
-
-
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, RecyclerView.VERTICAL,false);
-        binding.rcvCategory.setLayoutManager(linearLayoutManager);
-        adapter.setData(getCategoryList());
-        binding.rcvCategory.setAdapter(adapter);
 
         onClickListenerNavBottom();
+
+        getSupportFragmentManager().beginTransaction().add(R.id.frag_container_main,new Home_Fragment()).commit();
+
     }
 
-    private List<Category> getCategoryList(){
-        List<Category_Element> list = new ArrayList<>();
 
-        list.add(new Category_Element(R.drawable.clothes_nightwear_outfit_svgrepo_com,"Clothes"));
-        list.add(new Category_Element(R.drawable.clothes_nightwear_outfit_svgrepo_com,"Clothes"));
-        list.add(new Category_Element(R.drawable.clothes_nightwear_outfit_svgrepo_com,"Clothes"));
-        list.add(new Category_Element(R.drawable.clothes_nightwear_outfit_svgrepo_com,"Clothes"));
-        list.add(new Category_Element(R.drawable.clothes_nightwear_outfit_svgrepo_com,"Clothes"));
-
-        List<Category> categoryList = new ArrayList<>();
-        categoryList.add(new Category(list));
-
-        return categoryList;
-    }
 
     private void onClickListenerNavBottom() {
         binding.navBottom.setOnItemSelectedListener(item -> {
 
+
+
             if (item.getItemId() == R.id.nav_bot_home) {
-                General.loadFragment(getSupportFragmentManager(), new Notify_Fragment(), null);
-                translayout();
+                General.loadFragment(getSupportFragmentManager(), new Home_Fragment(), null);
             } else if (item.getItemId() == R.id.nav_bot_marker) {
                 General.loadFragment(getSupportFragmentManager(), new Favourite_Fragment(), null);
-                translayout();
+
             } else if (item.getItemId() == R.id.nav_bot_notify) {
                 General.loadFragment(getSupportFragmentManager(), new Notify_Fragment(), null);
-                translayout();
+
 //                FragmentManager fragmentManager = getSupportFragmentManager();
 //                fragmentManager.beginTransaction()
 //                        .replace(R.id.frag_container_main, new Bill_Fragment())
@@ -79,19 +62,19 @@ public class MainActivity extends AppCompatActivity {
 //                loadFragment(billFragment);
             }else if (item.getItemId() == R.id.nav_bot_member) {
                 General.loadFragment(getSupportFragmentManager(), new Fragment_Profile(), null);
-                translayout();
+
             }
             /*binding.tbMain.setTitle(item.getTitle());*/
             return true;
         });
     }
 
-    private void translayout() {
+    /*private void translayout() {
         binding.bgrDashBoard.setVisibility(View.GONE);
         binding.layoutDashboard.setVisibility(View.GONE);
         RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) binding.bgrDashBoardParent.getLayoutParams();
         layoutParams.width = RelativeLayout.LayoutParams.WRAP_CONTENT;
         layoutParams.height = RelativeLayout.LayoutParams.WRAP_CONTENT;
         binding.bgrDashBoardParent.setLayoutParams(layoutParams);
-    }
+    }*/
 }
