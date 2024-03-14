@@ -1,9 +1,11 @@
 package com.vdsl.cybermart.LoginSignUpForgetReset.Fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -11,10 +13,13 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.vdsl.cybermart.MainActivity;
 import com.vdsl.cybermart.R;
+import com.vdsl.cybermart.databinding.FragmentLogInBinding;
 
 public class Fragment_LogIn extends Fragment {
 
+    Button btnLogin;
     TextView txt_SignUp,txt_forgotPass;
 
     @Nullable
@@ -29,6 +34,7 @@ public class Fragment_LogIn extends Fragment {
 
         txt_SignUp = view.findViewById(R.id.txt_signUp);
         txt_forgotPass = view.findViewById(R.id.txt_forgotPass);
+        btnLogin = view.findViewById(R.id.btnLogin);
 
         txt_SignUp.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -51,6 +57,10 @@ public class Fragment_LogIn extends Fragment {
             }
         });
 
+        btnLogin.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), MainActivity.class);
+            startActivity(intent);
+        });
 
     }
 }
