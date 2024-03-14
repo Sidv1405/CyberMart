@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -57,7 +58,7 @@ public class HomeFragment extends Fragment {
 //Product
         prodReference = FirebaseDatabase.getInstance().getReference().child("products");
         RecyclerView rcvProduct = binding.rcvProduct;
-        rcvProduct.setLayoutManager(new LinearLayoutManager(requireContext()));
+        rcvProduct.setLayoutManager(new GridLayoutManager(requireContext(), 2));
         FirebaseRecyclerOptions<ProductModel> options1 =
                 new FirebaseRecyclerOptions.Builder<ProductModel>()
                         .setQuery(prodReference, ProductModel.class)
