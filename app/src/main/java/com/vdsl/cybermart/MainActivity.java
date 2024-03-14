@@ -4,10 +4,8 @@ import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.vdsl.cybermart.Category.CategoryAdapter;
-import com.vdsl.cybermart.Category.Category_ElementAdapter;
 import com.vdsl.cybermart.Favourite.Favourite_Fragment;
-import com.vdsl.cybermart.Home.HomeFragment;
+import com.vdsl.cybermart.Home.View.HomeFragment;
 import com.vdsl.cybermart.Person.Fragment_Profile;
 import com.vdsl.cybermart.Notify.Notify_Fragment;
 import com.vdsl.cybermart.databinding.ActivityMainBinding;
@@ -15,8 +13,6 @@ import com.vdsl.cybermart.databinding.ActivityMainBinding;
 public class MainActivity extends AppCompatActivity {
 
     ActivityMainBinding binding;
-    CategoryAdapter adapter;
-    Category_ElementAdapter elementAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,6 +23,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         onClickListenerNavBottom();
+        getSupportFragmentManager().beginTransaction().add(R.id.frag_container_main, new HomeFragment()).commit();
+        
     }
 
     private void onClickListenerNavBottom() {
@@ -41,8 +39,6 @@ public class MainActivity extends AppCompatActivity {
 
             } else if (item.getItemId() == R.id.nav_bot_member) {
                 General.loadFragment(getSupportFragmentManager(), new Fragment_Profile(), null);
-            } else {
-                getSupportFragmentManager().beginTransaction().add(R.id.frag_container_main, new HomeFragment()).commit();
             }
             return true;
         });
