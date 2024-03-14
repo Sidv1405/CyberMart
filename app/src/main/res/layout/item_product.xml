@@ -15,7 +15,7 @@
         android:orientation="vertical">
 
         <ImageView
-            android:id="@+id/img_category"
+            android:id="@+id/img_product"
             android:layout_width="match_parent"
             android:layout_height="155dp"
             android:src="@drawable/clothes_nightwear_outfit_svgrepo_com" />
