@@ -6,7 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.vdsl.cybermart.Favourite.Favourite_Fragment;
 import com.vdsl.cybermart.Home.View.HomeFragment;
-import com.vdsl.cybermart.Person.Fragment_Profile;
+import com.vdsl.cybermart.Person.FragmentProfile;
 import com.vdsl.cybermart.Notify.Notify_Fragment;
 import com.vdsl.cybermart.databinding.ActivityMainBinding;
 
@@ -38,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
                 General.loadFragment(getSupportFragmentManager(), new Notify_Fragment(), null);
 
             } else if (item.getItemId() == R.id.nav_bot_member) {
-                General.loadFragment(getSupportFragmentManager(), new Fragment_Profile(), null);
+                General.loadFragment(getSupportFragmentManager(), new FragmentProfile(), null);
             }
             return true;
         });

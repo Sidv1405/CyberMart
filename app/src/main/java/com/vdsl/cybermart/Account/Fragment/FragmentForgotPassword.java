@@ -1,4 +1,4 @@
-package com.vdsl.cybermart.LoginSignUpForgetReset.Fragment;
+package com.vdsl.cybermart.Account.Fragment;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -13,7 +13,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.vdsl.cybermart.R;
 
-public class Fragment_ForgotPassword extends Fragment {
+public class FragmentForgotPassword extends Fragment {
     Button btn_verify;
 
     @Nullable
@@ -29,7 +29,7 @@ public class Fragment_ForgotPassword extends Fragment {
         btn_verify.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Fragment_SetNewPass fragmentSetNewPass = new Fragment_SetNewPass();
+                FragmentSetNewPass fragmentSetNewPass = new FragmentSetNewPass();
                 FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
                 transaction.replace(R.id.fr_framemain, fragmentSetNewPass);
                 transaction.addToBackStack(null);

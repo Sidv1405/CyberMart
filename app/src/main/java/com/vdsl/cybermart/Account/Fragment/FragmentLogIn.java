@@ -1,4 +1,4 @@
-package com.vdsl.cybermart.LoginSignUpForgetReset.Fragment;
+package com.vdsl.cybermart.Account.Fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -15,9 +15,8 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.vdsl.cybermart.MainActivity;
 import com.vdsl.cybermart.R;
-import com.vdsl.cybermart.databinding.FragmentLogInBinding;
 
-public class Fragment_LogIn extends Fragment {
+public class FragmentLogIn extends Fragment {
 
     Button btnLogin;
     TextView txt_SignUp,txt_forgotPass;
@@ -39,7 +38,7 @@ public class Fragment_LogIn extends Fragment {
         txt_SignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Fragment_SignUp fragmentSignUp = new Fragment_SignUp();
+                FragmentSignUp fragmentSignUp = new FragmentSignUp();
                 FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
                 transaction.replace(R.id.fr_framemain, fragmentSignUp);
                 transaction.addToBackStack(null);
@@ -49,7 +48,7 @@ public class Fragment_LogIn extends Fragment {
         txt_forgotPass.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Fragment_ForgotPassword fragmentForgotPassword = new Fragment_ForgotPassword();
+                FragmentForgotPassword fragmentForgotPassword = new FragmentForgotPassword();
                 FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
                 transaction.replace(R.id.fr_framemain, fragmentForgotPassword);
                 transaction.addToBackStack(null);
