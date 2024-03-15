@@ -1,9 +1,6 @@
-package com.vdsl.cybermart.LoginSignUpForgetReset.Activity;
+package com.vdsl.cybermart.Account.Activity;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -11,7 +8,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-import com.vdsl.cybermart.LoginSignUpForgetReset.Fragment.Fragment_LogIn;
+import com.vdsl.cybermart.Account.Fragment.FragmentLogIn;
 import com.vdsl.cybermart.R;
 
 public class LoginActivity extends AppCompatActivity {
@@ -45,7 +42,7 @@ public class LoginActivity extends AppCompatActivity {
 //            }
 //        });
 
-        getSupportFragmentManager().beginTransaction().replace(R.id.fr_framemain, new Fragment_LogIn()).commit();
+        getSupportFragmentManager().beginTransaction().replace(R.id.fr_framemain, new FragmentLogIn()).commit();
 
 
     }

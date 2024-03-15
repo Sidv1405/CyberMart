@@ -1,4 +1,4 @@
-package com.vdsl.cybermart.LoginSignUpForgetReset.Fragment;
+package com.vdsl.cybermart.Account.Fragment;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -11,7 +11,7 @@ import androidx.fragment.app.Fragment;
 
 import com.vdsl.cybermart.R;
 
-public class Fragment_SignUp extends Fragment {
+public class FragmentSignUp extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
