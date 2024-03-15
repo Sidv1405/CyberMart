@@ -10,7 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.vdsl.cybermart.Person.View.CategoryManagementActivity;
+import com.vdsl.cybermart.CategoryManagement.View.CategoryManagementActivity;
 import com.vdsl.cybermart.databinding.FragmentProfileBinding;
 
 public class FragmentProfile extends Fragment {
