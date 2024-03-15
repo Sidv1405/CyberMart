@@ -44,8 +44,6 @@ public class MainActivity extends AppCompatActivity {
     private void onClickListenerNavBottom() {
         binding.navBottom.setOnItemSelectedListener(item -> {
 
-
-
             if (item.getItemId() == R.id.nav_bot_home) {
                 General.loadFragment(getSupportFragmentManager(), new Home_Fragment(), null);
             } else if (item.getItemId() == R.id.nav_bot_marker) {
