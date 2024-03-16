@@ -9,18 +9,25 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.vdsl.cybermart.General;
+import com.vdsl.cybermart.Order.Fragment.FragmentContainer;
 import com.vdsl.cybermart.R;
+import com.vdsl.cybermart.databinding.FragmentProfileBinding;
 
 public class FragmentProfile extends Fragment {
-
+    FragmentProfileBinding binding;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_profile, container,false);
+        binding = FragmentProfileBinding.inflate(inflater,container,false);
+        return binding.getRoot();
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        binding.btnMyOrder.setOnClickListener(v -> {
+            General.loadFragment(getParentFragmentManager(),new FragmentContainer(),null);
+        });
     }
 }
