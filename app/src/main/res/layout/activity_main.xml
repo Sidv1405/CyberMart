@@ -30,6 +30,7 @@
             android:layout_marginBottom="0dp"
             app:itemIconTint="@color/black"
             app:itemTextColor="@color/black"
+            android:background="#fff"
             app:menu="@menu/menu_nav_bottom" />
 
     </RelativeLayout>
