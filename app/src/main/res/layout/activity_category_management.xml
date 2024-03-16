@@ -22,7 +22,7 @@
             android:src="@drawable/ic_back" />
 
         <TextView
-            android:id="@+id/text_my_cart"
+            android:id="@+id/txt_cate_manage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -35,7 +35,7 @@
             android:textSize="24sp" />
 
         <androidx.appcompat.widget.SearchView
-            android:id="@+id/search_categỏy_management"
+            android:id="@+id/search_category_management"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:queryHint="Search here"

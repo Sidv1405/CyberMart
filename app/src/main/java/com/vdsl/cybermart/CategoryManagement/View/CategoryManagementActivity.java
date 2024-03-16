@@ -11,12 +11,14 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -39,6 +41,8 @@ import com.vdsl.cybermart.databinding.DialogAddCategoryBinding;
 public class CategoryManagementActivity extends AppCompatActivity {
     private DatabaseReference cateReference;
     private CateManageAdapter adapter;
+    private RecyclerView rcvCategory;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +54,8 @@ public class CategoryManagementActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        rcvCategory = findViewById(R.id.rcv_category_management);
 
 //        get all
         readDataCategory();
@@ -63,6 +69,38 @@ public class CategoryManagementActivity extends AppCompatActivity {
             super.onBackPressed();
         });
 
+
+        SearchView searchView = findViewById(R.id.search_category_management);
+        TextView textView = findViewById(R.id.txt_cate_manage);
+        searchView.setOnSearchClickListener(v -> textView.setVisibility(View.GONE));
+        searchView.setOnCloseListener(() -> {
+            textView.setVisibility(View.VISIBLE);
+            return false;
+        });
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                txtSearch(query);
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                txtSearch(newText);
+                return false;
+            }
+        });
+
+    }
+
+    private void txtSearch(String text) {
+        FirebaseRecyclerOptions<CategoryModel> options =
+                new FirebaseRecyclerOptions.Builder<CategoryModel>()
+                        .setQuery(FirebaseDatabase.getInstance().getReference().child("categories").orderByChild("title").startAt(text).endAt(text + "~"), CategoryModel.class)
+                        .build();
+        adapter = new CateManageAdapter(options);
+        adapter.startListening();
+        rcvCategory.setAdapter(adapter);
     }
 
     private void createDataCategory() {
@@ -117,7 +155,6 @@ public class CategoryManagementActivity extends AppCompatActivity {
 
     private void readDataCategory() {
         cateReference = FirebaseDatabase.getInstance().getReference().child("categories");
-        RecyclerView rcvCategory = findViewById(R.id.rcv_category_management);
         rcvCategory.setLayoutManager(new GridLayoutManager(this, 3));
 
         FirebaseRecyclerOptions<CategoryModel> options =

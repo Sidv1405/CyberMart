@@ -381,7 +381,7 @@
                         android:layout_height="wrap_content"
                         android:paddingHorizontal="5dp"
                         android:paddingVertical="2dp"
-                        android:text="Create/update/delete category"
+                        android:text="Create/update category"
                         android:textColor="#777777"
                         android:textSize="18dp" />
 
