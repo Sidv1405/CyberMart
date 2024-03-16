@@ -1,4 +1,4 @@
-package com.vdsl.cybermart.Order.Fragment;
+package com.vdsl.cybermart.Order;
 
 import android.os.Bundle;
 
@@ -11,7 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.google.android.material.tabs.TabLayoutMediator;
-import com.vdsl.cybermart.Order.Adapter.ViewPager2Adapter;
+import com.vdsl.cybermart.R;
 import com.vdsl.cybermart.databinding.FragmentContainerBinding;
 
 
@@ -20,7 +20,6 @@ public class FragmentContainer extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
         binding = FragmentContainerBinding.inflate(inflater,container,false);
         return binding.getRoot();
     }
@@ -28,7 +27,6 @@ public class FragmentContainer extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
         ViewPager2Adapter adapter = new ViewPager2Adapter(requireActivity());
         binding.vpOrder.setAdapter(adapter);
         TabLayoutMediator mediator = new TabLayoutMediator(binding.tabLayout,binding.vpOrder,((tab, i) -> {

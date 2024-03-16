@@ -1,13 +1,9 @@
-package com.vdsl.cybermart.Order.Adapter;
+package com.vdsl.cybermart.Order;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
-
-import com.vdsl.cybermart.Order.Fragment.DeliveredFragment;
-import com.vdsl.cybermart.Order.Fragment.CanceledOrderFragment;
-import com.vdsl.cybermart.Order.Fragment.ProcessingOrderFragment;
 
 public class ViewPager2Adapter extends FragmentStateAdapter {
     public ViewPager2Adapter(@NonNull FragmentActivity fragmentActivity) {

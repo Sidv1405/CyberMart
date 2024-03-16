@@ -6,8 +6,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.vdsl.cybermart.Favourite.Favourite_Fragment;
 import com.vdsl.cybermart.Home.View.HomeFragment;
-import com.vdsl.cybermart.Notify.Notify_Fragment;
 import com.vdsl.cybermart.Person.FragmentProfile;
+import com.vdsl.cybermart.Notify.Notify_Fragment;
 import com.vdsl.cybermart.databinding.ActivityMainBinding;
 
 public class MainActivity extends AppCompatActivity {
@@ -17,12 +17,14 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        binding = ActivityMainBinding.inflate(getLayoutInflater());
+        setContentView(R.layout.activity_main);
+
+        binding = ActivityMainBinding.inflate(getLayoutInflater()); // Initialize binding
         setContentView(binding.getRoot());
 
         onClickListenerNavBottom();
         getSupportFragmentManager().beginTransaction().add(R.id.frag_container_main, new HomeFragment()).commit();
-
+        
     }
 
     private void onClickListenerNavBottom() {
@@ -31,8 +33,10 @@ public class MainActivity extends AppCompatActivity {
                 General.loadFragment(getSupportFragmentManager(), new HomeFragment(), null);
             } else if (item.getItemId() == R.id.nav_bot_marker) {
                 General.loadFragment(getSupportFragmentManager(), new Favourite_Fragment(), null);
+
             } else if (item.getItemId() == R.id.nav_bot_notify) {
                 General.loadFragment(getSupportFragmentManager(), new Notify_Fragment(), null);
+
             } else if (item.getItemId() == R.id.nav_bot_member) {
                 General.loadFragment(getSupportFragmentManager(), new FragmentProfile(), null);
             }

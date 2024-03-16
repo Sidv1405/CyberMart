@@ -3,13 +3,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".Order.Fragment.ProcessingOrderFragment">
+    tools:context=".Order.ProcessingOrderFragment">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvProcessingList"
+    <!-- TODO: Update blank fragment layout -->
+    <TextView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
+        android:text="@string/hello_blank_fragment" />
 
 </FrameLayout>
