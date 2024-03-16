@@ -6,8 +6,18 @@ public class CategoryModel {
     private String image;
     private boolean status;
 
+
+
+    public String getId() {
+        return id;
+    }
+
     public boolean isStatus() {
         return status;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public CategoryModel(String id, String title, String image, boolean status) {
@@ -20,7 +30,6 @@ public class CategoryModel {
     public void setStatus(boolean status) {
         this.status = status;
     }
-
 
     public String getImage() {
         return image;

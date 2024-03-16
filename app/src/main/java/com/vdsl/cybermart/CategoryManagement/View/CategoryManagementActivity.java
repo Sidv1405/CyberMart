@@ -10,8 +10,11 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
@@ -22,11 +25,13 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 import com.vdsl.cybermart.CategoryManagement.Adapter.CateManageAdapter;
-import com.vdsl.cybermart.Home.Adapter.CategoryAdapter;
 import com.vdsl.cybermart.Home.Model.CategoryModel;
 import com.vdsl.cybermart.R;
 import com.vdsl.cybermart.databinding.DialogAddCategoryBinding;
@@ -47,19 +52,20 @@ public class CategoryManagementActivity extends AppCompatActivity {
         });
 
 //        get all
-        cateReference = FirebaseDatabase.getInstance().getReference().child("categories");
-        RecyclerView rcvCategory = findViewById(R.id.rcv_category_management);
-        rcvCategory.setLayoutManager(new GridLayoutManager(this, 3));
-
-        FirebaseRecyclerOptions<CategoryModel> options =
-                new FirebaseRecyclerOptions.Builder<CategoryModel>()
-                        .setQuery(cateReference, CategoryModel.class)
-                        .build();
-
-        adapter = new CateManageAdapter(options);
-        rcvCategory.setAdapter(adapter);
+        readDataCategory();
 
 //        Add
+        createDataCategory();
+
+//        Back
+        ImageView btnBack = findViewById(R.id.btn_back);
+        btnBack.setOnClickListener(v -> {
+            super.onBackPressed();
+        });
+
+    }
+
+    private void createDataCategory() {
         ImageButton btnAdd = findViewById(R.id.btn_add_category);
         btnAdd.setOnClickListener(v -> {
 
@@ -77,21 +83,50 @@ public class CategoryManagementActivity extends AppCompatActivity {
                 String title = addCategoryBinding.edtAddNameCate.getText().toString();
                 String image = addCategoryBinding.edtAddUrlCate.getText().toString();
 
-                Picasso.get().load(image).into(addCategoryBinding.imgAddCate);
+                // Kiểm tra tính duy nhất của tên danh mục
+                cateReference.orderByChild("title").equalTo(title).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        if (dataSnapshot.exists()) {
+                            // Tên danh mục đã tồn tại, hiển thị thông báo lỗi
+                            Toast.makeText(getApplicationContext(), "Had same title", Toast.LENGTH_SHORT).show();
+                        } else {
+                            // Tên danh mục chưa tồn tại, thêm danh mục mới
+                            Picasso.get().load(image).into(addCategoryBinding.imgAddCate);
 
-                DatabaseReference newCategoryRef = cateReference.push();
-                String categoryId = newCategoryRef.getKey();
+                            DatabaseReference newCategoryRef = cateReference.push();
+                            String categoryId = newCategoryRef.getKey();
 
-                CategoryModel categoryModel = new CategoryModel(categoryId, title, image, true);
+                            CategoryModel categoryModel = new CategoryModel(categoryId, title, image, true);
 
-                newCategoryRef.setValue(categoryModel);
-                alertDialog.dismiss();
+                            newCategoryRef.setValue(categoryModel);
+                            alertDialog.dismiss();
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                        // Xử lý khi có lỗi xảy ra trong quá trình truy vấn cơ sở dữ liệu
+                        Toast.makeText(getApplicationContext(), "Error query db", Toast.LENGTH_SHORT).show();
+                    }
+                });
             });
-
             addCategoryBinding.btnCancelAddCate.setOnClickListener(v1 -> alertDialog.dismiss());
-
         });
+    }
 
+    private void readDataCategory() {
+        cateReference = FirebaseDatabase.getInstance().getReference().child("categories");
+        RecyclerView rcvCategory = findViewById(R.id.rcv_category_management);
+        rcvCategory.setLayoutManager(new GridLayoutManager(this, 3));
+
+        FirebaseRecyclerOptions<CategoryModel> options =
+                new FirebaseRecyclerOptions.Builder<CategoryModel>()
+                        .setQuery(cateReference, CategoryModel.class)
+                        .build();
+
+        adapter = new CateManageAdapter(options);
+        rcvCategory.setAdapter(adapter);
     }
 
     @Override
