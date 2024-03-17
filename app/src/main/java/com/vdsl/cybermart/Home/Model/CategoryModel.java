@@ -2,11 +2,9 @@ package com.vdsl.cybermart.Home.Model;
 
 public class CategoryModel {
     private String id;
-    private String title;
-    private String image;
+    private final String title;
+    private final String image;
     private boolean status;
-
-
 
     public String getId() {
         return id;
@@ -35,19 +33,7 @@ public class CategoryModel {
         return image;
     }
 
-    public void setImage(String image) {
-        this.image = image;
-    }
-
     public String getTitle() {
         return title;
     }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public CategoryModel() {
-    }
-
 }

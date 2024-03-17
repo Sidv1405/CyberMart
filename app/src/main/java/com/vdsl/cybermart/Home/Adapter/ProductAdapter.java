@@ -1,6 +1,5 @@
 package com.vdsl.cybermart.Home.Adapter;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,7 +22,6 @@ public class ProductAdapter extends FirebaseRecyclerAdapter<ProductModel, Produc
 
     @Override
     protected void onBindViewHolder(@NonNull ProdViewHolder prodViewHolder, int i, @NonNull ProductModel productModel) {
-        Log.d("Productzzzzzzzz", "Title: " + productModel.getName() + ", Image: " + productModel.getImage() + ", Price: " + productModel.getPrice());
         prodViewHolder.bind(productModel.getName(), productModel.getImage(), productModel.getPrice());
     }
 
@@ -48,7 +46,7 @@ public class ProductAdapter extends FirebaseRecyclerAdapter<ProductModel, Produc
             productBinding.nameProduct.setText(productName);
             Picasso.get().load(productImage).into(productBinding.imgProduct);
             String formattedPrice = String.format(Locale.getDefault(), "%.2f", productPrice);
-            productBinding.priceProduct.setText(formattedPrice + " $");
+            productBinding.priceProduct.setText(String.format("%s $", formattedPrice));
         }
     }
 }

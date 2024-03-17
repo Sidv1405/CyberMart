@@ -12,8 +12,6 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.firebase.ui.database.FirebaseArray;
-import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -23,13 +21,10 @@ import com.vdsl.cybermart.Home.Model.CategoryModel;
 import com.vdsl.cybermart.Home.Model.ProductModel;
 import com.vdsl.cybermart.databinding.FragmentHomeBinding;
 
-
 public class HomeFragment extends Fragment {
     private FragmentHomeBinding binding;
     private CategoryAdapter categoryAdapter;
     private ProductAdapter productAdapter;
-    private DatabaseReference cateReference;
-    private DatabaseReference prodReference;
 
     @Nullable
     @Override
@@ -42,7 +37,7 @@ public class HomeFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 //Category
-        cateReference = FirebaseDatabase.getInstance().getReference().child("categories");
+        DatabaseReference cateReference = FirebaseDatabase.getInstance().getReference().child("categories");
 
         RecyclerView rcvCategory = binding.rcvCategory;
         rcvCategory.setLayoutManager(new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false));
@@ -56,7 +51,7 @@ public class HomeFragment extends Fragment {
         rcvCategory.setAdapter(categoryAdapter);
 
 //Product
-        prodReference = FirebaseDatabase.getInstance().getReference().child("products");
+        DatabaseReference prodReference = FirebaseDatabase.getInstance().getReference().child("products");
         RecyclerView rcvProduct = binding.rcvProduct;
         rcvProduct.setLayoutManager(new GridLayoutManager(requireContext(), 2));
         FirebaseRecyclerOptions<ProductModel> options1 =

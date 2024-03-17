@@ -1,14 +1,10 @@
 package com.vdsl.cybermart.CategoryManagement.View;
 
-import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -23,7 +19,6 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.firebase.ui.database.FirebaseRecyclerOptions;
@@ -38,11 +33,12 @@ import com.vdsl.cybermart.Home.Model.CategoryModel;
 import com.vdsl.cybermart.R;
 import com.vdsl.cybermart.databinding.DialogAddCategoryBinding;
 
+import java.util.Objects;
+
 public class CategoryManagementActivity extends AppCompatActivity {
     private DatabaseReference cateReference;
     private CateManageAdapter adapter;
     private RecyclerView rcvCategory;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,16 +55,11 @@ public class CategoryManagementActivity extends AppCompatActivity {
 
 //        get all
         readDataCategory();
-
 //        Add
         createDataCategory();
-
 //        Back
         ImageView btnBack = findViewById(R.id.btn_back);
-        btnBack.setOnClickListener(v -> {
-            super.onBackPressed();
-        });
-
+        btnBack.setOnClickListener(v -> finish());
 
         SearchView searchView = findViewById(R.id.search_category_management);
         TextView textView = findViewById(R.id.txt_cate_manage);
@@ -115,11 +106,11 @@ public class CategoryManagementActivity extends AppCompatActivity {
             AlertDialog alertDialog = builder.create();
             alertDialog.setCancelable(false);
             alertDialog.show();
-            alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            Objects.requireNonNull(alertDialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
             addCategoryBinding.btnAcceptAddCate.setOnClickListener(v1 -> {
-                String title = addCategoryBinding.edtAddNameCate.getText().toString();
-                String image = addCategoryBinding.edtAddUrlCate.getText().toString();
+                String title = Objects.requireNonNull(addCategoryBinding.edtAddNameCate.getText()).toString();
+                String image = Objects.requireNonNull(addCategoryBinding.edtAddUrlCate.getText()).toString();
 
                 cateReference.orderByChild("title").equalTo(title).addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
