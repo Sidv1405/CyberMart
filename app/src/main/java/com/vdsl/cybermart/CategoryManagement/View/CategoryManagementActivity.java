@@ -121,15 +121,12 @@ public class CategoryManagementActivity extends AppCompatActivity {
                 String title = addCategoryBinding.edtAddNameCate.getText().toString();
                 String image = addCategoryBinding.edtAddUrlCate.getText().toString();
 
-                // Kiểm tra tính duy nhất của tên danh mục
                 cateReference.orderByChild("title").equalTo(title).addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         if (dataSnapshot.exists()) {
-                            // Tên danh mục đã tồn tại, hiển thị thông báo lỗi
                             Toast.makeText(getApplicationContext(), "Had same title", Toast.LENGTH_SHORT).show();
                         } else {
-                            // Tên danh mục chưa tồn tại, thêm danh mục mới
                             Picasso.get().load(image).into(addCategoryBinding.imgAddCate);
 
                             DatabaseReference newCategoryRef = cateReference.push();
@@ -144,7 +141,6 @@ public class CategoryManagementActivity extends AppCompatActivity {
 
                     @Override
                     public void onCancelled(@NonNull DatabaseError databaseError) {
-                        // Xử lý khi có lỗi xảy ra trong quá trình truy vấn cơ sở dữ liệu
                         Toast.makeText(getApplicationContext(), "Error query db", Toast.LENGTH_SHORT).show();
                     }
                 });
