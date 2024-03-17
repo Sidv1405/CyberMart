@@ -1,9 +1,6 @@
 package com.vdsl.cybermart.Person;
 
-import android.app.AlertDialog;
-import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,7 +8,6 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -20,8 +16,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.vdsl.cybermart.Account.Activity.LoginActivity;
 import com.vdsl.cybermart.Account.Fragment.FragmentAddStaff;
 import com.vdsl.cybermart.Account.Model.UserModel;
+import com.vdsl.cybermart.General;
+import com.vdsl.cybermart.Order.Fragment.FragmentContainer;
 import com.vdsl.cybermart.R;
-import com.vdsl.cybermart.databinding.FragmentProfileBinding;
 
 public class FragmentProfile extends Fragment {
 
@@ -29,10 +26,13 @@ public class FragmentProfile extends Fragment {
     private FirebaseAuth auth;
     DatabaseReference databaseReference;
 
+    FragmentProfileBinding binding;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = FragmentProfileBinding.inflate(inflater, container, false);
+        return binding.getRoot();
+        binding = FragmentProfileBinding.inflate(inflater,container,false);
         return binding.getRoot();
     }
 
@@ -85,6 +85,9 @@ public class FragmentProfile extends Fragment {
             transaction.replace(R.id.frag_container_main, fragmentAddStaff);
             transaction.addToBackStack(null);
             transaction.commit();
+        });
+        binding.btnMyOrder.setOnClickListener(v -> {
+            General.loadFragment(getParentFragmentManager(),new FragmentContainer(),null);
         });
     }
 }
