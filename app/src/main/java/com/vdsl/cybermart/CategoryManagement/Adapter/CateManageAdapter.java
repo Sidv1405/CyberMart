@@ -1,7 +1,6 @@
 package com.vdsl.cybermart.CategoryManagement.Adapter;
 
 import android.annotation.SuppressLint;
-import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -126,7 +125,7 @@ public class CateManageAdapter extends FirebaseRecyclerAdapter<CategoryModel, Ca
             Picasso.get().load(categoryImage).into(cateManaBinding.imgCategory);
 
             if (!status) {
-                itemView.setBackgroundColor(Color.GRAY);
+                cateManaBinding.imgBaned.setVisibility(View.VISIBLE);
             }
         }
     }

@@ -2,8 +2,8 @@ package com.vdsl.cybermart.Home.Model;
 
 public class CategoryModel {
     private String id;
-    private final String title;
-    private final String image;
+    private String title;
+    private String image;
     private boolean status;
 
     public String getId() {
@@ -12,6 +12,9 @@ public class CategoryModel {
 
     public boolean isStatus() {
         return status;
+    }
+
+    public CategoryModel() {
     }
 
     public void setId(String id) {
