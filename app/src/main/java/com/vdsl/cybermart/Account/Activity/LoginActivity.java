@@ -26,22 +26,6 @@ public class LoginActivity extends AppCompatActivity {
             return insets;
         });
 
-//        txt_SignUp = findViewById(R.id.txt_signUp);
-//        txt_forgotPass = findViewById(R.id.txt_forgotPass);
-//
-//        txt_SignUp.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                startActivity(new Intent(LoginActivity.this, SignUpActivity.class));
-//            }
-//        });
-//        txt_forgotPass.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                startActivity(new Intent(LoginActivity.this, ForgotPassActivity.class));
-//            }
-//        });
-
         getSupportFragmentManager().beginTransaction().replace(R.id.fr_framemain, new FragmentLogIn()).commit();
 
 
