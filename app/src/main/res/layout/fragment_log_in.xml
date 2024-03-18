@@ -38,6 +38,7 @@
             android:fontFamily="serif"
             android:paddingHorizontal="2dp"
             android:text="WELCOME BACK"
+            android:textColor="@color/black"
             android:textSize="30sp"
             android:textStyle="bold" />
 
@@ -67,10 +68,13 @@
                 app:boxStrokeWidth="0dp">
 
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/edtEmailSignIn"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/password_bottomline_custom"
+                    android:paddingBottom="5dp"
                     android:hint="Email"
+                    android:layout_marginBottom="10dp"
                     android:textSize="20dp" />
 
             </com.google.android.material.textfield.TextInputLayout>
@@ -85,23 +89,23 @@
                 app:passwordToggleEnabled="true">
 
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/edtPassSignIn"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/password_bottomline_custom"
+                    android:paddingBottom="5dp"
                     android:hint="Password"
                     android:textSize="20dp" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
-            <TextView
-                android:id="@+id/txt_forgotPass"
+            <CheckBox
+                android:id="@+id/chk_remember"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="40dp"
-                android:gravity="center"
-                android:text="@string/forgot_pass"
-                android:textColor="@color/black"
-                android:textSize="20dp" />
+                android:text="Remember me?"
+                />
+
 
             <Button
                 android:id="@+id/btnLogin"
@@ -112,9 +116,17 @@
                 android:background="@drawable/button_black"
                 android:padding="10dp"
                 android:text="Log In"
-                android:textColor="#fff"
+                android:textColor="@color/white"
                 app:backgroundTint="@null" />
-
+            <TextView
+                android:id="@+id/txt_forgotPass"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="20dp"
+                android:gravity="center"
+                android:text="@string/forgot_pass"
+                android:textColor="@color/black"
+                android:textSize="20dp" />
             <TextView
                 android:id="@+id/txt_signUp"
                 android:layout_width="match_parent"
@@ -123,7 +135,6 @@
                 android:gravity="center"
                 android:padding="2dp"
                 android:text="SIGN UP"
-                android:textColor="#000"
                 android:textSize="22sp" />
 
 
