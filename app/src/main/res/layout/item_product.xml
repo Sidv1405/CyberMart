@@ -35,13 +35,6 @@
                 android:text="Iphone 1"
                 android:textColor="@android:color/black"
                 android:textSize="15sp" />
-
-            <ImageView
-                android:id="@+id/ic_favorites_product"
-                android:layout_width="0dp"
-                android:layout_height="20dp"
-                android:layout_weight="1"
-                android:src="@drawable/ic_favorite_product" />
         </LinearLayout>
 
         <LinearLayout
@@ -61,16 +54,6 @@
                 android:text="999$"
                 android:textColor="#FF0000"
                 android:textSize="13sp" />
-
-            <ImageView
-                android:id="@+id/ic_add_to_cart"
-                android:layout_width="0dp"
-                android:layout_height="20dp"
-                android:layout_weight="1"
-                android:src="@drawable/shopping_cart_svg" />
         </LinearLayout>
-
-
     </LinearLayout>
-
 </androidx.cardview.widget.CardView>
