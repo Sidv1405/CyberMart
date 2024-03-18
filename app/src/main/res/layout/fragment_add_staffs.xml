@@ -25,10 +25,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="start"
-            android:layout_marginLeft="20dp"
+            android:layout_marginHorizontal="10dp"
             android:fontFamily="serif"
             android:paddingHorizontal="2dp"
-            android:text="WELCOME"
+            android:text="Creating an staff account"
             android:textColor="@color/black"
             android:textSize="30sp"
             android:textStyle="bold" />
@@ -67,7 +67,7 @@
                     android:layout_marginBottom="10dp"
                     android:background="@drawable/password_bottomline_custom"
                     android:paddingBottom="5dp"
-                    android:hint="User Name"
+                    android:hint="Staff Name"
                     android:textSize="20dp" />
 
             </com.google.android.material.textfield.TextInputLayout>
@@ -87,7 +87,7 @@
                     android:layout_marginBottom="10dp"
                     android:paddingBottom="5dp"
                     android:background="@drawable/password_bottomline_custom"
-                    android:hint="Email"
+                    android:hint="Staff Email"
                     android:textSize="20dp" />
 
             </com.google.android.material.textfield.TextInputLayout>
@@ -138,7 +138,7 @@
                 android:layout_marginVertical="20dp"
                 android:background="@drawable/button_black"
                 android:padding="10dp"
-                android:text="Sign Up"
+                android:text="Add Staff"
                 android:textColor="@color/white"
                 app:backgroundTint="@null" />
 
@@ -147,27 +147,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="20dp"
                 android:gravity="center"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:id="@+id/txtHaveAccount"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:gravity="center"
-                    android:padding="2dp"
-                    android:text="Already have an account? "
-                    android:textSize="18sp" />
-
-                <TextView
-                    android:id="@+id/txtSignIn"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:gravity="center"
-                    android:padding="2dp"
-                    android:text="SIGN IN"
-                    android:textColor="@color/black"
-                    android:textSize="18sp" />
-            </LinearLayout>
+                android:orientation="horizontal"/>
 
         </LinearLayout>
     </androidx.cardview.widget.CardView>

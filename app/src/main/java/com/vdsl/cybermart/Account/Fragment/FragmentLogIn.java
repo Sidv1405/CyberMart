@@ -103,9 +103,17 @@ public class FragmentLogIn extends Fragment {
                                         if (storedPassword != null && storedPassword.equals(password)) {
                                             Toast.makeText(getActivity(), "Log in Successful", Toast.LENGTH_SHORT).show();
                                             rememberUser(email, password, binding.chkRemember.isChecked());
-                                            startActivity(new Intent(getActivity(), MainActivity.class));
-                                            // Trong LoginActivity hoặc nơi đăng nhập thành công
 
+                                            String yourName = userSnapshot.child("UserName").getValue(String.class);
+                                            String yourEmail = userSnapshot.child("Email").getValue(String.class);
+                                            Log.d("TAG", "onDataChange: "+yourName);
+                                            Log.d("TAG", "onDataChange: "+yourEmail);
+                                            Intent intent = new Intent(getActivity(), MainActivity.class);
+
+                                            // Trong LoginActivity hoặc nơi đăng nhập thành công
+                                            intent.putExtra("yourName",yourName);
+                                            intent.putExtra("yourEmail",yourEmail);
+                                            startActivity(intent);
                                             Log.d("Role", "Role: " + userSnapshot.child("Role").getValue(String.class));
                                             getActivity().finish(); // Kết thúc activity hiện tại sau khi đăng nhập thành công
                                             return;

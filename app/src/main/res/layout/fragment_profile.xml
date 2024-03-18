@@ -13,7 +13,11 @@
         android:orientation="horizontal"
         android:paddingHorizontal="20dp"
         android:paddingVertical="10dp">
-
+        <ImageView
+            android:id="@+id/img_back"
+            android:layout_width="30dp"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_back" />
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -207,7 +211,7 @@
                         android:layout_height="wrap_content"
                         android:paddingHorizontal="5dp"
                         android:paddingVertical="2dp"
-                        android:text="You have a total of 10 staffs"
+                        android:text="Create accounts for staffs"
                         android:textColor="#777777"
                         android:textSize="18dp" />
 
@@ -392,7 +396,7 @@
                 </LinearLayout>
 
                 <ImageView
-                    android:layout_width="10dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="end|center"
                     android:layout_margin="10dp"
@@ -436,7 +440,7 @@
                 </LinearLayout>
 
                 <ImageView
-                    android:layout_width="10dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="end|center"
                     android:layout_margin="10dp"

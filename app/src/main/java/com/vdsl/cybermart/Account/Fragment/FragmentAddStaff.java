@@ -21,10 +21,10 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.vdsl.cybermart.databinding.FragmentSignUpBinding;
+import com.vdsl.cybermart.databinding.FragmentAddStaffsBinding;
 
 public class FragmentAddStaff extends Fragment {
-    FragmentSignUpBinding binding;
+    FragmentAddStaffsBinding binding;
     FirebaseAuth userAuth;
     DatabaseReference userDatabase;
     FirebaseUser currentUser;
@@ -33,7 +33,7 @@ public class FragmentAddStaff extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        binding = FragmentSignUpBinding.inflate(inflater, container, false);
+        binding = FragmentAddStaffsBinding.inflate(inflater, container, false);
         return binding.getRoot();
     }
 
@@ -44,11 +44,6 @@ public class FragmentAddStaff extends Fragment {
         userAuth = FirebaseAuth.getInstance();
         userDatabase = FirebaseDatabase.getInstance().getReference().child("Account");
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
-        binding.txtSignIn.setVisibility(View.GONE);
-        binding.txtHaveAccount.setVisibility(View.GONE);
-        binding.txtTitleSignUp.setText("Creating an staff account");
-        binding.btnSignUp.setText("Add Staff");
-        binding.edtUserNameSignUp.setHint("Staff name");
 
         binding.btnSignUp.setOnClickListener(v -> {
             String userName = binding.edtUserNameSignUp.getText().toString().trim();
@@ -60,18 +55,18 @@ public class FragmentAddStaff extends Fragment {
             String emailPattern = "[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}";
 
             if (TextUtils.isEmpty(userName)) {
-                binding.edtUserNameSignUp.setError("Please enter your User name!");
+                binding.edtUserNameSignUp.setError("Please enter Staff name!");
                 error = true;
             }
             if (TextUtils.isEmpty(email)) {
-                binding.edtEmailSignUp.setError("Please enter your Email!");
+                binding.edtEmailSignUp.setError("Please enter Staff Email!");
                 error = true;
             } else if (!email.matches(emailPattern)) {
                 binding.edtEmailSignUp.setError("Wrong email format!");
                 error = true;
             }
             if (TextUtils.isEmpty(password)) {
-                binding.edtPassSignUp.setError("Please enter your Password!");
+                binding.edtPassSignUp.setError("Please enter Password!");
                 error = true;
 
             } else if (password.length() < 6) {
@@ -79,11 +74,11 @@ public class FragmentAddStaff extends Fragment {
                 error = true;
             }
             if (TextUtils.isEmpty(confirmPassword)) {
-                binding.edtConfirmPassSignUp.setError("Please confirm your Password!");
+                binding.edtConfirmPassSignUp.setError("Please confirm Password!");
                 error = true;
 
             } else if (!confirmPassword.equals(password)) {
-                binding.edtConfirmPassSignUp.setError("Your password is not match!");
+                binding.edtConfirmPassSignUp.setError("Password is not match!");
                 error = true;
             }
 

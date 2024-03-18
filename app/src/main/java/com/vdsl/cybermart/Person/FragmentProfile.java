@@ -14,7 +14,6 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.vdsl.cybermart.Account.Activity.LoginActivity;
@@ -45,18 +44,34 @@ public class FragmentProfile extends Fragment {
         databaseReference = FirebaseDatabase.getInstance().getReference().child("Account");
         if (auth.getCurrentUser() != null) {
             Log.d("loginnow", "logged in");
-            FirebaseUser user = auth.getCurrentUser();
 
-            String name = user.getDisplayName();
-            String email = user.getEmail();
-            binding.txtYourName.setText(name);
-            binding.txtYourEmail.setText(email);
-            Log.d("uname", "username" + name);
-            Log.d("umail", "usermail" + email);
+            Intent intent = getActivity().getIntent();
+            if (intent != null) {
+                Log.d("IntentData", "Intent is not null");
+                String yourName = intent.getStringExtra("yourName");
+                String yourEmail = intent.getStringExtra("yourEmail");
+                Log.d("IntentData", "YourName: " + yourName + ", YourEmail: " + yourEmail);
 
+                if (yourName != null && yourEmail != null) {
+                    Log.d("IntentData", "YourName: " + yourName + ", YourEmail: " + yourEmail);
+                    binding.txtYourName.setText(yourName);
+                    binding.txtYourEmail.setText(yourEmail);
+                } else {
+                    Log.d("IntentData", "YourName or YourEmail is null");
+                    // Xử lý trường hợp dữ liệu không tồn tại
+                }
+            } else {
+                Log.d("IntentData", "Intent is null");
+                // Xử lý trường hợp Intent không tồn tại
+            }
         } else {
             Log.d("loginnow", "not logged in");
         }
+        binding.imgBack.setOnClickListener(v -> {
+            if (getActivity() != null) {
+                getActivity().getSupportFragmentManager().popBackStack();
+            }
+        });
         binding.imgLogout.setOnClickListener(v -> {
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
             builder.setTitle("Logout your accont");
@@ -87,7 +102,7 @@ public class FragmentProfile extends Fragment {
             transaction.commit();
         });
         binding.btnMyOrder.setOnClickListener(v -> {
-            General.loadFragment(getParentFragmentManager(),new FragmentContainer(),null);
+            General.loadFragment(getParentFragmentManager(), new FragmentContainer(), null);
         });
     }
 }
