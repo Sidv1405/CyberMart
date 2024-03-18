@@ -1,5 +1,6 @@
 package com.vdsl.cybermart.Person;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +13,7 @@ import androidx.fragment.app.Fragment;
 import com.vdsl.cybermart.General;
 import com.vdsl.cybermart.Order.Fragment.FragmentContainer;
 import com.vdsl.cybermart.R;
+import com.vdsl.cybermart.Voucher.View.VoucherActivity;
 import com.vdsl.cybermart.databinding.FragmentProfileBinding;
 
 public class FragmentProfile extends Fragment {
@@ -28,6 +30,13 @@ public class FragmentProfile extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         binding.btnMyOrder.setOnClickListener(v -> {
             General.loadFragment(getParentFragmentManager(),new FragmentContainer(),null);
+        });
+
+
+
+        binding.btnMyVoucher.setOnClickListener(v -> {
+            Intent intent = new Intent(getContext(),VoucherActivity.class);
+            startActivity(intent);
         });
     }
 }

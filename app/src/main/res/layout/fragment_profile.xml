@@ -174,6 +174,7 @@
             </androidx.cardview.widget.CardView>
 
             <androidx.cardview.widget.CardView
+                android:id="@+id/btnMyVoucher"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"
@@ -195,16 +196,17 @@
                         android:layout_height="wrap_content"
                         android:paddingHorizontal="5dp"
                         android:paddingVertical="2dp"
-                        android:text="Shipping Addreses"
+                        android:text="Voucher Mangement"
                         android:textColor="@color/black"
                         android:textSize="22dp" />
 
                     <TextView
+                        android:id="@+id/txtCountVoucher"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:paddingHorizontal="5dp"
                         android:paddingVertical="2dp"
-                        android:text="03 addreses"
+                        android:text="03 voucher"
                         android:textColor="#777777"
                         android:textSize="18dp" />
 

@@ -59,6 +59,7 @@ dependencies {
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
 
     implementation("com.google.android.material:material:1.11.0")
+    implementation("com.saadahmedev.popup-dialog:popup-dialog:1.0.5")
 
     implementation("com.squareup.picasso:picasso:2.71828")
 
