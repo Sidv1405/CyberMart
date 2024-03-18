@@ -25,6 +25,7 @@
             android:layout_gravity="start"
             android:layout_marginLeft="20dp"
             android:fontFamily="serif"
+            android:textColor="@color/black"
             android:paddingHorizontal="2dp"
             android:text="Set Your New Password"
             android:textSize="30sp"
@@ -57,9 +58,12 @@
                 app:boxStrokeWidth="0dp">
 
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/edtOldPass"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/password_bottomline_custom"
+                    android:paddingBottom="5dp"
+                    android:layout_marginBottom="10dp"
                     android:hint="Old Password"
                     android:textSize="20dp" />
 
@@ -76,6 +80,7 @@
                 app:passwordToggleEnabled="true">
 
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/edtNewPass"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/password_bottomline_custom"
@@ -93,6 +98,7 @@
                 app:passwordToggleEnabled="true">
 
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/edtConfirmNewPass"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/password_bottomline_custom"
@@ -103,12 +109,14 @@
 
 
             <Button
+                android:id="@+id/btnReset"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginHorizontal="26dp"
                 android:layout_marginVertical="60dp"
                 android:background="@drawable/button_black"
                 android:padding="10dp"
+                android:textColor="@color/white"
                 android:text="RESET"
                 app:backgroundTint="@null" />
 
