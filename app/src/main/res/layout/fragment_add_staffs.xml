@@ -21,13 +21,14 @@
         android:orientation="vertical">
 
         <TextView
+            android:id="@+id/txtTitleSignUp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="start"
-            android:layout_marginLeft="20dp"
+            android:layout_marginHorizontal="10dp"
             android:fontFamily="serif"
             android:paddingHorizontal="2dp"
-            android:text="Forgot Password"
+            android:text="Creating an staff account"
             android:textColor="@color/black"
             android:textSize="30sp"
             android:textStyle="bold" />
@@ -37,7 +38,7 @@
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
+        android:layout_gravity="start"
         android:layout_marginHorizontal="20dp"
         android:layout_marginTop="20dp"
         android:padding="10dp"
@@ -56,16 +57,17 @@
                 android:layout_marginTop="20dp"
                 android:layout_marginBottom="10dp"
                 app:boxBackgroundMode="none"
+                android:id="@+id/textInputLayout"
                 app:boxStrokeWidth="0dp">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/edtUserNameForgotPass"
+                    android:id="@+id/edtUserNameSignUp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="10dp"
-                    android:paddingBottom="5dp"
                     android:background="@drawable/password_bottomline_custom"
-                    android:hint="User Name"
+                    android:paddingBottom="5dp"
+                    android:hint="Staff Name"
                     android:textSize="20dp" />
 
             </com.google.android.material.textfield.TextInputLayout>
@@ -79,30 +81,73 @@
                 app:boxStrokeWidth="0dp">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/edtEmailForgotPass"
+                    android:id="@+id/edtEmailSignUp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingBottom="5dp"
                     android:layout_marginBottom="10dp"
+                    android:paddingBottom="5dp"
                     android:background="@drawable/password_bottomline_custom"
-                    android:hint="Email"
+                    android:hint="Staff Email"
                     android:textSize="20dp" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="5dp"
+                android:layout_marginBottom="10dp"
+                app:boxBackgroundMode="none"
+                app:boxStrokeWidth="0dp"
+                app:passwordToggleEnabled="true">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/edtPassSignUp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/password_bottomline_custom"
+                    android:hint="Password"
+                    android:textSize="20dp" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="5dp"
+                android:layout_marginBottom="10dp"
+                app:boxBackgroundMode="none"
+                app:boxStrokeWidth="0dp"
+                app:passwordToggleEnabled="true">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/edtConfirmPassSignUp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/password_bottomline_custom"
+                    android:hint="Confirm Password"
+                    android:textSize="20dp" />
+
+            </com.google.android.material.textfield.TextInputLayout>
 
             <Button
-                android:id="@+id/btnVerify"
+                android:id="@+id/btnSignUp"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginHorizontal="26dp"
-                android:layout_marginVertical="60dp"
+                android:layout_marginVertical="20dp"
                 android:background="@drawable/button_black"
                 android:padding="10dp"
-                android:text="VERIFY"
+                android:text="Add Staff"
                 android:textColor="@color/white"
                 app:backgroundTint="@null" />
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp"
+                android:gravity="center"
+                android:orientation="horizontal"/>
 
         </LinearLayout>
     </androidx.cardview.widget.CardView>

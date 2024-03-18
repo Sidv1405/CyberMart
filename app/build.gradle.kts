@@ -61,6 +61,7 @@ dependencies {
     implementation("com.google.android.material:material:1.11.0")
     implementation("com.saadahmedev.popup-dialog:popup-dialog:1.0.5")
 
+    implementation ("com.google.firebase:firebase-auth:22.3.1")
     implementation("com.squareup.picasso:picasso:2.71828")
 
 }
