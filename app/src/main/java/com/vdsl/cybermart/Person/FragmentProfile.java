@@ -21,6 +21,7 @@ import com.vdsl.cybermart.Account.Fragment.FragmentAddStaff;
 import com.vdsl.cybermart.General;
 import com.vdsl.cybermart.Order.Fragment.FragmentContainer;
 import com.vdsl.cybermart.R;
+import com.vdsl.cybermart.Voucher.View.VoucherActivity;
 import com.vdsl.cybermart.databinding.FragmentProfileBinding;
 
 public class FragmentProfile extends Fragment {
@@ -103,6 +104,11 @@ public class FragmentProfile extends Fragment {
         });
         binding.btnMyOrder.setOnClickListener(v -> {
             General.loadFragment(getParentFragmentManager(), new FragmentContainer(), null);
+        });
+
+        binding.btnMyVoucher.setOnClickListener(v -> {
+            Intent intent = new Intent(getContext(), VoucherActivity.class);
+            startActivity(intent);
         });
     }
 }
