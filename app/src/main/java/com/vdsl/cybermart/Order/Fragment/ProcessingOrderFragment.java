@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
+import com.vdsl.cybermart.General;
 import com.vdsl.cybermart.Order.Adapter.OrderListAdapter;
 import com.vdsl.cybermart.Order.Model.Order;
 import com.vdsl.cybermart.databinding.FragmentProgressingOrderBinding;
@@ -35,7 +36,9 @@ public class ProcessingOrderFragment extends Fragment {
         FirebaseRecyclerOptions<Order> options = new FirebaseRecyclerOptions.Builder<Order>()
                 .setQuery(query, Order.class).build();
         adapter = new OrderListAdapter(options, order -> {
-
+            Bundle bundle = new Bundle();
+            bundle.putSerializable("Order",order);
+            General.loadFragment(getParentFragmentManager(),new OrderDetailFragment(),bundle);
         });
         binding.rvProcessingList.setAdapter(adapter);
     }

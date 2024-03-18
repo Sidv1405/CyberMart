@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
+import com.vdsl.cybermart.General;
 import com.vdsl.cybermart.Order.Adapter.OrderListAdapter;
 import com.vdsl.cybermart.Order.Model.Order;
 import com.vdsl.cybermart.databinding.FragmentDeliverdedBinding;
@@ -19,6 +20,7 @@ import com.vdsl.cybermart.databinding.FragmentDeliverdedBinding;
 public class DeliveredFragment extends Fragment {
     FragmentDeliverdedBinding binding;
     OrderListAdapter adapter;
+    Query query;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -30,12 +32,20 @@ public class DeliveredFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        Query query = FirebaseDatabase.getInstance().getReference("Orders")
-                .orderByChild("status").equalTo("delivered");
+//        if(true){
+//            query = FirebaseDatabase.getInstance().getReference("Orders")
+//                    .orderByChild("status").equalTo("delivered");
+//            query.orderByChild("idUser").equalTo("");
+//        }else {
+            query = FirebaseDatabase.getInstance().getReference("Orders")
+                    .orderByChild("status").equalTo("delivered");
+//        }
         FirebaseRecyclerOptions<Order> options = new FirebaseRecyclerOptions.Builder<Order>()
                 .setQuery(query, Order.class).build();
-        adapter = new OrderListAdapter(options, order -> {
-
+            adapter = new OrderListAdapter(options, order -> {
+            Bundle bundle = new Bundle();
+            bundle.putSerializable("Order",order);
+            General.loadFragment(getParentFragmentManager(),new OrderDetailFragment(),bundle);
         });
         binding.rvDeliveredList.setAdapter(adapter);
     }
