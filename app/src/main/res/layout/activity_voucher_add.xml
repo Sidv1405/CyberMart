@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Voucher.View.VoucherAddActivity"
+    android:layout_marginHorizontal="10sp"
+    android:layout_marginTop="10sp"
+    android:padding="10sp"
+    android:gravity="center">
+
+    <TextView
+        android:id="@+id/txtNameVoucher"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Nội Dung"
+        android:textSize="24sp"
+        android:textStyle="bold" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/titleNameVoucher"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/txtNameVoucher">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/edtNameVoucher"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Ví dụ: Giảm Giá 30/4 99%" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <TextView
+        android:id="@+id/txtCodeVoucher"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/titleNameVoucher"
+        android:text="Mã Giảm Giá"
+        android:textSize="24sp"
+        android:textStyle="bold" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/titleCodeVoucher"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/txtCodeVoucher">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/edtCodeVoucher"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Ví dụ: 0123456789" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <TextView
+        android:id="@+id/txtDiscount"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/titleCodeVoucher"
+        android:text="Giảm Giá"
+        android:textSize="24sp"
+        android:textStyle="bold" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/titleDiscount"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/txtDiscount">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/edtDiscount"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Ví dụ: 99%" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+
+    <TextView
+        android:id="@+id/txtDate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/titleDiscount"
+        android:text="Hạn Sử Dụng"
+        android:textSize="24sp"
+        android:textStyle="bold" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/titleDate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/txtDate">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/edtDate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Ví dụ: 30/04/2024" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btnAddVoucher"
+        android:layout_width="150sp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/titleDate"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="17dp"
+        android:background="@drawable/border1"
+        android:text="Thêm" />
+
+</RelativeLayout>

@@ -1,9 +1,10 @@
 package com.vdsl.cybermart.Order.Model;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
-public class Order {
+public class Order implements Serializable {
     private String seri,idUser, idStaff, address, date, status, paymentMethod;
     private int totalPrice, voucher;
     private Map<String,Integer> productList;

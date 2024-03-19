@@ -16,7 +16,7 @@ import com.vdsl.cybermart.Order.Model.Order;
 import com.vdsl.cybermart.databinding.ItemOrderRowBinding;
 
 public class OrderListAdapter extends FirebaseRecyclerAdapter<Order, OrderListAdapter.ViewHolder> {
-    private OnDetailListener listener;
+    private final OnDetailListener listener;
     public OrderListAdapter(@NonNull FirebaseRecyclerOptions<Order> options,OnDetailListener listener) {
         super(options);
         this.listener = listener;

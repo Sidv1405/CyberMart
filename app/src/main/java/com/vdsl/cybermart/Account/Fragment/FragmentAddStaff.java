@@ -10,7 +10,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -22,11 +21,10 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.vdsl.cybermart.R;
-import com.vdsl.cybermart.databinding.FragmentSignUpBinding;
+import com.vdsl.cybermart.databinding.FragmentAddStaffsBinding;
 
-public class FragmentSignUp extends Fragment {
-    FragmentSignUpBinding binding;
+public class FragmentAddStaff extends Fragment {
+    FragmentAddStaffsBinding binding;
     FirebaseAuth userAuth;
     DatabaseReference userDatabase;
     FirebaseUser currentUser;
@@ -35,7 +33,7 @@ public class FragmentSignUp extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        binding = FragmentSignUpBinding.inflate(inflater, container, false);
+        binding = FragmentAddStaffsBinding.inflate(inflater, container, false);
         return binding.getRoot();
     }
 
@@ -47,15 +45,6 @@ public class FragmentSignUp extends Fragment {
         userDatabase = FirebaseDatabase.getInstance().getReference().child("Account");
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
 
-        binding.txtSignIn.setOnClickListener(v -> {
-            FragmentLogIn fragmentLogIn = new FragmentLogIn();
-            FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-            transaction.replace(R.id.fr_framemain, fragmentLogIn);
-            transaction.addToBackStack(null);
-            transaction.commit();
-        });
-
-
         binding.btnSignUp.setOnClickListener(v -> {
             String userName = binding.edtUserNameSignUp.getText().toString().trim();
             String email = binding.edtEmailSignUp.getText().toString().trim();
@@ -66,18 +55,18 @@ public class FragmentSignUp extends Fragment {
             String emailPattern = "[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}";
 
             if (TextUtils.isEmpty(userName)) {
-                binding.edtUserNameSignUp.setError("Please enter your User name!");
+                binding.edtUserNameSignUp.setError("Please enter Staff name!");
                 error = true;
             }
             if (TextUtils.isEmpty(email)) {
-                binding.edtEmailSignUp.setError("Please enter your Email!");
+                binding.edtEmailSignUp.setError("Please enter Staff Email!");
                 error = true;
             } else if (!email.matches(emailPattern)) {
                 binding.edtEmailSignUp.setError("Wrong email format!");
                 error = true;
             }
             if (TextUtils.isEmpty(password)) {
-                binding.edtPassSignUp.setError("Please enter your Password!");
+                binding.edtPassSignUp.setError("Please enter Password!");
                 error = true;
 
             } else if (password.length() < 6) {
@@ -85,14 +74,13 @@ public class FragmentSignUp extends Fragment {
                 error = true;
             }
             if (TextUtils.isEmpty(confirmPassword)) {
-                binding.edtConfirmPassSignUp.setError("Please confirm your Password!");
+                binding.edtConfirmPassSignUp.setError("Please confirm Password!");
                 error = true;
 
             } else if (!confirmPassword.equals(password)) {
-                binding.edtConfirmPassSignUp.setError("Your password is not match!");
+                binding.edtConfirmPassSignUp.setError("Password is not match!");
                 error = true;
             }
-
 
             if (!error) {
                 userAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
@@ -115,20 +103,15 @@ public class FragmentSignUp extends Fragment {
                                     latestUserID++;
                                     String ID = "Id" + latestUserID;
                                     DatabaseReference currentUserDB = userDatabase.child(ID);
-                                    currentUserDB.child("UserName").setValue(userName).toString();
-                                    currentUserDB.child("FullName").setValue("").toString();
-                                    currentUserDB.child("Email").setValue(email).toString();
-                                    currentUserDB.child("Password").setValue(password).toString();
-                                    currentUserDB.child("PhoneNumber").setValue("").toString();
-                                    currentUserDB.child("Address").setValue("").toString();
-                                    currentUserDB.child("Role").setValue("Customer").toString();
+                                    currentUserDB.child("UserName").setValue(userName);
+                                    currentUserDB.child("FullName").setValue("");
+                                    currentUserDB.child("Email").setValue(email);
+                                    currentUserDB.child("Password").setValue(password);
+                                    currentUserDB.child("PhoneNumber").setValue("");
+                                    currentUserDB.child("Address").setValue("");
+                                    currentUserDB.child("Role").setValue("Staff");
 
-                                    Toast.makeText(getActivity(), "Sign Up Successful.", Toast.LENGTH_SHORT).show();
-                                    FragmentLogIn fragmentLogIn = new FragmentLogIn();
-                                    FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-                                    transaction.replace(R.id.fr_framemain, fragmentLogIn);
-                                    transaction.addToBackStack(null);
-                                    transaction.commit();
+                                    Toast.makeText(getActivity(), "Add Staff Successfully.", Toast.LENGTH_SHORT).show();
                                 }
 
                                 @Override
