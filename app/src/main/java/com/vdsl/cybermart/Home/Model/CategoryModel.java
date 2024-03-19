@@ -6,14 +6,15 @@ public class CategoryModel {
     private String image;
     private boolean status;
 
-
-
     public String getId() {
         return id;
     }
 
     public boolean isStatus() {
         return status;
+    }
+
+    public CategoryModel() {
     }
 
     public void setId(String id) {
@@ -35,19 +36,7 @@ public class CategoryModel {
         return image;
     }
 
-    public void setImage(String image) {
-        this.image = image;
-    }
-
     public String getTitle() {
         return title;
     }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public CategoryModel() {
-    }
-
 }

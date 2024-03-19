@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/cv_prod"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_marginHorizontal="10dp"
+    android:layout_marginBottom="15dp"
     android:orientation="vertical"
     app:cardCornerRadius="7dp">
 
@@ -18,6 +20,7 @@
             android:id="@+id/img_product"
             android:layout_width="match_parent"
             android:layout_height="155dp"
+            android:scaleType="fitXY"
             android:src="@drawable/clothes_nightwear_outfit_svgrepo_com" />
 
         <LinearLayout
@@ -35,13 +38,6 @@
                 android:text="Iphone 1"
                 android:textColor="@android:color/black"
                 android:textSize="15sp" />
-
-            <ImageView
-                android:id="@+id/ic_favorites_product"
-                android:layout_width="0dp"
-                android:layout_height="20dp"
-                android:layout_weight="1"
-                android:src="@drawable/ic_favorite_product" />
         </LinearLayout>
 
         <LinearLayout
@@ -53,24 +49,29 @@
             <TextView
                 android:id="@+id/price_product"
                 android:layout_width="0dp"
-                android:layout_gravity="center"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center"
                 android:layout_weight="1"
                 android:gravity="left"
                 android:paddingLeft="5dp"
                 android:text="999$"
                 android:textColor="#FF0000"
                 android:textSize="13sp" />
-
-            <ImageView
-                android:id="@+id/ic_add_to_cart"
-                android:layout_width="0dp"
-                android:layout_height="20dp"
-                android:layout_weight="1"
-                android:src="@drawable/shopping_cart_svg" />
         </LinearLayout>
-
-
     </LinearLayout>
 
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/img_baned"
+            android:layout_width="155dp"
+            android:layout_height="150dp"
+            android:padding="6dp"
+            android:src="@drawable/ic_ban"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>
