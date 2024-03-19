@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     android:orientation="horizontal"
-    tools:context=".CategoryManagement.View.CategoryManagementActivity">
+    tools:context=".ProductManagement.View.ProductManagementActivity">
 
 
     <RelativeLayout
@@ -33,13 +33,13 @@
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
                 android:layout_marginVertical="10dp"
-                android:text="Category"
+                android:text="Product"
                 android:textSize="22sp"
                 android:textStyle="bold" />
         </RelativeLayout>
 
         <androidx.appcompat.widget.SearchView
-            android:id="@+id/search_category_management"
+            android:id="@+id/search_product_management"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/headerLayout"
@@ -49,19 +49,19 @@
             app:searchIcon="@drawable/search_svg" />
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rcv_category_management"
+            android:id="@+id/rcv_product_management"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/search_category_management"
+            android:layout_below="@id/search_product_management"
             android:layout_marginStart="15dp"
             android:layout_marginTop="10dp"
             android:paddingHorizontal="7dp"
             app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-            app:spanCount="3"
-            tools:listitem="@layout/item_category_management" />
+            app:spanCount="2"
+            tools:listitem="@layout/item_product" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/btn_add_category"
+            android:id="@+id/btn_add_product"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"

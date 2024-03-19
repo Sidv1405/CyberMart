@@ -5,6 +5,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -22,6 +23,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -45,7 +47,7 @@ public class CategoryManagementActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_category_management);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.category_management), (v, insets) -> {
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
@@ -58,16 +60,10 @@ public class CategoryManagementActivity extends AppCompatActivity {
 //        Add
         createDataCategory();
 //        Back
-        ImageView btnBack = findViewById(R.id.btn_back);
+        ImageButton btnBack = findViewById(R.id.btn_back);
         btnBack.setOnClickListener(v -> finish());
 
         SearchView searchView = findViewById(R.id.search_category_management);
-        TextView textView = findViewById(R.id.txt_cate_manage);
-        searchView.setOnSearchClickListener(v -> textView.setVisibility(View.GONE));
-        searchView.setOnCloseListener(() -> {
-            textView.setVisibility(View.VISIBLE);
-            return false;
-        });
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -95,7 +91,7 @@ public class CategoryManagementActivity extends AppCompatActivity {
     }
 
     private void createDataCategory() {
-        ImageButton btnAdd = findViewById(R.id.btn_add_category);
+        FloatingActionButton btnAdd = findViewById(R.id.btn_add_category);
         btnAdd.setOnClickListener(v -> {
 
             AlertDialog.Builder builder = new AlertDialog.Builder(this);

@@ -1,12 +1,42 @@
 package com.vdsl.cybermart.Home.Model;
 
 public class ProductModel {
+    String prodId;
     String name;
     String description;
     Double price;
     int quantity;
     String image;
     String categoryId;
+    boolean status;
+
+    public ProductModel(String prodId, String name, String description, Double price, int quantity, String image, String categoryId, boolean status) {
+        this.prodId = prodId;
+        this.name = name;
+        this.description = description;
+        this.price = price;
+        this.quantity = quantity;
+        this.image = image;
+        this.categoryId = categoryId;
+        this.status = status;
+    }
+
+    public boolean getStatus() {
+        return status;
+    }
+
+    public void setStatus(boolean status) {
+        this.status = status;
+    }
+
+
+    public String getProdId() {
+        return prodId;
+    }
+
+    public void setProdId(String id) {
+        this.prodId = id;
+    }
 
     public String getName() {
         return name;
@@ -59,12 +89,4 @@ public class ProductModel {
     public ProductModel() {
     }
 
-    public ProductModel(String name, String description, Double price, int quantity, String image, String categoryId) {
-        this.name = name;
-        this.description = description;
-        this.price = price;
-        this.quantity = quantity;
-        this.image = image;
-        this.categoryId = categoryId;
-    }
 }

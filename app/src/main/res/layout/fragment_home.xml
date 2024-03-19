@@ -29,6 +29,11 @@
 
     </RelativeLayout>
 
+    <androidx.viewpager.widget.ViewPager
+        android:layout_width="match_parent"
+        android:id="@+id/view_page"
+        android:layout_height="220dp" />
+
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

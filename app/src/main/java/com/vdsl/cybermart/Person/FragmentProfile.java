@@ -21,6 +21,7 @@ import com.vdsl.cybermart.Account.Activity.LoginActivity;
 import com.vdsl.cybermart.Account.Fragment.FragmentAddStaff;
 import com.vdsl.cybermart.General;
 import com.vdsl.cybermart.Order.Fragment.FragmentContainer;
+import com.vdsl.cybermart.ProductManagement.View.ProductManagementActivity;
 import com.vdsl.cybermart.R;
 import com.vdsl.cybermart.Voucher.View.VoucherActivity;
 import com.vdsl.cybermart.databinding.FragmentProfileBinding;
@@ -110,6 +111,9 @@ public class FragmentProfile extends Fragment {
 
         binding.cvCateManage.setOnClickListener(v -> {
             startActivity(new Intent(getContext(), CategoryManagementActivity.class));
+        });
+        binding.cvProdManage.setOnClickListener(v -> {
+            startActivity(new Intent(getContext(), ProductManagementActivity.class));
         });
         binding.btnMyVoucher.setOnClickListener(v -> {
             Intent intent = new Intent(getContext(), VoucherActivity.class);

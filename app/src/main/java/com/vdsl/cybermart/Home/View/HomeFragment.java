@@ -1,6 +1,8 @@
 package com.vdsl.cybermart.Home.View;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,20 +13,32 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager.widget.ViewPager;
 
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.vdsl.cybermart.Home.Adapter.BannerAdapter;
 import com.vdsl.cybermart.Home.Adapter.CategoryAdapter;
 import com.vdsl.cybermart.Home.Adapter.ProductAdapter;
+import com.vdsl.cybermart.Home.Model.Banner;
 import com.vdsl.cybermart.Home.Model.CategoryModel;
 import com.vdsl.cybermart.Home.Model.ProductModel;
+import com.vdsl.cybermart.R;
 import com.vdsl.cybermart.databinding.FragmentHomeBinding;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class HomeFragment extends Fragment {
     private FragmentHomeBinding binding;
     private CategoryAdapter categoryAdapter;
     private ProductAdapter productAdapter;
+    private List<Banner> list;
+    private Timer timer;
 
     @Nullable
     @Override
@@ -42,10 +56,7 @@ public class HomeFragment extends Fragment {
         RecyclerView rcvCategory = binding.rcvCategory;
         rcvCategory.setLayoutManager(new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false));
 
-        FirebaseRecyclerOptions<CategoryModel> options =
-                new FirebaseRecyclerOptions.Builder<CategoryModel>()
-                        .setQuery(cateReference, CategoryModel.class)
-                        .build();
+        FirebaseRecyclerOptions<CategoryModel> options = new FirebaseRecyclerOptions.Builder<CategoryModel>().setQuery(cateReference, CategoryModel.class).build();
 
         categoryAdapter = new CategoryAdapter(options);
         rcvCategory.setAdapter(categoryAdapter);
@@ -54,14 +65,43 @@ public class HomeFragment extends Fragment {
         DatabaseReference prodReference = FirebaseDatabase.getInstance().getReference().child("products");
         RecyclerView rcvProduct = binding.rcvProduct;
         rcvProduct.setLayoutManager(new GridLayoutManager(requireContext(), 2));
-        FirebaseRecyclerOptions<ProductModel> options1 =
-                new FirebaseRecyclerOptions.Builder<ProductModel>()
-                        .setQuery(prodReference, ProductModel.class)
-                        .build();
+        FirebaseRecyclerOptions<ProductModel> options1 = new FirebaseRecyclerOptions.Builder<ProductModel>().setQuery(prodReference, ProductModel.class).build();
 
         productAdapter = new ProductAdapter(options1);
         rcvProduct.setAdapter(productAdapter);
+
+//Banner
+
+
+        list = new ArrayList<>();
+        list.add(new Banner(R.drawable.banner1));
+        list.add(new Banner(R.drawable.banner2));
+        list.add(new Banner(R.drawable.banner3));
+        list.add(new Banner(R.drawable.banner4));
+
+        ViewPager viewPager = binding.viewPage;
+        if (viewPager != null) {
+            BannerAdapter bannerAdapter = new BannerAdapter(getContext(), list);
+            viewPager.setAdapter(bannerAdapter);
+
+            if (timer == null) {
+                timer = new Timer();
+                timer.schedule(new TimerTask() {
+                    @Override
+                    public void run() {
+                        new Handler(Looper.getMainLooper()).post(() -> {
+                            if (viewPager.getCurrentItem() < list.size() - 1) {
+                                viewPager.setCurrentItem(viewPager.getCurrentItem() + 1);
+                            } else {
+                                viewPager.setCurrentItem(0);
+                            }
+                        });
+                    }
+                }, 500, 2222);
+            }
+        }
     }
+
 
     @Override
     public void onStart() {
@@ -75,5 +115,14 @@ public class HomeFragment extends Fragment {
         super.onStop();
         categoryAdapter.stopListening();
         productAdapter.stopListening();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (timer != null) {
+            timer.cancel();
+            timer = null;
+        }
     }
 }
