@@ -1,9 +1,6 @@
 package com.vdsl.cybermart.Person;
 
-<<<<<<< HEAD
-=======
 import android.app.AlertDialog;
->>>>>>> master
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -16,15 +13,12 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
-<<<<<<< HEAD
 import com.vdsl.cybermart.CategoryManagement.View.CategoryManagementActivity;
-=======
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.vdsl.cybermart.Account.Activity.LoginActivity;
 import com.vdsl.cybermart.Account.Fragment.FragmentAddStaff;
->>>>>>> master
 import com.vdsl.cybermart.General;
 import com.vdsl.cybermart.Order.Fragment.FragmentContainer;
 import com.vdsl.cybermart.R;
@@ -34,11 +28,9 @@ import com.vdsl.cybermart.databinding.FragmentProfileBinding;
 public class FragmentProfile extends Fragment {
 
     FragmentProfileBinding binding;
-<<<<<<< HEAD
-=======
+
     private FirebaseAuth auth;
     DatabaseReference databaseReference;
->>>>>>> master
 
     @Nullable
     @Override
@@ -116,14 +108,12 @@ public class FragmentProfile extends Fragment {
             General.loadFragment(getParentFragmentManager(), new FragmentContainer(), null);
         });
 
-<<<<<<< HEAD
         binding.cvCateManage.setOnClickListener(v -> {
             startActivity(new Intent(getContext(), CategoryManagementActivity.class));
-=======
+        });
         binding.btnMyVoucher.setOnClickListener(v -> {
             Intent intent = new Intent(getContext(), VoucherActivity.class);
             startActivity(intent);
->>>>>>> master
         });
     }
 }
