@@ -130,7 +130,6 @@ public class ProductManagementActivity extends AppCompatActivity {
                 String description = Objects.requireNonNull(addProdBinding.edtAddDescProd.getText()).toString();
                 String image = Objects.requireNonNull(addProdBinding.edtAddUrlProd.getText()).toString();
                 String cateName = spinnerCategory.getSelectedItem().toString();
-                String cateId = getIdFromTitle(cateName);
 
                 prodReference.orderByChild("name").equalTo(name).addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
@@ -142,7 +141,7 @@ public class ProductManagementActivity extends AppCompatActivity {
                             DatabaseReference newProdRef = prodReference.push();
                             String prodId = newProdRef.getKey();
 
-                            ProductModel productModel = new ProductModel(prodId, name, description, price, quantity, image, cateId, true);
+                            ProductModel productModel = new ProductModel(name, description, price, quantity, image, cateName, true);
 
                             newProdRef.setValue(productModel);
                             alertDialog.dismiss();
@@ -158,28 +157,6 @@ public class ProductManagementActivity extends AppCompatActivity {
             addProdBinding.btnCancelAddProd.setOnClickListener(v1 -> alertDialog.dismiss());
         });
     }
-
-    private String getIdFromTitle(String title) {
-        DatabaseReference peopleReference = FirebaseDatabase.getInstance().getReference().child("categories");
-        final String[] cateId = {null};
-        peopleReference.orderByChild("title").equalTo(title).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if (dataSnapshot.exists()) {
-                    for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
-                        cateId[0] = dataSnapshot1.getKey();
-                        break;
-                    }
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-            }
-        });
-        return cateId[0];
-    }
-
 
     private void readDataProduct() {
         prodReference = FirebaseDatabase.getInstance().getReference().child("products");

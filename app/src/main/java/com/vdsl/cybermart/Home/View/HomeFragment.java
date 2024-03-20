@@ -1,4 +1,4 @@
-package com.vdsl.cybermart.Home.View;
+package com.vdsl.cybermart.Home.View.Fragment;
 
 import android.os.Bundle;
 import android.os.Handler;
@@ -18,6 +18,7 @@ import androidx.viewpager.widget.ViewPager;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.vdsl.cybermart.Home.Adapter.BannerAdapter;
 import com.vdsl.cybermart.Home.Adapter.CategoryAdapter;
 import com.vdsl.cybermart.Home.Adapter.ProductAdapter;
@@ -29,7 +30,6 @@ import com.vdsl.cybermart.databinding.FragmentHomeBinding;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -71,8 +71,6 @@ public class HomeFragment extends Fragment {
         rcvProduct.setAdapter(productAdapter);
 
 //Banner
-
-
         list = new ArrayList<>();
         list.add(new Banner(R.drawable.banner1));
         list.add(new Banner(R.drawable.banner2));
@@ -97,9 +95,25 @@ public class HomeFragment extends Fragment {
                             }
                         });
                     }
-                }, 500, 2222);
+                }, 1111, 2222);
             }
         }
+
+//filter product
+
+
+        categoryAdapter.setCategoryClickListener(new CategoryAdapter.CategoryClickListener() {
+            @Override
+            public void onCategoryClicked(CategoryModel categoryModel) {
+                String categoryId = categoryModel.getTitle();
+                Query query = prodReference.orderByChild("categoryId").equalTo(categoryId);
+                FirebaseRecyclerOptions<ProductModel> options3 = new FirebaseRecyclerOptions.Builder<ProductModel>().setQuery(query, ProductModel.class).build();
+
+                productAdapter.updateOptions(options3);
+            }
+        });
+
+
     }
 
 

@@ -1,6 +1,7 @@
 package com.vdsl.cybermart.Home.Adapter;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,8 +12,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.squareup.picasso.Picasso;
-import com.vdsl.cybermart.Home.Model.CategoryModel;
 import com.vdsl.cybermart.Home.Model.ProductModel;
+import com.vdsl.cybermart.ProductDetail.ProductDetailActivity;
 import com.vdsl.cybermart.databinding.ItemProductBinding;
 
 import java.util.ArrayList;
@@ -30,7 +31,22 @@ public class ProductAdapter extends FirebaseRecyclerAdapter<ProductModel, Produc
     @Override
     protected void onBindViewHolder(@NonNull ProdViewHolder prodViewHolder, int i, @NonNull ProductModel model) {
         ProductModel productModel = visibleItems.get(i);
+
         prodViewHolder.bind(productModel.getName(), productModel.getImage(), productModel.getPrice(), productModel.getStatus());
+
+        viewProductDetail(prodViewHolder, i);
+    }
+
+    private void viewProductDetail(@NonNull ProductAdapter.ProdViewHolder prodViewHolder, int i) {
+        prodViewHolder.itemView.setOnClickListener(v -> {
+            ProductModel clickedItem = getItem(i);
+            Intent intent = new Intent(v.getContext(), ProductDetailActivity.class);
+            intent.putExtra("productName", clickedItem.getName());
+            intent.putExtra("productImage", clickedItem.getImage());
+            intent.putExtra("productPrice", clickedItem.getPrice());
+            intent.putExtra("productDescription", clickedItem.getDescription());
+            v.getContext().startActivity(intent);
+        });
     }
 
     @NonNull
