@@ -21,6 +21,7 @@
         android:orientation="vertical">
 
         <TextView
+            android:id="@+id/txtTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="start"
@@ -49,32 +50,33 @@
             android:orientation="vertical">
 
 
+            <!--            <com.google.android.material.textfield.TextInputLayout-->
+            <!--                android:layout_width="match_parent"-->
+            <!--                android:layout_height="wrap_content"-->
+            <!--                android:layout_marginHorizontal="5dp"-->
+            <!--                android:layout_marginTop="20dp"-->
+            <!--                android:layout_marginBottom="10dp"-->
+            <!--                app:boxBackgroundMode="none"-->
+            <!--                app:boxStrokeWidth="0dp">-->
+
+            <!--                <com.google.android.material.textfield.TextInputEditText-->
+            <!--                    android:id="@+id/edtUserNameForgotPass"-->
+            <!--                    android:layout_width="match_parent"-->
+            <!--                    android:layout_height="wrap_content"-->
+            <!--                    android:layout_marginBottom="10dp"-->
+            <!--                    android:paddingBottom="5dp"-->
+            <!--                    android:background="@drawable/password_bottomline_custom"-->
+            <!--                    android:hint="User Name"-->
+            <!--                    android:textSize="20dp" />-->
+
+            <!--            </com.google.android.material.textfield.TextInputLayout>-->
+
             <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/textInputLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="5dp"
-                android:layout_marginTop="20dp"
-                android:layout_marginBottom="10dp"
-                app:boxBackgroundMode="none"
-                app:boxStrokeWidth="0dp">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/edtUserNameForgotPass"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="10dp"
-                    android:paddingBottom="5dp"
-                    android:background="@drawable/password_bottomline_custom"
-                    android:hint="User Name"
-                    android:textSize="20dp" />
-
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="5dp"
-                android:layout_marginBottom="10dp"
+                android:layout_marginTop="30dp"
                 app:boxBackgroundMode="none"
                 app:boxStrokeWidth="0dp">
 
@@ -82,14 +84,26 @@
                     android:id="@+id/edtEmailForgotPass"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingBottom="5dp"
                     android:layout_marginBottom="10dp"
                     android:background="@drawable/password_bottomline_custom"
                     android:hint="Email"
+                    android:padding="5dp"
+                    android:paddingBottom="5dp"
                     android:textSize="20dp" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
+            <TextView
+                android:id="@+id/txt_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="25dp"
+                android:layout_marginTop="60dp"
+                android:layout_marginBottom="-40dp"
+                android:text="text"
+                android:textColor="@color/black"
+                android:textSize="18dp"
+                android:visibility="gone" />
 
             <Button
                 android:id="@+id/btnVerify"
@@ -99,7 +113,7 @@
                 android:layout_marginVertical="60dp"
                 android:background="@drawable/button_black"
                 android:padding="10dp"
-                android:text="VERIFY"
+                android:text="Verify"
                 android:textColor="@color/white"
                 app:backgroundTint="@null" />
 
