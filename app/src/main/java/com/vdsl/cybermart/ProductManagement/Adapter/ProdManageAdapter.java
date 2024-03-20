@@ -45,10 +45,18 @@ public class ProdManageAdapter extends FirebaseRecyclerAdapter<ProductModel, Pro
     protected void onBindViewHolder(@NonNull ProdManageViewHolder prodManageViewHolder, int i, @NonNull ProductModel productModel) {
         prodManageViewHolder.bind(productModel.getName(), productModel.getImage(), productModel.getPrice(), productModel.getStatus());
 
+        viewProductDetail(prodManageViewHolder);
+
+        updateProduct(prodManageViewHolder, i, productModel);
+    }
+
+    private static void viewProductDetail(@NonNull ProdManageViewHolder prodManageViewHolder) {
         prodManageViewHolder.itemView.setOnClickListener(v -> {
             v.getContext().startActivity(new Intent(v.getContext(), ProductDetailActivity.class));
         });
+    }
 
+    private void updateProduct(@NonNull ProdManageViewHolder prodManageViewHolder, int i, @NonNull ProductModel productModel) {
         prodManageViewHolder.binding.cvProd.setOnLongClickListener(v -> {
             AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
             builder.setTitle("Update Product");

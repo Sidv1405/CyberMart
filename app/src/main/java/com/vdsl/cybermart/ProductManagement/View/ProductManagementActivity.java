@@ -27,9 +27,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.squareup.picasso.Picasso;
-import com.vdsl.cybermart.CategoryManagement.Adapter.CateManageAdapter;
-import com.vdsl.cybermart.Home.Model.CategoryModel;
 import com.vdsl.cybermart.Home.Model.ProductModel;
 import com.vdsl.cybermart.ProductManagement.Adapter.ProdManageAdapter;
 import com.vdsl.cybermart.R;
@@ -43,9 +40,7 @@ public class ProductManagementActivity extends AppCompatActivity {
     private DatabaseReference prodReference;
     private ProdManageAdapter adapter;
     private RecyclerView rcvProduct;
-    private DatabaseReference categoryReference;
     private Spinner spinnerCategory;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,7 +58,6 @@ public class ProductManagementActivity extends AppCompatActivity {
 
         rcvProduct = findViewById(R.id.rcv_product_management);
 
-        readDataProduct();
 
         createDataProduct();
 
@@ -82,6 +76,7 @@ public class ProductManagementActivity extends AppCompatActivity {
             }
         });
     }
+
     private void txtSearch(String text) {
         FirebaseRecyclerOptions<ProductModel> options =
                 new FirebaseRecyclerOptions.Builder<ProductModel>()
@@ -200,8 +195,14 @@ public class ProductManagementActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+    }
+
+    @Override
     protected void onStart() {
         super.onStart();
+        readDataProduct();
         if (adapter != null) // Check if adapter is not null before calling startListening()
             adapter.startListening();
     }
