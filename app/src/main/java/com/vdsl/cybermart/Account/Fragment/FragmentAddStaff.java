@@ -103,13 +103,13 @@ public class FragmentAddStaff extends Fragment {
                                     latestUserID++;
                                     String ID = "Id" + latestUserID;
                                     DatabaseReference currentUserDB = userDatabase.child(ID);
-                                    currentUserDB.child("UserName").setValue(userName);
-                                    currentUserDB.child("FullName").setValue("");
+                                    currentUserDB.child("FullName").setValue(userName);
                                     currentUserDB.child("Email").setValue(email);
-                                    currentUserDB.child("Password").setValue(password);
-                                    currentUserDB.child("PhoneNumber").setValue("");
-                                    currentUserDB.child("Address").setValue("");
                                     currentUserDB.child("Role").setValue("Staff");
+//                                    currentUserDB.child("Password").setValue(password);
+//                                    currentUserDB.child("UserName").setValue(userName);
+//                                    currentUserDB.child("PhoneNumber").setValue("");
+//                                    currentUserDB.child("Address").setValue("");
 
                                     Toast.makeText(getActivity(), "Add Staff Successfully.", Toast.LENGTH_SHORT).show();
                                 }
