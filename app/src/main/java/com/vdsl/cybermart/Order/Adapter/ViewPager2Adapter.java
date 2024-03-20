@@ -9,28 +9,25 @@ import com.vdsl.cybermart.Order.Fragment.DeliveredFragment;
 import com.vdsl.cybermart.Order.Fragment.CanceledOrderFragment;
 import com.vdsl.cybermart.Order.Fragment.ProcessingOrderFragment;
 
+import java.util.ArrayList;
+import java.util.Collections;
+
 public class ViewPager2Adapter extends FragmentStateAdapter {
-    public ViewPager2Adapter(@NonNull FragmentActivity fragmentActivity) {
+    private final ArrayList<Fragment> fragmentArrayList;
+    public ViewPager2Adapter(@NonNull FragmentActivity fragmentActivity,ArrayList<Fragment> fragmentArrayList) {
         super(fragmentActivity);
+        this.fragmentArrayList = fragmentArrayList;
     }
 
     @NonNull
     @Override
     public Fragment createFragment(int position) {
-        switch (position) {
-            case 0: {
-                return new DeliveredFragment();
-            }
-            case 1: {
-                return new ProcessingOrderFragment();
-            }
-            default:
-                return new CanceledOrderFragment();
-        }
+
+        return fragmentArrayList.get(position);
     }
 
     @Override
     public int getItemCount() {
-        return 3;
+        return fragmentArrayList.size();
     }
 }

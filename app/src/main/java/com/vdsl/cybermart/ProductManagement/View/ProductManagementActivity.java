@@ -27,9 +27,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.squareup.picasso.Picasso;
-import com.vdsl.cybermart.CategoryManagement.Adapter.CateManageAdapter;
-import com.vdsl.cybermart.Home.Model.CategoryModel;
 import com.vdsl.cybermart.Home.Model.ProductModel;
 import com.vdsl.cybermart.ProductManagement.Adapter.ProdManageAdapter;
 import com.vdsl.cybermart.R;
@@ -82,6 +79,7 @@ public class ProductManagementActivity extends AppCompatActivity {
             }
         });
     }
+
     private void txtSearch(String text) {
         FirebaseRecyclerOptions<ProductModel> options =
                 new FirebaseRecyclerOptions.Builder<ProductModel>()
