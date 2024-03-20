@@ -57,7 +57,8 @@ public class FragmentSignUp extends Fragment {
 
 
         binding.btnSignUp.setOnClickListener(v -> {
-            String userName = binding.edtUserNameSignUp.getText().toString().trim();
+//            String userName = binding.edtUserNameSignUp.getText().toString().trim();
+            String fullName = binding.edtFullNameSignUp.getText().toString().trim();
             String email = binding.edtEmailSignUp.getText().toString().trim();
             String password = binding.edtPassSignUp.getText().toString().trim();
             String confirmPassword = binding.edtConfirmPassSignUp.getText().toString().trim();
@@ -65,8 +66,12 @@ public class FragmentSignUp extends Fragment {
             boolean error = false;
             String emailPattern = "[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}";
 
-            if (TextUtils.isEmpty(userName)) {
-                binding.edtUserNameSignUp.setError("Please enter your User name!");
+//            if (TextUtils.isEmpty(userName)) {
+//                binding.edtUserNameSignUp.setError("Please enter your User name!");
+//                error = true;
+//            }
+            if (TextUtils.isEmpty(fullName)) {
+                binding.edtFullNameSignUp.setError("Please enter your Full name!");
                 error = true;
             }
             if (TextUtils.isEmpty(email)) {
@@ -115,13 +120,13 @@ public class FragmentSignUp extends Fragment {
                                     latestUserID++;
                                     String ID = "Id" + latestUserID;
                                     DatabaseReference currentUserDB = userDatabase.child(ID);
-                                    currentUserDB.child("UserName").setValue(userName).toString();
-                                    currentUserDB.child("FullName").setValue("").toString();
-                                    currentUserDB.child("Email").setValue(email).toString();
-                                    currentUserDB.child("Password").setValue(password).toString();
-                                    currentUserDB.child("PhoneNumber").setValue("").toString();
-                                    currentUserDB.child("Address").setValue("").toString();
-                                    currentUserDB.child("Role").setValue("Customer").toString();
+                                    currentUserDB.child("FullName").setValue(fullName);
+                                    currentUserDB.child("Email").setValue(email);
+                                    currentUserDB.child("Role").setValue("Customer");
+//                                    currentUserDB.child("UserName").setValue(userName);
+//                                    currentUserDB.child("Password").setValue(password);
+//                                    currentUserDB.child("PhoneNumber").setValue("");
+//                                    currentUserDB.child("Address").setValue("");
 
                                     Toast.makeText(getActivity(), "Sign Up Successful.", Toast.LENGTH_SHORT).show();
                                     FragmentLogIn fragmentLogIn = new FragmentLogIn();

@@ -1,7 +1,9 @@
 package com.vdsl.cybermart.Person;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -43,36 +45,33 @@ public class FragmentProfile extends Fragment {
 
         auth = FirebaseAuth.getInstance();
         databaseReference = FirebaseDatabase.getInstance().getReference().child("Account");
+
+        //show infor
         if (auth.getCurrentUser() != null) {
             Log.d("loginnow", "logged in");
 
-            Intent intent = getActivity().getIntent();
-            if (intent != null) {
-                Log.d("IntentData", "Intent is not null");
-                String yourName = intent.getStringExtra("yourName");
-                String yourEmail = intent.getStringExtra("yourEmail");
-                Log.d("IntentData", "YourName: " + yourName + ", YourEmail: " + yourEmail);
-
-                if (yourName != null && yourEmail != null) {
-                    Log.d("IntentData", "YourName: " + yourName + ", YourEmail: " + yourEmail);
-                    binding.txtYourName.setText(yourName);
-                    binding.txtYourEmail.setText(yourEmail);
-                } else {
-                    Log.d("IntentData", "YourName or YourEmail is null");
-                    // Xử lý trường hợp dữ liệu không tồn tại
-                }
-            } else {
-                Log.d("IntentData", "Intent is null");
-                // Xử lý trường hợp Intent không tồn tại
-            }
+            SharedPreferences sharedPreferences=getActivity().getSharedPreferences("Users", Context.MODE_PRIVATE);
+            String FullName = sharedPreferences.getString("FullName","nothing to show");
+            String Email = sharedPreferences.getString("Email","nothing to show");
+            binding.txtYourName.setText(FullName);
+            binding.txtYourEmail.setText(Email);
+            Log.d("infor", ""+ FullName);
+            Log.d("infor", ""+ Email);
+//            Glide.with(getActivity()).load(avatar).error(R.drawable.img_default_profile_image).into(binding.imgAvatar);
         } else {
             Log.d("loginnow", "not logged in");
         }
+        //end
+
+        //back
         binding.imgBack.setOnClickListener(v -> {
             if (getActivity() != null) {
                 getActivity().getSupportFragmentManager().popBackStack();
             }
         });
+        //end
+
+        //sign out
         binding.imgLogout.setOnClickListener(v -> {
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
             builder.setTitle("Logout your accont");
@@ -93,15 +92,19 @@ public class FragmentProfile extends Fragment {
             builder.create().show();
 
         });
+        //end
 
 
-        binding.CVCreateStaff.setOnClickListener(v -> {
+        //go to frag create staff account
+        binding.CvCreateStaff.setOnClickListener(v -> {
             FragmentAddStaff fragmentAddStaff = new FragmentAddStaff();
             FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
             transaction.replace(R.id.frag_container_main, fragmentAddStaff);
             transaction.addToBackStack(null);
             transaction.commit();
         });
+        //end
+
         binding.btnMyOrder.setOnClickListener(v -> {
             General.loadFragment(getParentFragmentManager(), new FragmentContainer(), null);
         });

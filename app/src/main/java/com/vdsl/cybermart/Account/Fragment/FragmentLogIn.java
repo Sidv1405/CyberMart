@@ -16,6 +16,9 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -31,6 +34,7 @@ public class FragmentLogIn extends Fragment {
 
     FirebaseAuth userAuth;
     DatabaseReference userDatabase;
+    SharedPreferences sharedPreferences;
 
     @Nullable
     @Override
@@ -46,8 +50,7 @@ public class FragmentLogIn extends Fragment {
         userAuth = FirebaseAuth.getInstance();
         userDatabase = FirebaseDatabase.getInstance().getReference().child("Account");
 
-
-        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("LOGIN_PREFS", Context.MODE_PRIVATE);
+        sharedPreferences = getActivity().getSharedPreferences("LOGIN_PREFS", Context.MODE_PRIVATE);
         binding.edtEmailSignIn.setText(sharedPreferences.getString("email", ""));
         binding.edtPassSignIn.setText(sharedPreferences.getString("password", ""));
         binding.chkRemember.setChecked(sharedPreferences.getBoolean("remember", false));
@@ -69,7 +72,6 @@ public class FragmentLogIn extends Fragment {
         });
 
         binding.btnLogin.setOnClickListener(v -> {
-
             String email = binding.edtEmailSignIn.getText().toString().trim();
             String password = binding.edtPassSignIn.getText().toString().trim();
 
@@ -86,49 +88,58 @@ public class FragmentLogIn extends Fragment {
             if (TextUtils.isEmpty(password)) {
                 binding.edtPassSignIn.setError("Please enter your Password!");
                 error = true;
-
             } else if (password.length() < 6) {
                 binding.edtPassSignIn.setError("Please enter more than 6 characters!");
                 error = true;
             }
 
             if (!error) {
-                userAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(task ->
-                        userDatabase.orderByChild("Email").equalTo(email).addValueEventListener(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                if (snapshot.exists()) {
-                                    for (DataSnapshot userSnapshot : snapshot.getChildren()) {
-                                        String storedPassword = userSnapshot.child("Password").getValue(String.class);
-                                        if (storedPassword != null && storedPassword.equals(password)) {
+                userAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            Intent intent = new Intent(getActivity(), MainActivity.class);
+                            startActivity(intent);
+                            getActivity().finish();
+                            userDatabase.orderByChild("Email").equalTo(email).addValueEventListener(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                    if (snapshot.exists()) {
+                                        for (DataSnapshot userSnapshot : snapshot.getChildren()) {
                                             Toast.makeText(getActivity(), "Log in Successful", Toast.LENGTH_SHORT).show();
                                             rememberUser(email, password, binding.chkRemember.isChecked());
 
-                                            String yourName = userSnapshot.child("UserName").getValue(String.class);
-                                            String yourEmail = userSnapshot.child("Email").getValue(String.class);
-                                            Log.d("TAG", "onDataChange: "+yourName);
-                                            Log.d("TAG", "onDataChange: "+yourEmail);
-                                            Intent intent = new Intent(getActivity(), MainActivity.class);
+                                            sharedPreferences = getActivity().getSharedPreferences("Users", Context.MODE_PRIVATE);
+                                            SharedPreferences.Editor editor = sharedPreferences.edit();
+                                            String ID =userSnapshot.getKey();
+                                            String FullName = userSnapshot.child("FullName").getValue(String.class);
+                                            String Email = userSnapshot.child("Email").getValue(String.class);
+                                            String Role = userSnapshot.child("Role").getValue(String.class);
 
-                                            // Trong LoginActivity hoặc nơi đăng nhập thành công
-                                            intent.putExtra("yourName",yourName);
-                                            intent.putExtra("yourEmail",yourEmail);
-                                            startActivity(intent);
+                                            editor.putString("ID", ID);
+                                            editor.putString("FullName", FullName);
+                                            editor.putString("Email", Email);
+                                            editor.putString("Role", Role);
+                                            editor.apply();
+
+
                                             Log.d("Role", "Role: " + userSnapshot.child("Role").getValue(String.class));
-                                            getActivity().finish(); // Kết thúc activity hiện tại sau khi đăng nhập thành công
                                             return;
                                         }
+                                    } else {
+                                        Toast.makeText(getActivity(), "Email not found!", Toast.LENGTH_SHORT).show();
                                     }
-                                    Toast.makeText(getActivity(), "Incorrect password!", Toast.LENGTH_SHORT).show();
-                                } else {
-                                    Toast.makeText(getActivity(), "Email not found!", Toast.LENGTH_SHORT).show();
                                 }
-                            }
 
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError error1) {
-                            }
-                        }));
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error1) {
+                                }
+                            });
+                        } else {
+                            Toast.makeText(getActivity(), "Failed, Please check your Email or Password", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
             }
 
         });
