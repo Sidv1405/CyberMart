@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ProductManagement.View.ProductDetailActivity">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/product_image"
+            android:layout_width="match_parent"
+            android:layout_height="470dp"
+            android:src="@drawable/clothes_nightwear_outfit_svgrepo_com" />
+
+        <TextView
+            android:id="@+id/product_title"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:layout_gravity="top|left"
+            android:layout_marginLeft="25dp"
+            android:layout_marginTop="480dp"
+            android:gravity="left|center_vertical"
+            android:includeFontPadding="false"
+            android:maxLines="1"
+            android:singleLine="true"
+            android:text="Minimal Stand"
+            android:textColor="#FF303030"
+            android:textSize="24dp" />
+
+        <LinearLayout
+            android:id="@+id/container_item_number_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top|left"
+            android:layout_marginLeft="237dp"
+            android:layout_marginTop="526dp"
+            android:clipToPadding="false"
+            android:gravity="left|center_vertical"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/image_group"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:scaleType="centerInside"
+                android:src="@drawable/ic_minus" />
+
+            <TextView
+                android:id="@+id/text"
+                android:layout_width="wrap_content"
+                android:layout_height="25dp"
+                android:layout_marginLeft="15dp"
+                android:gravity="left|center_vertical"
+                android:includeFontPadding="false"
+                android:maxLines="1"
+                android:singleLine="true"
+                android:text="01"
+                android:textColor="#FF242424"
+                android:textSize="18dp" />
+
+            <ImageView
+                android:id="@+id/image_group1"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginLeft="15dp"
+                android:scaleType="centerInside"
+                android:src="@drawable/ic_add" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/product_price"
+            android:layout_width="wrap_content"
+            android:layout_height="41dp"
+            android:layout_gravity="top|left"
+            android:layout_marginLeft="25dp"
+            android:layout_marginTop="520dp"
+            android:gravity="left|center_vertical"
+            android:includeFontPadding="false"
+            android:maxLines="1"
+            android:singleLine="true"
+            android:text="$ 50"
+            android:textColor="#FF303030"
+            android:textSize="30dp" />
+
+        <TextView
+            android:id="@+id/product_reviews"
+            android:layout_width="wrap_content"
+            android:layout_height="19dp"
+            android:layout_gravity="top|left"
+            android:layout_marginLeft="102dp"
+            android:layout_marginTop="574dp"
+            android:gravity="left|center_vertical"
+            android:includeFontPadding="false"
+            android:maxLines="1"
+            android:singleLine="true"
+            android:text="(50 reviews)"
+            android:textColor="#FF808080"
+            android:textSize="14dp" />
+
+        <TextView
+            android:id="@+id/product_rating"
+            android:layout_width="wrap_content"
+            android:layout_height="25dp"
+            android:layout_gravity="top|left"
+            android:layout_marginLeft="55dp"
+            android:layout_marginTop="571dp"
+            android:gravity="left|center_vertical"
+            android:includeFontPadding="false"
+            android:maxLines="1"
+            android:singleLine="true"
+            android:text="4.5"
+            android:textColor="#FF303030"
+            android:textSize="18dp" />
+
+        <TextView
+            android:id="@+id/product_description"
+            android:layout_width="325dp"
+            android:layout_height="95dp"
+            android:layout_gravity="top|left"
+            android:layout_marginLeft="25dp"
+            android:layout_marginTop="607dp"
+            android:gravity="left|top"
+            android:includeFontPadding="false"
+            android:lineHeight="19.1dp"
+            android:text="Minimal Stand is made of by natural wood. The design that is very simple and minimal. This is truly one of the best furnitures in any family for now. With 3 different colors, you can easily select the best match for your home. "
+            android:textColor="#FF606060"
+            android:textSize="14dp" />
+
+
+        <ImageView
+            android:id="@+id/iv_star"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_gravity="top|left"
+            android:layout_marginLeft="25dp"
+            android:layout_marginTop="572dp"
+            android:scaleType="centerInside"
+            android:src="@drawable/ic_star" />
+
+        <ImageView
+            android:id="@+id/container_back"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_gravity="top|left"
+            android:layout_marginLeft="32dp"
+            android:layout_marginTop="53dp"
+            android:scaleType="centerInside"
+            android:src="@drawable/ic_back" />
+
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top|left"
+            android:layout_marginLeft="25dp"
+            android:layout_marginTop="722dp">
+
+            <LinearLayout
+                android:id="@+id/container_frame1"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="left|top"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/image_frame"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_gravity="center"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/ic_heart_black" />
+
+                <FrameLayout
+                    android:id="@+id/container_group"
+                    android:layout_width="250dp"
+                    android:layout_height="60dp"
+                    android:layout_marginStart="45dp">
+
+                    <Button
+                        android:id="@+id/text_add_to_cart"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:gravity="center_horizontal|center_vertical"
+                        android:includeFontPadding="false"
+                        android:maxLines="1"
+                        android:singleLine="true"
+                        android:text="Add to cart "
+                        android:textColor="@color/black"
+                        android:textSize="20sp"
+                        android:textStyle="bold" />
+                </FrameLayout>
+            </LinearLayout>
+
+            <ImageView
+                android:id="@+id/image_favorite"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_gravity="top|left"
+                android:layout_marginLeft="18dp"
+                android:layout_marginTop="20dp"
+                android:scaleType="centerInside" />
+        </FrameLayout>
+    </FrameLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

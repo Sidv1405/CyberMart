@@ -1,5 +1,6 @@
 package com.vdsl.cybermart.Home.Adapter;
 
+import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,7 +19,7 @@ import java.util.List;
 
 public class CategoryAdapter extends FirebaseRecyclerAdapter<CategoryModel, CategoryAdapter.CateViewHolder> {
 
-    private List<CategoryModel> visibleItems = new ArrayList<>();
+    private final List<CategoryModel> visibleItems = new ArrayList<>();
 
     public CategoryAdapter(@NonNull FirebaseRecyclerOptions<CategoryModel> options) {
         super(options);
@@ -45,6 +46,7 @@ public class CategoryAdapter extends FirebaseRecyclerAdapter<CategoryModel, Cate
         return visibleItems.size();
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     @Override
     public void onDataChanged() {
         super.onDataChanged();

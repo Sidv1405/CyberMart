@@ -1,8 +1,6 @@
 package com.vdsl.cybermart.CategoryManagement.Adapter;
 
-import android.content.DialogInterface;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
+import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,8 +22,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.squareup.picasso.Picasso;
 import com.vdsl.cybermart.Home.Model.CategoryModel;
-import com.vdsl.cybermart.R;
-import com.vdsl.cybermart.databinding.ItemCategoryBinding;
 import com.vdsl.cybermart.databinding.ItemCategoryManagementBinding;
 
 import java.util.Objects;
@@ -36,6 +32,7 @@ public class CateManageAdapter extends FirebaseRecyclerAdapter<CategoryModel, Ca
         super(options);
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     protected void onBindViewHolder(@NonNull CateManageViewHolder cateManageViewHolder, int position, @NonNull CategoryModel categoryModel) {
         cateManageViewHolder.bind(categoryModel.getTitle(), categoryModel.getImage(), categoryModel.isStatus());
@@ -84,30 +81,21 @@ public class CateManageAdapter extends FirebaseRecyclerAdapter<CategoryModel, Ca
             FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
             DatabaseReference rootReference = firebaseDatabase.getReference();
             DatabaseReference cateReference = rootReference.child("categories");
-            builder.setPositiveButton("Update", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    boolean newStatus;
-                    String updatedTitle = edtNameCate.getText().toString();
-                    String updatedImage = edtImageUrl.getText().toString();
-                    String selectedStatus = spinnerCate.getSelectedItem().toString();
-                    if (selectedStatus.equals("Active")) {
-                        newStatus = true;
-                    } else {
-                        newStatus = false;
-                    }
+            builder.setPositiveButton("Update", (dialog, which) -> {
+                boolean newStatus;
+                String updatedTitle = Objects.requireNonNull(edtNameCate.getText()).toString();
+                String updatedImage = Objects.requireNonNull(edtImageUrl.getText()).toString();
+                String selectedStatus = spinnerCate.getSelectedItem().toString();
+                newStatus = selectedStatus.equals("Active");
 
-                    DatabaseReference categoryRef = cateReference.child(getRef(position).getKey());
-                    categoryRef.child("title").setValue(updatedTitle);
-                    categoryRef.child("image").setValue(updatedImage);
-                    categoryRef.child("status").setValue(newStatus);
+                DatabaseReference categoryRef = cateReference.child(Objects.requireNonNull(getRef(position).getKey()));
+                categoryRef.child("title").setValue(updatedTitle);
+                categoryRef.child("image").setValue(updatedImage);
+                categoryRef.child("status").setValue(newStatus);
 
-                    dialog.dismiss();
+                dialog.dismiss();
 
-                }
-            });
-
-            builder.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
+            }).setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
 
             AlertDialog dialog = builder.create();
             dialog.show();
@@ -137,7 +125,7 @@ public class CateManageAdapter extends FirebaseRecyclerAdapter<CategoryModel, Ca
             Picasso.get().load(categoryImage).into(cateManaBinding.imgCategory);
 
             if (!status) {
-                itemView.setBackgroundColor(Color.GRAY);
+                cateManaBinding.imgBaned.setVisibility(View.VISIBLE);
             }
         }
     }
