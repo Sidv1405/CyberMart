@@ -1,5 +1,6 @@
 package com.vdsl.cybermart.Voucher;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public class Voucher {
@@ -48,5 +49,15 @@ public class Voucher {
 
     public void setDiscount(int discount) {
         this.discount = discount;
+    }
+
+    public Map<String,Object> toMap(){
+        HashMap<String,Object> map = new HashMap<>();
+        map.put("code",code);
+        map.put("title",title);
+        map.put("discount",discount);
+        map.put("expiryDate",expiryDate);
+
+        return map;
     }
 }

@@ -1,15 +1,22 @@
 package com.vdsl.cybermart.Voucher.View;
 
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.ContextMenu;
+import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.core.graphics.Insets;
@@ -25,7 +32,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.ktx.Firebase;
+import com.saadahmedsoft.popupdialog.listener.OnDialogButtonClickListener;
 import com.vdsl.cybermart.CategoryManagement.Adapter.CateManageAdapter;
+import com.vdsl.cybermart.General;
 import com.vdsl.cybermart.Home.Model.CategoryModel;
 import com.vdsl.cybermart.Order.Model.Order;
 import com.vdsl.cybermart.R;
@@ -33,6 +42,7 @@ import com.vdsl.cybermart.Voucher.Adapter.VoucherListAdapter;
 import com.vdsl.cybermart.Voucher.Voucher;
 import com.vdsl.cybermart.databinding.ActivityMainBinding;
 import com.vdsl.cybermart.databinding.ActivityVoucherBinding;
+import com.vdsl.cybermart.databinding.UpdateVoucherBinding;
 
 import java.util.ArrayList;
 
@@ -60,7 +70,18 @@ public class VoucherActivity extends AppCompatActivity {
         showAdminOption();
 
         readDataVoucher();
-        
+
+        binding.flAddVoucher.setOnClickListener(v -> {
+            Intent intent = new Intent(VoucherActivity.this, VoucherAddActivity.class);
+            startActivity(intent);
+        });
+
+        adapter.setOnItemClick(new VoucherListAdapter.OnItemClick() {
+            @Override
+            public void onItemClick(int position, Voucher voucher) {
+                showDialogDetail(adapter.getVoucherAtPosition(position));
+            }
+        });
 
         binding.btnBack.setOnClickListener(v -> {
             super.onBackPressed();
@@ -92,42 +113,82 @@ public class VoucherActivity extends AppCompatActivity {
 
     }
 
-    private void showAdminOption() {
-        Query query = FirebaseDatabase.getInstance().getReference("Account")
-                .orderByChild("Role").equalTo("Admin");
+    private void showDialogDetail(Voucher voucher) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        LayoutInflater inflater = this.getLayoutInflater();
 
-        query.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if (dataSnapshot.exists()) {
-                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                        String role = snapshot.child("Role").getValue(String.class);
-                        if ( role.equals("Admin")) {
-                            Log.d("Admin Account", snapshot.getValue().toString());
-                            binding.flAddVoucher.setOnClickListener(v -> {
-                                Intent intent = new Intent(VoucherActivity.this, VoucherAddActivity.class);
-                                startActivity(intent);
-                            });
-                        }else{
-                            binding.flAddVoucher.setVisibility(View.GONE);
-                        }
-                    }
-                } else {
-                    Log.d("AdminOption", "No admin accounts found.");
-                }
-            }
+        UpdateVoucherBinding updateVoucherBinding = UpdateVoucherBinding.inflate(inflater);
+        builder.setView(updateVoucherBinding.getRoot());
+        Dialog dialog = builder.create();
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                // Xử lý khi truy vấn bị hủy
-                Log.d("AdminOption", "Firebase query cancelled: " + databaseError.getMessage());
-            }
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialog.show();
+
+        if (voucher != null) {
+            updateVoucherBinding.edtName.setText(voucher.getTitle());
+            updateVoucherBinding.edtCode.setText(voucher.getCode());
+            updateVoucherBinding.edtDiscount.setText(String.valueOf(voucher.getDiscount()));
+            updateVoucherBinding.edtDate.setText(voucher.getExpiryDate());
+        }
+
+        updateVoucherBinding.btnDelete.setOnClickListener(v -> {
+            onClickDeleteVoucher(voucher);
+            dialog.dismiss();
         });
+
+        updateVoucherBinding.btnUpdate.setOnClickListener(v -> {
+            String newTitle = updateVoucherBinding.edtName.getText().toString().trim();
+            String newCode = updateVoucherBinding.edtCode.getText().toString().trim();
+            String newDiscount = updateVoucherBinding.edtDiscount.getText().toString().trim();
+            String newDate = updateVoucherBinding.edtDate.getText().toString().trim();
+
+            voucher.setTitle(newTitle);
+
+            voucher.setDiscount(Integer.parseInt(newDiscount));
+            voucher.setExpiryDate(newDate);
+
+            // Đẩy việc cập nhật dữ liệu vào bên trong phương thức onIdReceived
+            getIdFromCode(voucher.getCode(), new IdFromCodeCallback() {
+                @Override
+                public void onIdReceived(String id) {
+                    if (id != null) {
+                        voucher.setCode(newCode);
+                        voucherRef.child(id).updateChildren(voucher.toMap(), new DatabaseReference.CompletionListener() {
+                            @Override
+                            public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
+                                if (error == null) {
+                                    // Nếu không có lỗi, hiển thị thông báo thành công
+                                    General.showSuccessPopup(VoucherActivity.this, "Thành Công", "Update Sản Phẩm Thành Công", new OnDialogButtonClickListener() {
+                                        @Override
+                                        public void onDismissClicked(Dialog dialog) {
+                                            super.onDismissClicked(dialog);
+                                        }
+                                    });
+                                    adapter.notifyDataSetChanged();
+                                } else {
+                                    // Nếu có lỗi, hiển thị thông báo lỗi
+                                    Log.e("updateChildren", "Error updating voucher: " + error.getMessage());
+                                }
+                            }
+                        });
+                        dialog.dismiss();
+                    } else {
+                        // Nếu không tìm thấy voucher, hiển thị thông báo lỗi
+                        Log.e("getIdFromCode", "Voucher không tồn tại với mã code: " + voucher.getCode());
+                    }
+                }
+            });
+        });
+    }
+
+
+    private void showAdminOption() {
+
     }
 
     private void readDataVoucher() {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         binding.rcvVoucher.setLayoutManager(linearLayoutManager);
 
         voucherRef = database.getReference().child("Voucher");
@@ -157,6 +218,75 @@ public class VoucherActivity extends AppCompatActivity {
         adapter = new VoucherListAdapter(options);
         binding.rcvVoucher.setAdapter(adapter);
     }
+
+
+    private void onClickDeleteVoucher(Voucher voucher) {
+        new AlertDialog.Builder(this)
+                .setTitle("Confirm")
+                .setMessage("Bạn Có Muốn Xóa Voucher Có Mã " + voucher.getCode() + " Không ?")
+                .setPositiveButton("Đồng Ý", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        FirebaseDatabase database = FirebaseDatabase.getInstance();
+                        voucherRef = database.getReference().child("Voucher");
+                        getIdFromCode(voucher.getCode(), new IdFromCodeCallback() {
+                            @Override
+                            public void onIdReceived(String id) {
+                                if (id != null) {
+                                    Log.e("test2", "onDismissClicked: " + id);
+                                    voucherRef.child(id).removeValue(new DatabaseReference.CompletionListener() {
+                                        @Override
+                                        public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
+                                            General.showSuccessPopup(VoucherActivity.this, "Thành Công", "Bạn Đã Xóa Voucher Thành Công", new OnDialogButtonClickListener() {
+                                                @Override
+                                                public void onDismissClicked(Dialog dialog) {
+                                                    super.onDismissClicked(dialog);
+                                                    dialog.dismiss();
+                                                }
+                                            });
+                                        }
+                                    });
+                                } else {
+                                    Log.e("getIdFromCode", "Voucher không tồn tại với mã code: " + voucher.getCode());
+                                }
+                            }
+                        });
+                    }
+                })
+                .setNegativeButton("Cancel", null)
+                .show();
+    }
+
+
+    private void getIdFromCode(String code, IdFromCodeCallback callback) {
+        DatabaseReference voucherRef = FirebaseDatabase.getInstance().getReference().child("Voucher");
+        voucherRef.orderByChild("code").equalTo(code).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                String voucherId = null;
+                if (dataSnapshot.exists()) {
+                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                        voucherId = snapshot.getKey();
+                        Log.e("getIdFromCode", "Firebase query open: " + voucherId);
+                        break;
+                    }
+                }
+                callback.onIdReceived(voucherId);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Log.e("getIdFromCode", "Firebase query cancelled: " + databaseError.getMessage());
+                callback.onIdReceived(null);
+            }
+        });
+    }
+
+    public interface IdFromCodeCallback {
+        void onIdReceived(String id);
+    }
+
+
 
     @Override
     protected void onStart() {

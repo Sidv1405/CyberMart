@@ -82,6 +82,7 @@ public class VoucherAddActivity extends AppCompatActivity {
                 binding.titleDiscount.getError() == null &&
                 binding.titleNameVoucher.getError() == null) {
 
+            String pathObj = String.valueOf(code);
             voucherRef.orderByChild("code").equalTo(code).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
