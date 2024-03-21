@@ -31,13 +31,28 @@ public class VoucherListAdapter extends FirebaseRecyclerAdapter<Voucher,VoucherL
     protected void onBindViewHolder(@NonNull ViewHolderVoucher viewHolderVoucher, int i, @NonNull Voucher voucher) {
         Log.e("VoucherListAdapter", "Binding Voucher at position " + i + ": " + voucher.toString());
         viewHolderVoucher.bind(voucher);
+
+        viewHolderVoucher.itemView.setOnClickListener(v -> {
+            if (mListener != null) {
+                mListener.onItemClick(i, voucher);
+            }
+        });
     }
 
+    public interface OnItemClick {
+        void onItemClick(int position, Voucher voucher);
+    }
+
+    private VoucherListAdapter.OnItemClick mListener;
 
     public void updateList(List<Voucher> newList) {
         voucherList.clear();
         voucherList.addAll(newList);
         notifyDataSetChanged();
+    }
+
+    public void setOnItemClick(VoucherListAdapter.OnItemClick listener) {
+        mListener = listener;
     }
     @NonNull
     @Override
@@ -59,9 +74,15 @@ public class VoucherListAdapter extends FirebaseRecyclerAdapter<Voucher,VoucherL
             binding.tvId.setText(voucher.getCode());
             binding.tvName.setText(voucher.getTitle());
             binding.tvPrice.setText(voucher.getDiscount() + "%");
-            binding.tvDate.setText(voucher.getExpiryDate());
-
         }
     }
+
+    public Voucher getVoucherAtPosition(int position) {
+        if (position >= 0 && position < getItemCount()) {
+            return getItem(position);
+        }
+        return null;
+    }
+
 
 }

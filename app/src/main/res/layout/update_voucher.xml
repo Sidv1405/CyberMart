@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:background="@drawable/khung"
+    android:paddingHorizontal="20dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Thông Tin Mã Giảm Giá"
+        android:textSize="30sp"
+        android:layout_marginVertical="10dp"
+        android:textStyle="bold"
+        android:textColor="@color/black"
+        />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="10dp"
+        android:background="@drawable/custom_border_detail">
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <TextView
+                android:id="@+id/txtNameVoucher"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10sp"
+                android:text="Tên : "
+                android:textSize="22sp"
+                android:textStyle="bold"
+                />
+
+            <EditText
+                android:textColor="#2B1F1F"
+                android:id="@+id/edt_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="22sp"
+                android:layout_gravity="center"
+                android:textAlignment="center"
+                android:text="Tên"
+                android:textStyle="bold"
+                android:textAllCaps="false"
+                />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <TextView
+                android:id="@+id/txtCodeVoucher"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10sp"
+                android:text="Mã : "
+                android:textSize="22sp"
+                android:textStyle="bold"
+                />
+
+            <EditText
+                android:textColor="#2B1F1F"
+                android:id="@+id/edt_Code"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="22sp"
+                android:layout_gravity="center"
+                android:textAlignment="center"
+                android:text="Mã"
+                android:textStyle="bold"
+                android:textAllCaps="false" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <TextView
+                android:id="@+id/txtDiscountVoucher"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10sp"
+                android:text="Giảm(%) : "
+                android:textSize="22sp"
+                android:textStyle="bold"
+                />
+
+            <EditText
+                android:textColor="#2B1F1F"
+                android:id="@+id/edt_Discount"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="22sp"
+                android:layout_gravity="center"
+                android:textAlignment="center"
+                android:text="99%"
+                android:textStyle="bold"
+                android:textAllCaps="false" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <TextView
+                android:id="@+id/txtDateVoucher"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10sp"
+                android:text="Ngày Hết Hạn : "
+                android:textSize="22sp"
+                android:textStyle="bold"
+                />
+
+            <EditText
+                android:textColor="#2B1F1F"
+                android:id="@+id/edt_Date"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="22sp"
+                android:layout_gravity="center"
+                android:textAlignment="center"
+                android:text="20/11/2032"
+                android:textStyle="bold"
+                android:textAllCaps="false" />
+        </LinearLayout>
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20sp"
+        android:gravity="center_horizontal"
+        android:orientation="horizontal"
+        android:background="@drawable/custom_border_detail"
+        android:padding="20dp">
+
+        <ImageView
+            android:id="@+id/btnDelete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginRight="30sp"
+            android:background="@drawable/ic_delete" />
+
+        <ImageView
+            android:id="@+id/btnUpdate"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginLeft="30sp"
+            android:background="@drawable/ic_update" />
+    </LinearLayout>
+
+
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btnUpdateVoucher"
+        android:layout_width="150sp"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="30sp"
+        android:background="@drawable/border1"
+        android:text="Cập nhật" />
+</LinearLayout>

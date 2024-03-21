@@ -37,13 +37,13 @@
             android:name=".Cart.View.CartActivity"
             android:exported="false" />
         <activity
-            android:name=".PlashScreen.WelcomeActivity"
+            android:name=".Account.Activity.LoginActivity"
             android:exported="false" />
         <activity
             android:name=".MainActivity"
             android:exported="false" />
         <activity
-            android:name=".Account.Activity.LoginActivity"
+            android:name=".PlashScreen.WelcomeActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
