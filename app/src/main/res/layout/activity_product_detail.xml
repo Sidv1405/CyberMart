@@ -4,7 +4,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ProductDetail.ProductDetailActivity">
+    tools:context=".Product.View.ProductDetailActivity">
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -155,11 +155,11 @@
 
         <ImageView
             android:id="@+id/container_back"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="33dp"
+            android:layout_height="33dp"
             android:layout_gravity="top|left"
-            android:layout_marginLeft="32dp"
-            android:layout_marginTop="53dp"
+            android:layout_marginLeft="17dp"
+            android:layout_marginTop="13dp"
             android:scaleType="centerInside"
             android:src="@drawable/ic_back"
             tools:ignore="RtlHardcoded" />
@@ -180,7 +180,7 @@
                 android:orientation="horizontal">
 
                 <ImageView
-                    android:id="@+id/image_frame"
+                    android:id="@+id/ic_heart"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:layout_gravity="center"
@@ -194,7 +194,7 @@
                     android:layout_marginStart="45dp">
 
                     <Button
-                        android:id="@+id/text_add_to_cart"
+                        android:id="@+id/btn_add_to_cart"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"

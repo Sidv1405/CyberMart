@@ -2,7 +2,6 @@ package com.vdsl.cybermart.Order.Adapter;
 
 import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
@@ -11,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.squareup.picasso.Picasso;
-import com.vdsl.cybermart.Home.Model.ProductModel;
+import com.vdsl.cybermart.Product.Model.ProductModel;
 import com.vdsl.cybermart.databinding.ItemProductInDetailOrderBinding;
 
 public class ProductsListAdapterInOrder extends FirebaseRecyclerAdapter<ProductModel, ProductsListAdapterInOrder.ViewHolder> {

@@ -1,5 +1,6 @@
 package com.vdsl.cybermart.Home.View.Fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -19,12 +20,13 @@ import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
+import com.vdsl.cybermart.Cart.View.CartActivity;
 import com.vdsl.cybermart.Home.Adapter.BannerAdapter;
-import com.vdsl.cybermart.Home.Adapter.CategoryAdapter;
-import com.vdsl.cybermart.Home.Adapter.ProductAdapter;
+import com.vdsl.cybermart.Category.Adapter.CategoryAdapter;
+import com.vdsl.cybermart.Product.Adapter.ProductAdapter;
 import com.vdsl.cybermart.Home.Model.Banner;
-import com.vdsl.cybermart.Home.Model.CategoryModel;
-import com.vdsl.cybermart.Home.Model.ProductModel;
+import com.vdsl.cybermart.Category.Model.CategoryModel;
+import com.vdsl.cybermart.Product.Model.ProductModel;
 import com.vdsl.cybermart.R;
 import com.vdsl.cybermart.databinding.FragmentHomeBinding;
 
@@ -100,8 +102,6 @@ public class HomeFragment extends Fragment {
         }
 
 //filter product
-
-
         categoryAdapter.setCategoryClickListener(new CategoryAdapter.CategoryClickListener() {
             @Override
             public void onCategoryClicked(CategoryModel categoryModel) {
@@ -112,7 +112,10 @@ public class HomeFragment extends Fragment {
                 productAdapter.updateOptions(options3);
             }
         });
-
+//Click cart
+        binding.btnCart.setOnClickListener(v -> {
+            startActivity(new Intent(v.getContext(), CartActivity.class));
+        });
 
     }
 

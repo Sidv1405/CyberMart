@@ -1,4 +1,4 @@
-package com.vdsl.cybermart.Home.Adapter;
+package com.vdsl.cybermart.Product.Adapter;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -12,8 +12,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.squareup.picasso.Picasso;
-import com.vdsl.cybermart.Home.Model.ProductModel;
-import com.vdsl.cybermart.ProductDetail.ProductDetailActivity;
+import com.vdsl.cybermart.Product.View.ProductDetailActivity;
+import com.vdsl.cybermart.Product.Model.ProductModel;
 import com.vdsl.cybermart.databinding.ItemProductBinding;
 
 import java.util.ArrayList;

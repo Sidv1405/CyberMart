@@ -27,7 +27,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.vdsl.cybermart.Home.Model.ProductModel;
+import com.vdsl.cybermart.Product.Model.ProductModel;
 import com.vdsl.cybermart.ProductManagement.Adapter.ProdManageAdapter;
 import com.vdsl.cybermart.R;
 import com.vdsl.cybermart.databinding.DialogAddProductBinding;

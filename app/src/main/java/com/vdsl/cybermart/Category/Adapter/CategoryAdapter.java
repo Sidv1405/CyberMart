@@ -1,4 +1,4 @@
-package com.vdsl.cybermart.Home.Adapter;
+package com.vdsl.cybermart.Category.Adapter;
 
 import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.squareup.picasso.Picasso;
-import com.vdsl.cybermart.Home.Model.CategoryModel;
+import com.vdsl.cybermart.Category.Model.CategoryModel;
 import com.vdsl.cybermart.databinding.ItemCategoryBinding;
 
 import java.util.ArrayList;

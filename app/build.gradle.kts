@@ -65,4 +65,6 @@ dependencies {
     implementation("com.squareup.picasso:picasso:2.71828")
 
     implementation ("de.hdodenhof:circleimageview:3.1.0")
+
+    implementation ("com.nex3z:notification-badge:1.0.4")
 }

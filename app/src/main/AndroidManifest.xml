@@ -19,7 +19,7 @@
         android:theme="@style/Theme.CyberMart"
         tools:targetApi="31">
         <activity
-            android:name=".ProductDetail.ProductDetailActivity"
+            android:name=".Product.View.ProductDetailActivity"
             android:exported="false" />
         <activity
             android:name=".ProductManagement.View.ProductManagementActivity"
@@ -34,7 +34,7 @@
             android:name=".CategoryManagement.View.CategoryManagementActivity"
             android:exported="false" />
         <activity
-            android:name=".Cart.Cart_Activity"
+            android:name=".Cart.View.CartActivity"
             android:exported="false" />
         <activity
             android:name=".PlashScreen.WelcomeActivity"

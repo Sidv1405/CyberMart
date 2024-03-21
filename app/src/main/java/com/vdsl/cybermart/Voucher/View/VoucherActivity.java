@@ -3,9 +3,6 @@ package com.vdsl.cybermart.Voucher.View;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.ContextMenu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 
 import androidx.activity.EdgeToEdge;
@@ -24,17 +21,10 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.ktx.Firebase;
-import com.vdsl.cybermart.CategoryManagement.Adapter.CateManageAdapter;
-import com.vdsl.cybermart.Home.Model.CategoryModel;
-import com.vdsl.cybermart.Order.Model.Order;
 import com.vdsl.cybermart.R;
 import com.vdsl.cybermart.Voucher.Adapter.VoucherListAdapter;
 import com.vdsl.cybermart.Voucher.Voucher;
-import com.vdsl.cybermart.databinding.ActivityMainBinding;
 import com.vdsl.cybermart.databinding.ActivityVoucherBinding;
-
-import java.util.ArrayList;
 
 public class VoucherActivity extends AppCompatActivity {
 
@@ -60,7 +50,6 @@ public class VoucherActivity extends AppCompatActivity {
         showAdminOption();
 
         readDataVoucher();
-        
 
         binding.btnBack.setOnClickListener(v -> {
             super.onBackPressed();
@@ -102,13 +91,13 @@ public class VoucherActivity extends AppCompatActivity {
                 if (dataSnapshot.exists()) {
                     for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                         String role = snapshot.child("Role").getValue(String.class);
-                        if ( role.equals("Admin")) {
+                        if (role.equals("Admin")) {
                             Log.d("Admin Account", snapshot.getValue().toString());
                             binding.flAddVoucher.setOnClickListener(v -> {
                                 Intent intent = new Intent(VoucherActivity.this, VoucherAddActivity.class);
                                 startActivity(intent);
                             });
-                        }else{
+                        } else {
                             binding.flAddVoucher.setVisibility(View.GONE);
                         }
                     }
@@ -127,7 +116,7 @@ public class VoucherActivity extends AppCompatActivity {
 
     private void readDataVoucher() {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         binding.rcvVoucher.setLayoutManager(linearLayoutManager);
 
         voucherRef = database.getReference().child("Voucher");
