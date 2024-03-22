@@ -1,18 +1,16 @@
 package com.vdsl.cybermart.Cart.Model;
 
-import com.vdsl.cybermart.Product.Model.ProductModel;
-
-import java.util.Date;
-import java.util.List;
 import java.util.Map;
 
 public class CartModel {
     private String cartId;
     private String accountId;
-    private List<ProductModel> listProduct;
+    private Map<String, Object> cartDetail;
     private double totalPrice;
     private String creatAt;
-    private String updateAt;
+
+    public CartModel() {
+    }
 
     public String getCartId() {
         return cartId;
@@ -28,14 +26,6 @@ public class CartModel {
 
     public void setAccountId(String accountId) {
         this.accountId = accountId;
-    }
-
-    public List<ProductModel> getListProduct() {
-        return listProduct;
-    }
-
-    public void setListProduct(List<ProductModel> listProduct) {
-        this.listProduct = listProduct;
     }
 
     public double getTotalPrice() {
@@ -54,23 +44,19 @@ public class CartModel {
         this.creatAt = creatAt;
     }
 
-    public String getUpdateAt() {
-        return updateAt;
+    public Map<String, Object> getCartDetail() {
+        return cartDetail;
     }
 
-    public void setUpdateAt(String updateAt) {
-        this.updateAt = updateAt;
+    public void setCartDetail(Map<String, Object> cartDetail) {
+        this.cartDetail = cartDetail;
     }
 
-    public CartModel() {
-    }
-
-    public CartModel(String cartId, String accountId, List<ProductModel> listProduct, double totalPrice, String creatAt, String updateAt) {
+    public CartModel(String cartId, String accountId, Map<String, Object> cartDetail, double totalPrice, String creatAt) {
         this.cartId = cartId;
         this.accountId = accountId;
-        this.listProduct = listProduct;
+        this.cartDetail = cartDetail;
         this.totalPrice = totalPrice;
         this.creatAt = creatAt;
-        this.updateAt = updateAt;
     }
 }

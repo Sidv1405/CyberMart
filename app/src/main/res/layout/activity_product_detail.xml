@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
@@ -49,6 +50,7 @@
             <ImageView
                 android:id="@+id/img_minus"
                 android:layout_width="30dp"
+
                 android:layout_height="30dp"
                 android:layout_marginLeft="20dp"
                 android:scaleType="centerInside"
@@ -153,6 +155,20 @@
             android:src="@drawable/ic_star"
             tools:ignore="RtlHardcoded" />
 
+        <View
+            android:id="@+id/end"
+            android:layout_width="10dp"
+            android:layout_height="10dp"
+            android:layout_gravity="end"
+            android:background="@color/red"
+            android:visibility="invisible" />
+
+        <ImageView
+            android:id="@+id/view_animation"
+            android:layout_width="50dp"
+            android:layout_height="50dp" />
+
+
         <ImageView
             android:id="@+id/container_back"
             android:layout_width="33dp"
@@ -187,36 +203,31 @@
                     android:scaleType="centerInside"
                     android:src="@drawable/ic_heart_black" />
 
-                <FrameLayout
+
+                <androidx.cardview.widget.CardView
                     android:id="@+id/container_group"
                     android:layout_width="270dp"
                     android:layout_height="60dp"
-                    android:layout_marginStart="45dp">
+                    android:layout_marginStart="45dp"
+                    app:cardBackgroundColor="@color/black"
+                    app:cardCornerRadius="8dp">
 
                     <Button
                         android:id="@+id/btn_add_to_cart"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
+                        android:backgroundTint="@color/black"
                         android:gravity="center_horizontal|center_vertical"
                         android:includeFontPadding="false"
                         android:maxLines="1"
                         android:singleLine="true"
                         android:text="Add to cart "
-                        android:textColor="@color/black"
+                        android:textColor="@color/white"
                         android:textSize="20sp"
                         android:textStyle="bold" />
-                </FrameLayout>
+                </androidx.cardview.widget.CardView>
             </LinearLayout>
-
-            <ImageView
-                android:id="@+id/image_favorite"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_gravity="top|left"
-                android:layout_marginLeft="18dp"
-                android:layout_marginTop="20dp"
-                android:scaleType="centerInside" />
         </FrameLayout>
     </FrameLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

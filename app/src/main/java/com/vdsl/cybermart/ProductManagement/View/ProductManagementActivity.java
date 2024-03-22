@@ -137,9 +137,7 @@ public class ProductManagementActivity extends AppCompatActivity {
                         if (dataSnapshot.exists()) {
                             Toast.makeText(getApplicationContext(), "Had same title", Toast.LENGTH_SHORT).show();
                         } else {
-
                             DatabaseReference newProdRef = prodReference.push();
-                            String prodId = newProdRef.getKey();
 
                             ProductModel productModel = new ProductModel(name, description, price, quantity, image, cateName, true);
 
@@ -180,15 +178,14 @@ public class ProductManagementActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         readDataProduct();
-        if (adapter != null) // Check if adapter is not null before calling startListening()
+        if (adapter != null)
             adapter.startListening();
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        if (adapter != null) // Check if adapter is not null before calling stopListening()
+        if (adapter != null)
             adapter.stopListening();
     }
-
 }
