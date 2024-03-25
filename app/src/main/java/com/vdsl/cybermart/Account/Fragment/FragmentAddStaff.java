@@ -103,9 +103,9 @@ public class FragmentAddStaff extends Fragment {
                                     latestUserID++;
                                     String ID = "Id" + latestUserID;
                                     DatabaseReference currentUserDB = userDatabase.child(ID);
-                                    currentUserDB.child("FullName").setValue(userName);
-                                    currentUserDB.child("Email").setValue(email);
-                                    currentUserDB.child("Role").setValue("Staff");
+                                    currentUserDB.child("fullName").setValue(userName);
+                                    currentUserDB.child("email").setValue(email);
+                                    currentUserDB.child("role").setValue("Staff");
 //                                    currentUserDB.child("Password").setValue(password);
 //                                    currentUserDB.child("UserName").setValue(userName);
 //                                    currentUserDB.child("PhoneNumber").setValue("");

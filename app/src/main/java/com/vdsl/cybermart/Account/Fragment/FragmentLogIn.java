@@ -98,10 +98,8 @@ public class FragmentLogIn extends Fragment {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            Intent intent = new Intent(getActivity(), MainActivity.class);
-                            startActivity(intent);
-                            getActivity().finish();
-                            userDatabase.orderByChild("Email").equalTo(email).addValueEventListener(new ValueEventListener() {
+
+                            userDatabase.orderByChild("email").equalTo(email).addValueEventListener(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                                     if (snapshot.exists()) {
@@ -111,23 +109,38 @@ public class FragmentLogIn extends Fragment {
 
                                             sharedPreferences = getActivity().getSharedPreferences("Users", Context.MODE_PRIVATE);
                                             SharedPreferences.Editor editor = sharedPreferences.edit();
-                                            String ID =userSnapshot.getKey();
-                                            String FullName = userSnapshot.child("FullName").getValue(String.class);
-                                            String Email = userSnapshot.child("Email").getValue(String.class);
-                                            String Role = userSnapshot.child("Role").getValue(String.class);
+                                            String ID = userSnapshot.getKey();
+                                            String FullName = userSnapshot.child("fullName").getValue(String.class);
+                                            String Email = userSnapshot.child("email").getValue(String.class);
+                                            String Role = userSnapshot.child("role").getValue(String.class);
+                                            String Avatar = userSnapshot.child("avatar").getValue(String.class);
+                                            String Address = userSnapshot.child("address").getValue(String.class);
+                                            String PhoneNumber = userSnapshot.child("phoneNumber").getValue(String.class);
 
                                             editor.putString("ID", ID);
-                                            editor.putString("FullName", FullName);
-                                            editor.putString("Email", Email);
-                                            editor.putString("Role", Role);
+                                            editor.putString("fullName", FullName);
+                                            editor.putString("email", Email);
+                                            editor.putString("role", Role);
+                                            if (!TextUtils.isEmpty(Avatar)) {
+                                                editor.putString("avatar", Avatar);
+                                                Log.d("Avatar", "onViewCreated: " + Avatar);
+                                            } else {
+                                                editor.putString("avatar", null);
+                                                Log.d("Avatar", "Avatar is empty");
+                                            }
+                                            editor.putString("address", Address);
+                                            editor.putString("phoneNumber", PhoneNumber);
                                             editor.apply();
-
-
-                                            Log.d("Role", "Role: " + userSnapshot.child("Role").getValue(String.class));
+                                            Intent intent = new Intent(getActivity(), MainActivity.class);
+                                            startActivity(intent);
+                                            getActivity().finish();
+                                            Log.d("ID", "ID " + ID);
+                                            Log.d("Role", "Role: " + Role);
                                             return;
                                         }
                                     } else {
                                         Toast.makeText(getActivity(), "Email not found!", Toast.LENGTH_SHORT).show();
+                                        return;
                                     }
                                 }
 
