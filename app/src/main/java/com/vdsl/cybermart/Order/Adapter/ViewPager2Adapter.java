@@ -5,16 +5,12 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
-import com.vdsl.cybermart.Order.Fragment.DeliveredFragment;
-import com.vdsl.cybermart.Order.Fragment.CanceledOrderFragment;
-import com.vdsl.cybermart.Order.Fragment.ProcessingOrderFragment;
-
 import java.util.ArrayList;
-import java.util.Collections;
 
 public class ViewPager2Adapter extends FragmentStateAdapter {
     private final ArrayList<Fragment> fragmentArrayList;
-    public ViewPager2Adapter(@NonNull FragmentActivity fragmentActivity,ArrayList<Fragment> fragmentArrayList) {
+
+    public ViewPager2Adapter(@NonNull FragmentActivity fragmentActivity, ArrayList<Fragment> fragmentArrayList) {
         super(fragmentActivity);
         this.fragmentArrayList = fragmentArrayList;
     }

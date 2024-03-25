@@ -79,27 +79,27 @@ public class HomeFragment extends Fragment {
         list.add(new Banner(R.drawable.banner3));
         list.add(new Banner(R.drawable.banner4));
 
-        ViewPager viewPager = binding.viewPage;
-        if (viewPager != null) {
-            BannerAdapter bannerAdapter = new BannerAdapter(getContext(), list);
-            viewPager.setAdapter(bannerAdapter);
-
-            if (timer == null) {
-                timer = new Timer();
-                timer.schedule(new TimerTask() {
-                    @Override
-                    public void run() {
-                        new Handler(Looper.getMainLooper()).post(() -> {
-                            if (viewPager.getCurrentItem() < list.size() - 1) {
-                                viewPager.setCurrentItem(viewPager.getCurrentItem() + 1);
-                            } else {
-                                viewPager.setCurrentItem(0);
-                            }
-                        });
-                    }
-                }, 500, 2222);
-            }
-        }
+//        ViewPager viewPager = binding.viewPage;
+//        if (viewPager != null) {
+//            BannerAdapter bannerAdapter = new BannerAdapter(getContext(), list);
+//            viewPager.setAdapter(bannerAdapter);
+//
+//            if (timer == null) {
+//                timer = new Timer();
+//                timer.schedule(new TimerTask() {
+//                    @Override
+//                    public void run() {
+//                        new Handler(Looper.getMainLooper()).post(() -> {
+//                            if (viewPager.getCurrentItem() < list.size() - 1) {
+//                                viewPager.setCurrentItem(viewPager.getCurrentItem() + 1);
+//                            } else {
+//                                viewPager.setCurrentItem(0);
+//                            }
+//                        });
+//                    }
+//                }, 500, 2222);
+//            }
+//        }
     }
 
 

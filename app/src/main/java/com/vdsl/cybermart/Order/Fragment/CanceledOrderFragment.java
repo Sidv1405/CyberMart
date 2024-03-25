@@ -1,5 +1,7 @@
 package com.vdsl.cybermart.Order.Fragment;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,6 +23,8 @@ import com.vdsl.cybermart.databinding.FragmentCanceledOrderBinding;
 public class CanceledOrderFragment extends Fragment {
     OrderListAdapter adapter;
     FragmentCanceledOrderBinding binding;
+    SharedPreferences sharedPreferences;
+    Query query;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -32,8 +36,17 @@ public class CanceledOrderFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        Query query = FirebaseDatabase.getInstance().getReference("Orders")
-                .orderByChild("status").equalTo("canceled");
+        sharedPreferences = requireActivity().getSharedPreferences("Users", Context.MODE_PRIVATE);
+        String id = sharedPreferences.getString("ID", "");
+        String role = sharedPreferences.getString("Role", "");
+        if (role.equals("Customers")) {
+            query = FirebaseDatabase.getInstance().getReference("Orders")
+                    .orderByChild("status").equalTo("canceled");
+            query.orderByChild("idUser").equalTo(id);
+        } else {
+            query = FirebaseDatabase.getInstance().getReference("Orders")
+                    .orderByChild("status").equalTo("delivered");
+        }
         FirebaseRecyclerOptions<Order> options = new FirebaseRecyclerOptions.Builder<Order>()
                 .setQuery(query, Order.class).build();
         adapter = new OrderListAdapter(options, order -> {
