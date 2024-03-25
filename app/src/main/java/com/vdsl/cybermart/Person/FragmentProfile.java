@@ -15,12 +15,15 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.vdsl.cybermart.CategoryManagement.View.CategoryManagementActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.Picasso;
 import com.vdsl.cybermart.Account.Activity.LoginActivity;
+import com.vdsl.cybermart.Account.Activity.SettingsActivity;
 import com.vdsl.cybermart.Account.Fragment.FragmentAddStaff;
+import com.vdsl.cybermart.CategoryManagement.View.CategoryManagementActivity;
 import com.vdsl.cybermart.General;
 import com.vdsl.cybermart.Order.Fragment.FragmentContainer;
 import com.vdsl.cybermart.ProductManagement.View.ProductManagementActivity;
@@ -34,6 +37,7 @@ public class FragmentProfile extends Fragment {
 
     private FirebaseAuth auth;
     DatabaseReference databaseReference;
+    SharedPreferences sharedPreferences;
 
     @Nullable
     @Override
@@ -48,22 +52,10 @@ public class FragmentProfile extends Fragment {
 
         auth = FirebaseAuth.getInstance();
         databaseReference = FirebaseDatabase.getInstance().getReference().child("Account");
+        sharedPreferences = getActivity().getSharedPreferences("Users", Context.MODE_PRIVATE);
 
         //show infor
-        if (auth.getCurrentUser() != null) {
-            Log.d("loginnow", "logged in");
-
-            SharedPreferences sharedPreferences=getActivity().getSharedPreferences("Users", Context.MODE_PRIVATE);
-            String FullName = sharedPreferences.getString("FullName","nothing to show");
-            String Email = sharedPreferences.getString("Email","nothing to show");
-            binding.txtYourName.setText(FullName);
-            binding.txtYourEmail.setText(Email);
-            Log.d("infor", ""+ FullName);
-            Log.d("infor", ""+ Email);
-//            Glide.with(getActivity()).load(avatar).error(R.drawable.img_default_profile_image).into(binding.imgAvatar);
-        } else {
-            Log.d("loginnow", "not logged in");
-        }
+        showInitInfor();
         //end
 
         //back
@@ -122,5 +114,47 @@ public class FragmentProfile extends Fragment {
             Intent intent = new Intent(getContext(), VoucherActivity.class);
             startActivity(intent);
         });
+        binding.CvSettings.setOnClickListener(v -> {
+            startActivity(new Intent(getContext(), SettingsActivity.class));
+        });
+    }
+
+    private void showInitInfor() {
+        if (auth.getCurrentUser() != null) {
+            Log.d("loginnow", "logged in");
+
+            String FullName = sharedPreferences.getString("fullName", "nothing to show");
+            String Email = sharedPreferences.getString("email", "nothing to show");
+            String Avatar = sharedPreferences.getString("avatar", null);
+            String Role = sharedPreferences.getString("role", "nothing");
+            binding.txtYourName.setText(FullName);
+            binding.txtYourEmail.setText(Email);
+            Log.d("infor", "" + FullName);
+            Log.d("infor", "" + Email);
+            if (Avatar != null && !Avatar.isEmpty()) {
+                Picasso.get().load(Avatar).into(binding.imgAvatar, new Callback() {
+                    @Override
+                    public void onSuccess() {
+                        Log.d("Avatar", "Avatar: " + Avatar);
+                    }
+
+                    @Override
+                    public void onError(Exception e) {
+                        binding.imgAvatar.setImageResource(R.drawable.img_default_profile_image);
+                    }
+                });
+            } else {
+                binding.imgAvatar.setImageResource(R.drawable.img_default_profile_image);
+            }
+            if (!Role.isEmpty() && Role.equals("Admin")) {
+                binding.CvCreateStaff.setVisibility(View.VISIBLE);
+                Log.d("Role", "Role: " + Role);
+            }else{
+                binding.CvCreateStaff.setVisibility(View.GONE);
+                Log.d("Role", "Role: " + Role);
+            }
+        } else {
+            Log.d("loginnow", "not logged in");
+        }
     }
 }
