@@ -4,11 +4,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
-import android.view.View;
-import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -31,7 +27,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 import com.vdsl.cybermart.CategoryManagement.Adapter.CateManageAdapter;
-import com.vdsl.cybermart.Home.Model.CategoryModel;
+import com.vdsl.cybermart.Category.Model.CategoryModel;
 import com.vdsl.cybermart.R;
 import com.vdsl.cybermart.databinding.DialogAddCategoryBinding;
 
@@ -62,7 +58,11 @@ public class CategoryManagementActivity extends AppCompatActivity {
 //        Back
         ImageButton btnBack = findViewById(R.id.btn_back);
         btnBack.setOnClickListener(v -> finish());
+//        search
+        searchCategory();
+    }
 
+    private void searchCategory() {
         SearchView searchView = findViewById(R.id.search_category_management);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -77,7 +77,6 @@ public class CategoryManagementActivity extends AppCompatActivity {
                 return false;
             }
         });
-
     }
 
     private void txtSearch(String text) {

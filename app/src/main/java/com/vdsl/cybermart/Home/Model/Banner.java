@@ -1,17 +1,10 @@
 package com.vdsl.cybermart.Home.Model;
 
 public class Banner {
-    private int resourceId;
-
-    public Banner() {
-    }
+    private final int resourceId;
 
     public int getResourceId() {
         return resourceId;
-    }
-
-    public void setResourceId(int resourceId) {
-        this.resourceId = resourceId;
     }
 
     public Banner(int resourceId) {

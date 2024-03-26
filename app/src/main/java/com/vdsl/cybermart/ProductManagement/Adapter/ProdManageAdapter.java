@@ -1,6 +1,6 @@
 package com.vdsl.cybermart.ProductManagement.Adapter;
 
-import android.content.Context;
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,9 +25,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
-import com.vdsl.cybermart.Home.Model.ProductModel;
-import com.vdsl.cybermart.ProductManagement.View.ProductDetailActivity;
-import com.vdsl.cybermart.ProductManagement.View.ProductManagementActivity;
+import com.vdsl.cybermart.Product.Model.ProductModel;
+import com.vdsl.cybermart.Product.View.ProductDetailActivity;
 import com.vdsl.cybermart.databinding.ItemProductBinding;
 
 import java.util.ArrayList;
@@ -45,10 +44,26 @@ public class ProdManageAdapter extends FirebaseRecyclerAdapter<ProductModel, Pro
     protected void onBindViewHolder(@NonNull ProdManageViewHolder prodManageViewHolder, int i, @NonNull ProductModel productModel) {
         prodManageViewHolder.bind(productModel.getName(), productModel.getImage(), productModel.getPrice(), productModel.getStatus());
 
-        prodManageViewHolder.itemView.setOnClickListener(v -> {
-            v.getContext().startActivity(new Intent(v.getContext(), ProductDetailActivity.class));
-        });
+        viewProductDetail(prodManageViewHolder, i);
 
+        updateProduct(prodManageViewHolder, i, productModel);
+    }
+
+    private void viewProductDetail(@NonNull ProdManageViewHolder prodManageViewHolder, int i) {
+        prodManageViewHolder.itemView.setOnClickListener(v -> {
+            ProductModel clickedItem = getItem(i);
+            Intent intent = new Intent(v.getContext(), ProductDetailActivity.class);
+            intent.putExtra("productName", clickedItem.getName());
+            intent.putExtra("productImage", clickedItem.getImage());
+            intent.putExtra("productPrice", clickedItem.getPrice());
+            intent.putExtra("productDescription", clickedItem.getDescription());
+            v.getContext().startActivity(intent);
+        });
+    }
+
+
+    @SuppressLint("SetTextI18n")
+    private void updateProduct(@NonNull ProdManageViewHolder prodManageViewHolder, int i, @NonNull ProductModel productModel) {
         prodManageViewHolder.binding.cvProd.setOnLongClickListener(v -> {
             AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
             builder.setTitle("Update Product");
@@ -152,6 +167,7 @@ public class ProdManageAdapter extends FirebaseRecyclerAdapter<ProductModel, Pro
                 double updatedPrice = Double.parseDouble(Objects.requireNonNull(edtPriceProd.getText()).toString());
                 int updatedQuantity = Integer.parseInt(Objects.requireNonNull(edtQuantityProd.getText()).toString());
                 String selectedStatus = spinnerProd.getSelectedItem().toString();
+                String selectedCaregory = spinnerCate.getSelectedItem().toString();
                 newStatus = selectedStatus.equals("Active");
 
                 DatabaseReference prodRef = reference.child(Objects.requireNonNull(getRef(i).getKey()));
@@ -161,6 +177,7 @@ public class ProdManageAdapter extends FirebaseRecyclerAdapter<ProductModel, Pro
                 prodRef.child("price").setValue(updatedPrice);
                 prodRef.child("quantity").setValue(updatedQuantity);
                 prodRef.child("status").setValue(newStatus);
+                prodRef.child("categoryId").setValue(selectedCaregory);
 
                 dialog.dismiss();
 

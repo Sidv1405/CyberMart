@@ -9,13 +9,26 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <ImageButton
-            android:id="@+id/cart"
+        <RelativeLayout
+            android:id="@+id/btn_cart"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:src="@drawable/shopping_cart_svg"
-            app:backgroundTint="@color/cardview_light_background" />
+            android:layout_marginStart="370dp">
+
+            <ImageView
+                android:id="@+id/cart"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:layout_marginTop="10dp"
+                android:src="@drawable/shopping_cart_svg" />
+
+            <com.nex3z.notificationbadge.NotificationBadge
+                android:id="@+id/badge"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:layout_marginLeft="10dp"
+                app:nbMaxTextLength="2" />
+        </RelativeLayout>
 
         <androidx.appcompat.widget.SearchView
             android:id="@+id/searchview"
@@ -29,10 +42,19 @@
 
     </RelativeLayout>
 
-    <androidx.viewpager.widget.ViewPager
+    <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
-        android:id="@+id/view_page"
-        android:layout_height="220dp" />
+        android:layout_height="220dp"
+        android:paddingLeft="3dp"
+        android:paddingRight="3dp"
+        app:cardCornerRadius="15dp">
+
+        <androidx.viewpager.widget.ViewPager
+            android:id="@+id/view_page"
+            android:layout_width="match_parent"
+            android:layout_height="220dp" />
+    </androidx.cardview.widget.CardView>
+
 
     <TextView
         android:layout_width="match_parent"

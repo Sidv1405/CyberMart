@@ -68,4 +68,6 @@ dependencies {
     implementation ("de.hdodenhof:circleimageview:3.1.0")
     implementation ("com.google.android.gms:play-services-location:21.2.0")
 
+
+    implementation ("com.nex3z:notification-badge:1.0.4")
 }

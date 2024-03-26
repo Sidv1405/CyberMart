@@ -25,7 +25,7 @@
             android:name=".Account.Activity.SettingsActivity"
             android:exported="false" />
         <activity
-            android:name=".ProductManagement.View.ProductDetailActivity"
+            android:name=".Product.View.ProductDetailActivity"
             android:exported="false" />
         <activity
             android:name=".ProductManagement.View.ProductManagementActivity"
@@ -40,7 +40,7 @@
             android:name=".CategoryManagement.View.CategoryManagementActivity"
             android:exported="false" />
         <activity
-            android:name=".Cart.Cart_Activity"
+            android:name=".Cart.View.CartActivity"
             android:exported="false" />
         <activity
             android:name=".Account.Activity.LoginActivity"
