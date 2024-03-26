@@ -28,6 +28,7 @@ import com.vdsl.cybermart.General;
 import com.vdsl.cybermart.Order.Fragment.FragmentContainer;
 import com.vdsl.cybermart.ProductManagement.View.ProductManagementActivity;
 import com.vdsl.cybermart.R;
+import com.vdsl.cybermart.Statistic.Fragment.StatisticFragment;
 import com.vdsl.cybermart.Voucher.View.VoucherActivity;
 import com.vdsl.cybermart.databinding.FragmentProfileBinding;
 
@@ -37,6 +38,7 @@ public class FragmentProfile extends Fragment {
 
     private FirebaseAuth auth;
     DatabaseReference databaseReference;
+    SharedPreferences sharedPreferences;
 
     @Nullable
     @Override
@@ -51,22 +53,10 @@ public class FragmentProfile extends Fragment {
 
         auth = FirebaseAuth.getInstance();
         databaseReference = FirebaseDatabase.getInstance().getReference().child("Account");
+        sharedPreferences = getActivity().getSharedPreferences("Users", Context.MODE_PRIVATE);
 
         //show infor
-        if (auth.getCurrentUser() != null) {
-            Log.d("loginnow", "logged in");
-
-            SharedPreferences sharedPreferences=getActivity().getSharedPreferences("Users", Context.MODE_PRIVATE);
-            String FullName = sharedPreferences.getString("FullName","nothing to show");
-            String Email = sharedPreferences.getString("Email","nothing to show");
-            binding.txtYourName.setText(FullName);
-            binding.txtYourEmail.setText(Email);
-            Log.d("infor", ""+ FullName);
-            Log.d("infor", ""+ Email);
-//            Glide.with(getActivity()).load(avatar).error(R.drawable.img_default_profile_image).into(binding.imgAvatar);
-        } else {
-            Log.d("loginnow", "not logged in");
-        }
+        showInitInfor();
         //end
 
         //back
@@ -128,6 +118,9 @@ public class FragmentProfile extends Fragment {
         binding.CvSettings.setOnClickListener(v -> {
             startActivity(new Intent(getContext(), SettingsActivity.class));
         });
+        binding.btnStatistic.setOnClickListener(v -> {
+            General.loadFragment(getParentFragmentManager(),new StatisticFragment(),null);
+        });
     }
 
     private void showInitInfor() {
@@ -167,8 +160,5 @@ public class FragmentProfile extends Fragment {
         } else {
             Log.d("loginnow", "not logged in");
         }
-        binding.btnStatistic.setOnClickListener(v -> {
-            General.loadFragment(getParentFragmentManager(), new StatisticFragment(), null);
-        });
     }
 }
