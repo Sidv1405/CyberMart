@@ -38,6 +38,7 @@ import com.vdsl.cybermart.databinding.FragmentHomeBinding;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -80,6 +81,8 @@ public class HomeFragment extends Fragment {
         rcvProduct.setAdapter(productAdapter);
 
 //Banner
+
+
         list = new ArrayList<>();
         list.add(new Banner(R.drawable.banner1));
         list.add(new Banner(R.drawable.banner2));
@@ -185,5 +188,4 @@ public class HomeFragment extends Fragment {
             timer = null;
         }
     }
-
 }
