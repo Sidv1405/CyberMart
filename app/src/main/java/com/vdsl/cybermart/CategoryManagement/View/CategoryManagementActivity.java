@@ -58,7 +58,12 @@ public class CategoryManagementActivity extends AppCompatActivity {
 //        Back
         ImageButton btnBack = findViewById(R.id.btn_back);
         btnBack.setOnClickListener(v -> finish());
+//        search
+        searchCategory();
 
+    }
+
+    private void searchCategory() {
         SearchView searchView = findViewById(R.id.search_category_management);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -73,7 +78,6 @@ public class CategoryManagementActivity extends AppCompatActivity {
                 return false;
             }
         });
-
     }
 
     private void txtSearch(String text) {

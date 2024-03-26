@@ -1,30 +1,100 @@
 package com.vdsl.cybermart.Cart.View;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.widget.ImageView;
+import android.widget.TextView;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.vdsl.cybermart.Cart.Adapter.CartAdapter;
+import com.vdsl.cybermart.Cart.Model.CartModel;
+import com.vdsl.cybermart.Product.Model.ProductModel;
 import com.vdsl.cybermart.R;
 
-public class CartActivity extends AppCompatActivity {
+import java.text.DecimalFormat;
+import java.util.Locale;
+
+public class CartActivity extends AppCompatActivity implements CartAdapter.TotalPriceListener {
+    private CartAdapter adapter;
+    private RecyclerView rcvCart;
+    private TextView txtTotalPrice;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_cart);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.container_cart), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
+        readData();
 
         ImageView btnBack = findViewById(R.id.c_ic_back);
         btnBack.setOnClickListener(v -> finish());
+    }
+
+    private void readData() {
+        rcvCart = findViewById(R.id.rcv_cart);
+        rcvCart.setLayoutManager(new LinearLayoutManager(this));
+        SharedPreferences sharedPreferences = getSharedPreferences("cartDetail", Context.MODE_PRIVATE);
+        String cartId = sharedPreferences.getString("id", "");
+        adapter = new CartAdapter(new FirebaseRecyclerOptions.Builder<ProductModel>()
+                .setQuery(FirebaseDatabase.getInstance().getReference().child("carts").child(cartId).child("cartDetail"), ProductModel.class)
+                .build(), this, this);
+        rcvCart.setAdapter(adapter);
+
+
+        txtTotalPrice = findViewById(R.id.text_total_price);
+        DatabaseReference cartsRef = FirebaseDatabase.getInstance().getReference().child("carts");
+        cartsRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                double totalCartPrice = 0.0;
+                for (DataSnapshot cartSnapshot : snapshot.getChildren()) {
+                    CartModel cart = cartSnapshot.getValue(CartModel.class);
+                    if (cart != null) {
+                        totalCartPrice += cart.getTotalPrice();
+                        String formattedPrice = String.format(Locale.getDefault(), "%.2f", totalCartPrice);
+                        txtTotalPrice.setText(String.format("%s $", formattedPrice));
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
+        });
+
+    }
+
+    @Override
+    public void onTotalPriceUpdated(double totalPriceSum) {
+        String formattedPrice = String.format(Locale.getDefault(), "%.2f", totalPriceSum);
+        txtTotalPrice.setText(String.format("%s $", formattedPrice));
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        readData();
+        adapter.startListening();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        adapter.stopListening();
     }
 }

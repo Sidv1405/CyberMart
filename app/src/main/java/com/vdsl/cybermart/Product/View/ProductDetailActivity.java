@@ -1,14 +1,13 @@
 package com.vdsl.cybermart.Product.View;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
@@ -18,18 +17,29 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
+import com.vdsl.cybermart.Cart.Model.CartModel;
 import com.vdsl.cybermart.Product.Model.ProductModel;
 import com.vdsl.cybermart.R;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ProductDetailActivity extends AppCompatActivity {
+    TextView productNameTextView;
+    ImageView productImageView;
+    TextView productPriceTextView;
+    TextView productDescriptionTextView;
 
-    @SuppressLint("SetTextI18n")
+
+    @SuppressLint({"SetTextI18n", "UseCompatLoadingForDrawables"})
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,11 +52,25 @@ public class ProductDetailActivity extends AppCompatActivity {
         });
 
 
-        String productName, productImage, productDescription;
+        productNameTextView = findViewById(R.id.product_title);
+        productImageView = findViewById(R.id.product_image);
+        productPriceTextView = findViewById(R.id.product_price);
+        productDescriptionTextView = findViewById(R.id.product_description);
+
         double productPrice;
+        String productName;
+        String productDescription;
+        String productImage;
+        Intent intent = getIntent();
+        productName = intent.getStringExtra("productName");
+        productImage = intent.getStringExtra("productImage");
+        productPrice = intent.getDoubleExtra("productPrice", 0.0);
+        productDescription = intent.getStringExtra("productDescription");
 
-        getDetail();
-
+        productNameTextView.setText(productName);
+        Picasso.get().load(productImage).into(productImageView);
+        productPriceTextView.setText("$ " + productPrice);
+        productDescriptionTextView.setText(productDescription);
 
         back();
 
@@ -90,46 +114,75 @@ public class ProductDetailActivity extends AppCompatActivity {
             }
         });
 
-//
-
+// add to cart
         Button btnAddToCart = findViewById(R.id.btn_add_to_cart);
         btnAddToCart.setOnClickListener(v -> {
-            DatabaseReference cartRef;
-            cartRef = FirebaseDatabase.getInstance().getReference().child("carts");
+            DatabaseReference cartRef = FirebaseDatabase.getInstance().getReference().child("carts");
 
-
-            SharedPreferences sharedPreferences = getSharedPreferences("Users", v.getContext().MODE_PRIVATE);
+            SharedPreferences sharedPreferences = getSharedPreferences("Users", MODE_PRIVATE);
             String accountId = sharedPreferences.getString("ID", "");
-            Log.d("acountIdzz", "onCreate: " + accountId);
-        });
 
+            ProductModel productDetail = new ProductModel(productNameTextView.getText().toString(), Double.parseDouble(productPriceTextView.getText().toString().substring(1)), Integer.parseInt(txtQuantity.getText().toString()), productImage);
+            productDetail.setImage(productImage);
+            Map<String, ProductModel> cartDetail = new HashMap<>();
+
+            cartDetail.put(productDetail.getName(), productDetail);
+
+            double totalMoney = productDetail.getPrice() * productDetail.getQuantity();
+
+            Date currentDate = new Date();
+            @SuppressLint("SimpleDateFormat") SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+            String date = dateFormat.format(currentDate);
+
+            cartRef.orderByChild("accountId").equalTo(accountId).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    if (snapshot.exists()) {
+                        for (DataSnapshot cartSnapshot : snapshot.getChildren()) {
+                            String cartId = cartSnapshot.getKey();
+                            CartModel existingCart = cartSnapshot.getValue(CartModel.class);
+
+                            existingCart.getCartDetail().put(productDetail.getName(), productDetail);
+
+                            existingCart.setTotalPrice(existingCart.getTotalPrice() + totalMoney);
+                            SharedPreferences sharedPreferences = getSharedPreferences("cartDetail", Context.MODE_PRIVATE);
+                            SharedPreferences.Editor editor = sharedPreferences.edit();
+                            editor.putString("id", cartId);
+                            editor.apply();
+
+                            cartRef.child(cartId).setValue(existingCart);
+                            finish();
+                            break;
+                        }
+                    } else {
+                        DatabaseReference newCartRef = cartRef.push();
+                        String cartId = newCartRef.getKey();
+                        CartModel cartModel = new CartModel(cartId, accountId, cartDetail, totalMoney, date);
+                        SharedPreferences sharedPreferences = getSharedPreferences("cartDetail", Context.MODE_PRIVATE);
+                        SharedPreferences.Editor editor = sharedPreferences.edit();
+                        editor.putString("id", cartId);
+                        editor.apply();
+
+                        newCartRef.setValue(cartModel);
+                        finish();
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                }
+            });
+        });
     }
 
+    @SuppressLint("SetTextI18n")
     private void getDetail() {
-        double productPrice;
-        String productName;
-        String productDescription;
-        String productImage;
-        Intent intent = getIntent();
-        productName = intent.getStringExtra("productName");
-        productImage = intent.getStringExtra("productImage");
-        productPrice = intent.getDoubleExtra("productPrice", 0.0);
-        productDescription = intent.getStringExtra("productDescription");
 
-
-        TextView productNameTextView = findViewById(R.id.product_title);
-        ImageView productImageView = findViewById(R.id.product_image);
-        TextView productPriceTextView = findViewById(R.id.product_price);
-        TextView productDescriptionTextView = findViewById(R.id.product_description);
-
-        productNameTextView.setText(productName);
-        Picasso.get().load(productImage).into(productImageView);
-        productPriceTextView.setText("$ " + productPrice);
-        productDescriptionTextView.setText(productDescription);
     }
 
     private void back() {
         ImageView btnBack = findViewById(R.id.container_back);
         btnBack.setOnClickListener(v -> finish());
     }
+
 }

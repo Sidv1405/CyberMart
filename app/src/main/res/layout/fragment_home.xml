@@ -11,9 +11,9 @@
 
         <RelativeLayout
             android:id="@+id/btn_cart"
-            android:layout_marginStart="370dp"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginStart="370dp">
 
             <ImageView
                 android:id="@+id/cart"
@@ -24,11 +24,12 @@
 
             <com.nex3z.notificationbadge.NotificationBadge
                 android:id="@+id/badge"
-                android:layout_marginLeft="10dp"
                 android:layout_width="28dp"
                 android:layout_height="28dp"
+                android:layout_marginLeft="10dp"
                 app:nbMaxTextLength="2" />
         </RelativeLayout>
+
         <androidx.appcompat.widget.SearchView
             android:id="@+id/searchview"
             android:layout_width="wrap_content"
@@ -41,10 +42,19 @@
 
     </RelativeLayout>
 
-    <androidx.viewpager.widget.ViewPager
-        android:id="@+id/view_page"
+    <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="220dp" />
+        android:layout_height="220dp"
+        android:paddingLeft="3dp"
+        android:paddingRight="3dp"
+        app:cardCornerRadius="15dp">
+
+        <androidx.viewpager.widget.ViewPager
+            android:id="@+id/view_page"
+            android:layout_width="match_parent"
+            android:layout_height="220dp" />
+    </androidx.cardview.widget.CardView>
+
 
     <TextView
         android:layout_width="match_parent"

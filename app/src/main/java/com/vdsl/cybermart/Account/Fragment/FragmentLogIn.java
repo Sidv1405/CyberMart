@@ -111,7 +111,7 @@ public class FragmentLogIn extends Fragment {
 
                                             sharedPreferences = getActivity().getSharedPreferences("Users", Context.MODE_PRIVATE);
                                             SharedPreferences.Editor editor = sharedPreferences.edit();
-                                            String ID =userSnapshot.getKey();
+                                            String ID = userSnapshot.getKey();
                                             String FullName = userSnapshot.child("FullName").getValue(String.class);
                                             String Email = userSnapshot.child("Email").getValue(String.class);
                                             String Role = userSnapshot.child("Role").getValue(String.class);
