@@ -81,6 +81,21 @@ public class FragmentSignUp extends Fragment {
                 binding.edtEmailSignUp.setError("Wrong email format!");
                 error = true;
             }
+
+            userDatabase.orderByChild("email").equalTo(email).addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    if (snapshot.exists()){
+                        binding.edtEmailSignUp.setError("Email already exists. Please use another email!");
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
+
             if (TextUtils.isEmpty(password)) {
                 binding.edtPassSignUp.setError("Please enter your Password!");
                 error = true;
