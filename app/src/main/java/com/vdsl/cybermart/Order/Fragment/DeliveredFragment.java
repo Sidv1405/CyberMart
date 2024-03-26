@@ -1,5 +1,7 @@
 package com.vdsl.cybermart.Order.Fragment;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,6 +23,7 @@ public class DeliveredFragment extends Fragment {
     FragmentDeliverdedBinding binding;
     OrderListAdapter adapter;
     Query query;
+    SharedPreferences sharedPreferences;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -32,20 +35,23 @@ public class DeliveredFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-//        if(true){
-//            query = FirebaseDatabase.getInstance().getReference("Orders")
-//                    .orderByChild("status").equalTo("delivered");
-//            query.orderByChild("idUser").equalTo("");
-//        }else {
+        sharedPreferences = requireActivity().getSharedPreferences("Users", Context.MODE_PRIVATE);
+        String id = sharedPreferences.getString("ID", "");
+        String role = sharedPreferences.getString("Role", "");
+        if (role.equals("Customers")) {
             query = FirebaseDatabase.getInstance().getReference("Orders")
                     .orderByChild("status").equalTo("delivered");
-//        }
+            query.orderByChild("idUser").equalTo(id);
+        } else {
+            query = FirebaseDatabase.getInstance().getReference("Orders")
+                    .orderByChild("status").equalTo("delivered");
+        }
         FirebaseRecyclerOptions<Order> options = new FirebaseRecyclerOptions.Builder<Order>()
                 .setQuery(query, Order.class).build();
-            adapter = new OrderListAdapter(options, order -> {
+        adapter = new OrderListAdapter(options, order -> {
             Bundle bundle = new Bundle();
-            bundle.putSerializable("Order",order);
-            General.loadFragment(getParentFragmentManager(),new OrderDetailFragment(),bundle);
+            bundle.putSerializable("Order", order);
+            General.loadFragment(getParentFragmentManager(), new OrderDetailFragment(), bundle);
         });
         binding.rvDeliveredList.setAdapter(adapter);
     }

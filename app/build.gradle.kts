@@ -66,6 +66,7 @@ dependencies {
     implementation("com.squareup.picasso:picasso:2.71828")
 
     implementation ("de.hdodenhof:circleimageview:3.1.0")
+    implementation ("com.github.PhilJay:MPAndroidChart:v3.1.0")
     implementation ("com.google.android.gms:play-services-location:21.2.0")
 
 
