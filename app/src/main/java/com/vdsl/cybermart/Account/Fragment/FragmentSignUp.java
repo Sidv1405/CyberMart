@@ -120,9 +120,9 @@ public class FragmentSignUp extends Fragment {
                                     latestUserID++;
                                     String ID = "Id" + latestUserID;
                                     DatabaseReference currentUserDB = userDatabase.child(ID);
-                                    currentUserDB.child("FullName").setValue(fullName);
-                                    currentUserDB.child("Email").setValue(email);
-                                    currentUserDB.child("Role").setValue("Customer");
+                                    currentUserDB.child("fullName").setValue(fullName);
+                                    currentUserDB.child("email").setValue(email);
+                                    currentUserDB.child("role").setValue("Customer");
 //                                    currentUserDB.child("UserName").setValue(userName);
 //                                    currentUserDB.child("Password").setValue(password);
 //                                    currentUserDB.child("PhoneNumber").setValue("");
