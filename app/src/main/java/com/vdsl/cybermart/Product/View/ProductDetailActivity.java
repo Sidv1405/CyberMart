@@ -140,6 +140,10 @@ public class ProductDetailActivity extends AppCompatActivity {
                         for (DataSnapshot cartSnapshot : snapshot.getChildren()) {
                             String cartId = cartSnapshot.getKey();
                             CartModel existingCart = cartSnapshot.getValue(CartModel.class);
+                            if (!cartSnapshot.hasChild("cartDetail")) {
+                                Map<String, ProductModel> cartDetail = new HashMap<>();
+                                existingCart.setCartDetail(cartDetail);
+                            }
 
                             existingCart.getCartDetail().put(productDetail.getName(), productDetail);
 

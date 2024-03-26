@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -58,15 +59,19 @@ public class CartActivity extends AppCompatActivity implements CartAdapter.Total
         cartsRef.orderByChild("accountId").equalTo(accountId).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                double totalCartPrice = 0.0;
-                for (DataSnapshot cartSnapshot : snapshot.getChildren()) {
-                    CartModel cart = cartSnapshot.getValue(CartModel.class);
-                    if (cart != null) {
-                        totalCartPrice += cart.getTotalPrice();
+                if (snapshot.exists() && snapshot.hasChildren()) {
+                    double totalCartPrice = 0.0;
+                    for (DataSnapshot cartSnapshot : snapshot.getChildren()) {
+                        CartModel cart = cartSnapshot.getValue(CartModel.class);
+                        if (cart != null) {
+                            totalCartPrice += cart.getTotalPrice();
+                        }
                     }
+                    String formattedPrice = String.format(Locale.getDefault(), "%.2f", totalCartPrice);
+                    txtTotalPrice.setText(String.format("%s $", formattedPrice));
+                } else {
+                    Log.d("CartActivity", "Cart detail is empty");
                 }
-                String formattedPrice = String.format(Locale.getDefault(), "%.2f", totalCartPrice);
-                txtTotalPrice.setText(String.format("%s $", formattedPrice));
             }
 
             @Override

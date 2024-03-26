@@ -21,6 +21,7 @@ import com.squareup.picasso.Picasso;
 import com.vdsl.cybermart.Product.Model.ProductModel;
 import com.vdsl.cybermart.databinding.ItemCartDetailBinding;
 
+import java.util.HashMap;
 import java.util.Locale;
 
 public class CartAdapter extends FirebaseRecyclerAdapter<ProductModel, CartAdapter.CartViewHolder> {
@@ -52,13 +53,30 @@ public class CartAdapter extends FirebaseRecyclerAdapter<ProductModel, CartAdapt
             String cartDetailName = "cartDetail_" + accountId;
             SharedPreferences cartSharedPreferences = mContext.getSharedPreferences(cartDetailName, Context.MODE_PRIVATE);
             String cartId = cartSharedPreferences.getString("id", "");
-            DatabaseReference totalPriceRef = FirebaseDatabase.getInstance().getReference("carts/" + cartId + "/totalPrice");
-            totalPriceRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            DatabaseReference cartDetailRef = FirebaseDatabase.getInstance().getReference("carts/" + cartId + "/cartDetail");
+            cartDetailRef.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    double totalPrice = snapshot.getValue(Double.class);
-                    totalPriceRef.setValue(totalPrice - oldPrice);
-                    totalPriceListener.onTotalPriceUpdated(totalPrice - oldPrice);
+                    if (snapshot.exists()) {
+                        // cartDetail exists, do nothing
+                    } else {
+                        cartDetailRef.setValue(new HashMap<>());
+                    }
+
+                    // Update total price
+                    DatabaseReference totalPriceRef = FirebaseDatabase.getInstance().getReference("carts/" + cartId + "/totalPrice");
+                    totalPriceRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            double totalPrice = snapshot.getValue(Double.class);
+                            totalPriceRef.setValue(totalPrice - oldPrice);
+                            totalPriceListener.onTotalPriceUpdated(totalPrice - oldPrice);
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+                        }
+                    });
                 }
 
                 @Override
