@@ -1,5 +1,9 @@
 package com.vdsl.cybermart.Home.View;
 
+import static android.content.Context.MODE_PRIVATE;
+
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -16,20 +20,24 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
 import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
+import com.vdsl.cybermart.Cart.View.CartActivity;
 import com.vdsl.cybermart.Home.Adapter.BannerAdapter;
-import com.vdsl.cybermart.Home.Adapter.CategoryAdapter;
-import com.vdsl.cybermart.Home.Adapter.ProductAdapter;
+import com.vdsl.cybermart.Category.Adapter.CategoryAdapter;
+import com.vdsl.cybermart.Product.Adapter.ProductAdapter;
 import com.vdsl.cybermart.Home.Model.Banner;
-import com.vdsl.cybermart.Home.Model.CategoryModel;
-import com.vdsl.cybermart.Home.Model.ProductModel;
+import com.vdsl.cybermart.Category.Model.CategoryModel;
+import com.vdsl.cybermart.Product.Model.ProductModel;
 import com.vdsl.cybermart.R;
 import com.vdsl.cybermart.databinding.FragmentHomeBinding;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -39,6 +47,7 @@ public class HomeFragment extends Fragment {
     private ProductAdapter productAdapter;
     private List<Banner> list;
     private Timer timer;
+
 
     @Nullable
     @Override
@@ -71,8 +80,6 @@ public class HomeFragment extends Fragment {
         rcvProduct.setAdapter(productAdapter);
 
 //Banner
-
-
         list = new ArrayList<>();
         list.add(new Banner(R.drawable.banner1));
         list.add(new Banner(R.drawable.banner2));
@@ -80,28 +87,81 @@ public class HomeFragment extends Fragment {
         list.add(new Banner(R.drawable.banner4));
 
         ViewPager viewPager = binding.viewPage;
-        if (viewPager != null) {
-            BannerAdapter bannerAdapter = new BannerAdapter(getContext(), list);
-            viewPager.setAdapter(bannerAdapter);
+        BannerAdapter bannerAdapter = new BannerAdapter(list);
+        viewPager.setAdapter(bannerAdapter);
 
-            if (timer == null) {
-                timer = new Timer();
-                timer.schedule(new TimerTask() {
-                    @Override
-                    public void run() {
-                        new Handler(Looper.getMainLooper()).post(() -> {
-                            if (viewPager.getCurrentItem() < list.size() - 1) {
-                                viewPager.setCurrentItem(viewPager.getCurrentItem() + 1);
-                            } else {
-                                viewPager.setCurrentItem(0);
-                            }
-                        });
-                    }
-                }, 500, 2222);
-            }
+        if (timer == null) {
+            timer = new Timer();
+            timer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    new Handler(Looper.getMainLooper()).post(() -> {
+                        if (viewPager.getCurrentItem() < list.size() - 1) {
+                            viewPager.setCurrentItem(viewPager.getCurrentItem() + 1);
+                        } else {
+                            viewPager.setCurrentItem(0);
+                        }
+                    });
+                }
+            }, 1234, 2345);
         }
+
+//filter product
+        categoryAdapter.setCategoryClickListener(categoryModel -> {
+            String categoryId = categoryModel.getTitle();
+            Query query = prodReference.orderByChild("categoryId").equalTo(categoryId);
+            FirebaseRecyclerOptions<ProductModel> options3 = new FirebaseRecyclerOptions.Builder<ProductModel>().setQuery(query, ProductModel.class).build();
+
+            productAdapter.updateOptions(options3);
+        });
+//Click cart
+        binding.btnCart.setOnClickListener(v -> startActivity(new Intent(v.getContext(), CartActivity.class)));
     }
 
+    //        badge
+    private void viewBadge() {
+        SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("Users", MODE_PRIVATE);
+        String accountId = sharedPreferences.getString("ID", "");
+
+        DatabaseReference cartsRef = FirebaseDatabase.getInstance().getReference().child("carts");
+        Query query = cartsRef.orderByChild("accountId").equalTo(accountId);
+
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot cartSnapshot : dataSnapshot.getChildren()) {
+                    String cartId = cartSnapshot.getKey();
+                    DatabaseReference cartDetailRef = FirebaseDatabase.getInstance().getReference().child("carts").child(cartId).child("cartDetail");
+                    cartDetailRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            int count = (int) dataSnapshot.getChildrenCount();
+                            if (count > 0) {
+                                binding.badge.setText(String.valueOf(count));
+                            }
+                            if (count == 0) {
+                                cartsRef.child(accountId).removeValue();
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+            }
+        });
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        viewBadge();
+    }
 
     @Override
     public void onStart() {
@@ -125,4 +185,5 @@ public class HomeFragment extends Fragment {
             timer = null;
         }
     }
+
 }

@@ -1,6 +1,5 @@
 package com.vdsl.cybermart.Home.Adapter;
 
-import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,11 +15,9 @@ import com.vdsl.cybermart.R;
 import java.util.List;
 
 public class BannerAdapter extends PagerAdapter {
-    private Context context;
-    private List<Banner> listBanner;
+    private final List<Banner> listBanner;
 
-    public BannerAdapter(Context context, List<Banner> listBanner) {
-        this.context = context;
+    public BannerAdapter(List<Banner> listBanner) {
         this.listBanner = listBanner;
     }
 
@@ -31,7 +28,7 @@ public class BannerAdapter extends PagerAdapter {
         ImageView img = view.findViewById(R.id.img_banner);
 
         Banner banner = listBanner.get(position);
-        if (banner!=null){
+        if (banner != null) {
             Picasso.get().load(banner.getResourceId()).into(img);
         }
         container.addView(view);

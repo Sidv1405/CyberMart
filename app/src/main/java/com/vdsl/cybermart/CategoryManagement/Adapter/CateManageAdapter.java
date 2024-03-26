@@ -21,7 +21,7 @@ import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.squareup.picasso.Picasso;
-import com.vdsl.cybermart.Home.Model.CategoryModel;
+import com.vdsl.cybermart.Category.Model.CategoryModel;
 import com.vdsl.cybermart.databinding.ItemCategoryManagementBinding;
 
 import java.util.Objects;

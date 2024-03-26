@@ -5,7 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ProductManagement.View.ProductDetailActivity">
+    tools:context=".Product.View.ProductDetailActivity">
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -15,6 +15,8 @@
             android:id="@+id/product_image"
             android:layout_width="match_parent"
             android:layout_height="470dp"
+            android:layout_marginLeft="25dp"
+            android:layout_marginRight="25dp"
             android:src="@drawable/clothes_nightwear_outfit_svgrepo_com" />
 
         <TextView
@@ -30,31 +32,35 @@
             android:singleLine="true"
             android:text="Minimal Stand"
             android:textColor="#FF303030"
-            android:textSize="24dp" />
+            android:textSize="24sp"
+            tools:ignore="RtlHardcoded" />
 
         <LinearLayout
             android:id="@+id/container_item_number_button"
-            android:layout_width="wrap_content"
+            android:layout_width="135dp"
             android:layout_height="wrap_content"
             android:layout_gravity="top|left"
-            android:layout_marginLeft="237dp"
+            android:layout_marginLeft="250dp"
             android:layout_marginTop="526dp"
             android:clipToPadding="false"
             android:gravity="left|center_vertical"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            tools:ignore="RtlHardcoded">
 
             <ImageView
-                android:id="@+id/image_group"
+                android:id="@+id/img_minus"
                 android:layout_width="30dp"
+
                 android:layout_height="30dp"
+                android:layout_marginLeft="20dp"
                 android:scaleType="centerInside"
                 android:src="@drawable/ic_minus" />
 
             <TextView
-                android:id="@+id/text"
+                android:id="@+id/txt_quantity"
                 android:layout_width="wrap_content"
                 android:layout_height="25dp"
-                android:layout_marginLeft="15dp"
+                android:layout_marginLeft="18dp"
                 android:gravity="left|center_vertical"
                 android:includeFontPadding="false"
                 android:maxLines="1"
@@ -64,7 +70,7 @@
                 android:textSize="18dp" />
 
             <ImageView
-                android:id="@+id/image_group1"
+                android:id="@+id/img_plus"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_marginLeft="15dp"
@@ -85,7 +91,9 @@
             android:singleLine="true"
             android:text="$ 50"
             android:textColor="#FF303030"
-            android:textSize="30dp" />
+            android:textSize="30sp"
+            android:textStyle="bold"
+            tools:ignore="RtlHardcoded" />
 
         <TextView
             android:id="@+id/product_reviews"
@@ -100,7 +108,8 @@
             android:singleLine="true"
             android:text="(50 reviews)"
             android:textColor="#FF808080"
-            android:textSize="14dp" />
+            android:textSize="14sp"
+            tools:ignore="RtlHardcoded" />
 
         <TextView
             android:id="@+id/product_rating"
@@ -115,21 +124,24 @@
             android:singleLine="true"
             android:text="4.5"
             android:textColor="#FF303030"
-            android:textSize="18dp" />
+            android:textSize="18sp"
+            tools:ignore="RtlHardcoded" />
 
         <TextView
             android:id="@+id/product_description"
-            android:layout_width="325dp"
+            android:layout_width="match_parent"
             android:layout_height="95dp"
             android:layout_gravity="top|left"
             android:layout_marginLeft="25dp"
             android:layout_marginTop="607dp"
+            android:layout_marginRight="25dp"
             android:gravity="left|top"
             android:includeFontPadding="false"
             android:lineHeight="19.1dp"
             android:text="Minimal Stand is made of by natural wood. The design that is very simple and minimal. This is truly one of the best furnitures in any family for now. With 3 different colors, you can easily select the best match for your home. "
             android:textColor="#FF606060"
-            android:textSize="14dp" />
+            android:textSize="14sp"
+            tools:ignore="RtlHardcoded" />
 
 
         <ImageView
@@ -140,24 +152,41 @@
             android:layout_marginLeft="25dp"
             android:layout_marginTop="572dp"
             android:scaleType="centerInside"
-            android:src="@drawable/ic_star" />
+            android:src="@drawable/ic_star"
+            tools:ignore="RtlHardcoded" />
+
+        <View
+            android:id="@+id/end"
+            android:layout_width="10dp"
+            android:layout_height="10dp"
+            android:layout_gravity="end"
+            android:background="@color/red"
+            android:visibility="invisible" />
+
+        <ImageView
+            android:id="@+id/view_animation"
+            android:layout_width="50dp"
+            android:layout_height="50dp" />
+
 
         <ImageView
             android:id="@+id/container_back"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="33dp"
+            android:layout_height="33dp"
             android:layout_gravity="top|left"
-            android:layout_marginLeft="32dp"
-            android:layout_marginTop="53dp"
+            android:layout_marginLeft="17dp"
+            android:layout_marginTop="13dp"
             android:scaleType="centerInside"
-            android:src="@drawable/ic_back" />
+            android:src="@drawable/ic_back"
+            tools:ignore="RtlHardcoded" />
 
         <FrameLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="top|left"
             android:layout_marginLeft="25dp"
-            android:layout_marginTop="722dp">
+            android:layout_marginTop="722dp"
+            tools:ignore="RtlHardcoded">
 
             <LinearLayout
                 android:id="@+id/container_frame1"
@@ -167,43 +196,38 @@
                 android:orientation="horizontal">
 
                 <ImageView
-                    android:id="@+id/image_frame"
+                    android:id="@+id/ic_heart"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:layout_gravity="center"
                     android:scaleType="centerInside"
                     android:src="@drawable/ic_heart_black" />
 
-                <FrameLayout
+
+                <androidx.cardview.widget.CardView
                     android:id="@+id/container_group"
-                    android:layout_width="250dp"
+                    android:layout_width="270dp"
                     android:layout_height="60dp"
-                    android:layout_marginStart="45dp">
+                    android:layout_marginStart="45dp"
+                    app:cardBackgroundColor="@color/black"
+                    app:cardCornerRadius="8dp">
 
                     <Button
-                        android:id="@+id/text_add_to_cart"
+                        android:id="@+id/btn_add_to_cart"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
+                        android:backgroundTint="@color/black"
                         android:gravity="center_horizontal|center_vertical"
                         android:includeFontPadding="false"
                         android:maxLines="1"
                         android:singleLine="true"
                         android:text="Add to cart "
-                        android:textColor="@color/black"
+                        android:textColor="@color/white"
                         android:textSize="20sp"
                         android:textStyle="bold" />
-                </FrameLayout>
+                </androidx.cardview.widget.CardView>
             </LinearLayout>
-
-            <ImageView
-                android:id="@+id/image_favorite"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_gravity="top|left"
-                android:layout_marginLeft="18dp"
-                android:layout_marginTop="20dp"
-                android:scaleType="centerInside" />
         </FrameLayout>
     </FrameLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,17 +1,22 @@
-package com.vdsl.cybermart.Home.Model;
+package com.vdsl.cybermart.Product.Model;
 
 public class ProductModel {
-    String prodId;
-    String name;
-    String description;
-    Double price;
-    int quantity;
-    String image;
-    String categoryId;
-    boolean status;
+    private String prodId;
+    private String name;
+    private String description;
+    private Double price;
+    private int quantity;
+    private String image;
+    private String categoryId;
+    private boolean status;
 
-    public ProductModel(String prodId, String name, String description, Double price, int quantity, String image, String categoryId, boolean status) {
-        this.prodId = prodId;
+    public ProductModel(String name, Double price, int quantity, String image) {
+        this.name = name;
+        this.price = price;
+        this.quantity = quantity;
+    }
+
+    public ProductModel(String name, String description, Double price, int quantity, String image, String categoryId, boolean status) {
         this.name = name;
         this.description = description;
         this.price = price;

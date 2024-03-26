@@ -35,7 +35,6 @@ import com.google.firebase.ktx.Firebase;
 import com.saadahmedsoft.popupdialog.listener.OnDialogButtonClickListener;
 import com.vdsl.cybermart.CategoryManagement.Adapter.CateManageAdapter;
 import com.vdsl.cybermart.General;
-import com.vdsl.cybermart.Home.Model.CategoryModel;
 import com.vdsl.cybermart.Order.Model.Order;
 import com.vdsl.cybermart.R;
 import com.vdsl.cybermart.Voucher.Adapter.VoucherListAdapter;
