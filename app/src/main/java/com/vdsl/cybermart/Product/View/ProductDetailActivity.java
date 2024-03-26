@@ -71,7 +71,6 @@ public class ProductDetailActivity extends AppCompatActivity {
         Picasso.get().load(productImage).into(productImageView);
         productPriceTextView.setText("$ " + productPrice);
         productDescriptionTextView.setText(productDescription);
-
         back();
 
         ImageView imgMinus, imgPlus;
