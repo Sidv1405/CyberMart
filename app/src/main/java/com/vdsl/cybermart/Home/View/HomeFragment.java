@@ -116,8 +116,6 @@ public class HomeFragment extends Fragment {
         });
 //Click cart
         binding.btnCart.setOnClickListener(v -> startActivity(new Intent(v.getContext(), CartActivity.class)));
-
-
     }
 
     //        badge
@@ -145,6 +143,7 @@ public class HomeFragment extends Fragment {
                                 cartsRef.child(accountId).removeValue();
                             }
                         }
+
                         @Override
                         public void onCancelled(@NonNull DatabaseError databaseError) {
                         }

@@ -1,62 +1,57 @@
 package com.vdsl.cybermart.Cart.Adapter;
 
-import android.app.Activity;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
-import com.vdsl.cybermart.Cart.Model.CartModel;
 import com.vdsl.cybermart.Product.Model.ProductModel;
 import com.vdsl.cybermart.databinding.ItemCartDetailBinding;
 
-import java.util.ArrayList;
 import java.util.Locale;
-import java.util.Map;
-import java.util.Objects;
 
 public class CartAdapter extends FirebaseRecyclerAdapter<ProductModel, CartAdapter.CartViewHolder> {
-    private SharedPreferences sharedPreferences;
-    private TotalPriceListener totalPriceListener;
+    private final SharedPreferences sharedPreferences;
+    private final TotalPriceListener totalPriceListener;
+    private final Context mContext;
 
 
     public CartAdapter(@NonNull FirebaseRecyclerOptions<ProductModel> options, Context context, TotalPriceListener totalPriceListener) {
         super(options);
-        sharedPreferences = context.getSharedPreferences("cartDetail", Context.MODE_PRIVATE);
+        sharedPreferences = context.getSharedPreferences("Users", Context.MODE_PRIVATE);
+        mContext = context;
         this.totalPriceListener = totalPriceListener;
     }
 
 
+    @SuppressLint("SetTextI18n")
     @Override
     protected void onBindViewHolder(@NonNull CartViewHolder cartViewHolder, int i, @NonNull ProductModel productModel) {
 
         cartViewHolder.bind(productModel);
 
-        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-        DatabaseReference rootReference = firebaseDatabase.getReference();
-        DatabaseReference reference = rootReference.child("carts");
-
         cartViewHolder.binding.imgDelete.setOnClickListener(v -> {
             DatabaseReference databaseReference = getRef(i);
             databaseReference.removeValue();
             double oldPrice = productModel.getPrice() * productModel.getQuantity();
-            String cartId = sharedPreferences.getString("id", "");
+
+            String accountId = sharedPreferences.getString("ID", "");
+            String cartDetailName = "cartDetail_" + accountId;
+            SharedPreferences cartSharedPreferences = mContext.getSharedPreferences(cartDetailName, Context.MODE_PRIVATE);
+            String cartId = cartSharedPreferences.getString("id", "");
             DatabaseReference totalPriceRef = FirebaseDatabase.getInstance().getReference("carts/" + cartId + "/totalPrice");
             totalPriceRef.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
@@ -65,6 +60,7 @@ public class CartAdapter extends FirebaseRecyclerAdapter<ProductModel, CartAdapt
                     totalPriceRef.setValue(totalPrice - oldPrice);
                     totalPriceListener.onTotalPriceUpdated(totalPrice - oldPrice);
                 }
+
                 @Override
                 public void onCancelled(@NonNull DatabaseError error) {
                 }
@@ -83,7 +79,10 @@ public class CartAdapter extends FirebaseRecyclerAdapter<ProductModel, CartAdapt
             DatabaseReference databaseReference = getRef(i);
             databaseReference.child("quantity").setValue(count);
             double oldPrice = productModel.getPrice();
-            String cartId = sharedPreferences.getString("id", "");
+            String accountId = sharedPreferences.getString("ID", "");
+            String cartDetailName = "cartDetail_" + accountId;
+            SharedPreferences cartSharedPreferences = mContext.getSharedPreferences(cartDetailName, Context.MODE_PRIVATE);
+            String cartId = cartSharedPreferences.getString("id", "");
             DatabaseReference totalPriceRef = FirebaseDatabase.getInstance().getReference("carts/" + cartId + "/totalPrice");
             totalPriceRef.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
@@ -113,7 +112,10 @@ public class CartAdapter extends FirebaseRecyclerAdapter<ProductModel, CartAdapt
                 DatabaseReference databaseReference = getRef(i);
                 databaseReference.child("quantity").setValue(count);
                 double oldPrice = productModel.getPrice();
-                String cartId = sharedPreferences.getString("id", "");
+                String accountId = sharedPreferences.getString("ID", "");
+                String cartDetailName = "cartDetail_" + accountId;
+                SharedPreferences cartSharedPreferences = mContext.getSharedPreferences(cartDetailName, Context.MODE_PRIVATE);
+                String cartId = cartSharedPreferences.getString("id", "");
                 DatabaseReference totalPriceRef = FirebaseDatabase.getInstance().getReference("carts/" + cartId + "/totalPrice");
                 totalPriceRef.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
@@ -122,6 +124,7 @@ public class CartAdapter extends FirebaseRecyclerAdapter<ProductModel, CartAdapt
                         totalPriceRef.setValue(totalPrice - oldPrice);
                         totalPriceListener.onTotalPriceUpdated(totalPrice - oldPrice);
                     }
+
                     @Override
                     public void onCancelled(@NonNull DatabaseError error) {
                     }
@@ -156,20 +159,17 @@ public class CartAdapter extends FirebaseRecyclerAdapter<ProductModel, CartAdapt
             this.binding = binding;
         }
 
-        int i = 0;
-
+        @SuppressLint("SetTextI18n")
         public void bind(ProductModel productModel) {
             binding.cartProdName.setText(productModel.getName());
             Picasso.get().load(productModel.getImage()).into(binding.cartProdImg);
             String formattedPrice = String.format(Locale.getDefault(), "%.2f", productModel.getPrice());
             binding.cartProdPrice.setText(String.format("%s $", formattedPrice));
             if (productModel.getQuantity() >= 0 && productModel.getQuantity() < 10) {
-                binding.cartProdQuantity.setText("0" + String.valueOf(productModel.getQuantity()));
+                binding.cartProdQuantity.setText("0" + productModel.getQuantity());
             } else {
                 binding.cartProdQuantity.setText(String.valueOf(productModel.getQuantity()));
             }
         }
     }
 }
-
-

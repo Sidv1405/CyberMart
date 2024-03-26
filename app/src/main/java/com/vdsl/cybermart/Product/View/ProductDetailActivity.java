@@ -144,10 +144,12 @@ public class ProductDetailActivity extends AppCompatActivity {
                             existingCart.getCartDetail().put(productDetail.getName(), productDetail);
 
                             existingCart.setTotalPrice(existingCart.getTotalPrice() + totalMoney);
-                            SharedPreferences sharedPreferences = getSharedPreferences("cartDetail", Context.MODE_PRIVATE);
-                            SharedPreferences.Editor editor = sharedPreferences.edit();
-                            editor.putString("id", cartId);
-                            editor.apply();
+
+                            String cartDetailName = "cartDetail_" + accountId;
+                            SharedPreferences cartSharedPreferences = getSharedPreferences(cartDetailName, Context.MODE_PRIVATE);
+                            SharedPreferences.Editor cartEditor = cartSharedPreferences.edit();
+                            cartEditor.putString("id", cartId);
+                            cartEditor.apply();
 
                             cartRef.child(cartId).setValue(existingCart);
                             finish();
@@ -157,10 +159,12 @@ public class ProductDetailActivity extends AppCompatActivity {
                         DatabaseReference newCartRef = cartRef.push();
                         String cartId = newCartRef.getKey();
                         CartModel cartModel = new CartModel(cartId, accountId, cartDetail, totalMoney, date);
-                        SharedPreferences sharedPreferences = getSharedPreferences("cartDetail", Context.MODE_PRIVATE);
-                        SharedPreferences.Editor editor = sharedPreferences.edit();
-                        editor.putString("id", cartId);
-                        editor.apply();
+
+                        String cartDetailName = "cartDetail_" + accountId;
+                        SharedPreferences cartSharedPreferences = getSharedPreferences(cartDetailName, Context.MODE_PRIVATE);
+                        SharedPreferences.Editor cartEditor = cartSharedPreferences.edit();
+                        cartEditor.putString("id", cartId);
+                        cartEditor.apply();
 
                         newCartRef.setValue(cartModel);
                         finish();
@@ -172,11 +176,6 @@ public class ProductDetailActivity extends AppCompatActivity {
                 }
             });
         });
-    }
-
-    @SuppressLint("SetTextI18n")
-    private void getDetail() {
-
     }
 
     private void back() {

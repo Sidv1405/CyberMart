@@ -22,12 +22,10 @@ import com.vdsl.cybermart.Cart.Model.CartModel;
 import com.vdsl.cybermart.Product.Model.ProductModel;
 import com.vdsl.cybermart.R;
 
-import java.text.DecimalFormat;
 import java.util.Locale;
 
 public class CartActivity extends AppCompatActivity implements CartAdapter.TotalPriceListener {
     private CartAdapter adapter;
-    private RecyclerView rcvCart;
     private TextView txtTotalPrice;
 
     @Override
@@ -41,19 +39,23 @@ public class CartActivity extends AppCompatActivity implements CartAdapter.Total
     }
 
     private void readData() {
-        rcvCart = findViewById(R.id.rcv_cart);
+        RecyclerView rcvCart = findViewById(R.id.rcv_cart);
         rcvCart.setLayoutManager(new LinearLayoutManager(this));
-        SharedPreferences sharedPreferences = getSharedPreferences("cartDetail", Context.MODE_PRIVATE);
-        String cartId = sharedPreferences.getString("id", "");
+
+        SharedPreferences sharedPreferences = getSharedPreferences("Users", Context.MODE_PRIVATE);
+        String accountId = sharedPreferences.getString("ID", "");
+        String cartDetailName = "cartDetail_" + accountId;
+        SharedPreferences cartSharedPreferences = getSharedPreferences(cartDetailName, Context.MODE_PRIVATE);
+        String cartId = cartSharedPreferences.getString("id", "");
+
         adapter = new CartAdapter(new FirebaseRecyclerOptions.Builder<ProductModel>()
                 .setQuery(FirebaseDatabase.getInstance().getReference().child("carts").child(cartId).child("cartDetail"), ProductModel.class)
                 .build(), this, this);
         rcvCart.setAdapter(adapter);
 
-
         txtTotalPrice = findViewById(R.id.text_total_price);
         DatabaseReference cartsRef = FirebaseDatabase.getInstance().getReference().child("carts");
-        cartsRef.addListenerForSingleValueEvent(new ValueEventListener() {
+        cartsRef.orderByChild("accountId").equalTo(accountId).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 double totalCartPrice = 0.0;
@@ -61,17 +63,16 @@ public class CartActivity extends AppCompatActivity implements CartAdapter.Total
                     CartModel cart = cartSnapshot.getValue(CartModel.class);
                     if (cart != null) {
                         totalCartPrice += cart.getTotalPrice();
-                        String formattedPrice = String.format(Locale.getDefault(), "%.2f", totalCartPrice);
-                        txtTotalPrice.setText(String.format("%s $", formattedPrice));
                     }
                 }
+                String formattedPrice = String.format(Locale.getDefault(), "%.2f", totalCartPrice);
+                txtTotalPrice.setText(String.format("%s $", formattedPrice));
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
             }
         });
-
     }
 
     @Override

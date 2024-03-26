@@ -60,7 +60,6 @@ public class CategoryManagementActivity extends AppCompatActivity {
         btnBack.setOnClickListener(v -> finish());
 //        search
         searchCategory();
-
     }
 
     private void searchCategory() {

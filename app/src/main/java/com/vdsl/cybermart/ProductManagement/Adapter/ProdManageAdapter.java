@@ -1,5 +1,6 @@
 package com.vdsl.cybermart.ProductManagement.Adapter;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -61,6 +62,7 @@ public class ProdManageAdapter extends FirebaseRecyclerAdapter<ProductModel, Pro
     }
 
 
+    @SuppressLint("SetTextI18n")
     private void updateProduct(@NonNull ProdManageViewHolder prodManageViewHolder, int i, @NonNull ProductModel productModel) {
         prodManageViewHolder.binding.cvProd.setOnLongClickListener(v -> {
             AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
