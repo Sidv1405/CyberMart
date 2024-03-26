@@ -7,7 +7,7 @@
 
     <item
         android:id="@+id/nav_bot_marker"
-        android:icon="@drawable/shopping_cart_svg"
+        android:icon="@drawable/ic_heart_black"
         android:title="Favourite" />
 
     <item

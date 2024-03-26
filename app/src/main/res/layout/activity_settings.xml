@@ -1,9 +1,12 @@
-<?xml version="1.0" encoding="utf-8"?><LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    tools:context=".Account.Activity.SettingsActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -13,74 +16,28 @@
         android:orientation="horizontal"
         android:paddingHorizontal="20dp"
         android:paddingVertical="10dp">
+
         <ImageView
             android:id="@+id/img_back"
             android:layout_width="30dp"
             android:layout_height="wrap_content"
             android:src="@drawable/ic_back" />
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:fontFamily="serif"
             android:gravity="center_horizontal"
-            android:text="Profile"
+            android:text="Settings"
             android:textSize="24dp"
             android:textStyle="bold" />
-
-        <ImageView
-            android:id="@+id/img_logout"
-            android:layout_width="30dp"
-            android:layout_height="wrap_content"
-            android:src="@drawable/img_log_out" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="20dp"
-        android:orientation="horizontal"
-        android:paddingHorizontal="20dp"
-        android:paddingVertical="5dp">
-
-        <ImageView
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:id="@+id/imgAvatar"
-            android:src="@drawable/img_default_profile_image" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:orientation="vertical"
-            android:padding="5dp">
-
-            <TextView
-                android:id="@+id/txt_YourName"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:text="Your Name"
-                android:textColor="@color/black"
-                android:textSize="20sp" />
-
-            <TextView
-                android:id="@+id/txt_YourEmail"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:text="yourmail@gmail.com"
-                android:textColor="#959595"
-                android:textSize="16sp" />
-
-        </LinearLayout>
     </LinearLayout>
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
         android:layout_weight="1">
 
         <LinearLayout
@@ -89,16 +46,24 @@
             android:orientation="vertical"
             android:paddingBottom="10dp">
 
+            <TextView
+                android:id="@+id/txtPersonInfor"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="20dp"
+                android:drawableRight="@drawable/ic_edit_pen"
+                android:text="Personal Information"
+                android:textSize="20sp" />
+
             <androidx.cardview.widget.CardView
-                android:id="@+id/btnMyOrder"
+                android:id="@+id/CvName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"
                 android:layout_marginHorizontal="20dp"
                 android:layout_marginVertical="10dp"
                 android:padding="10dp"
-                app:cardElevation="4dp">
-
+                app:cardElevation="8dp">
 
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -112,39 +77,31 @@
                         android:layout_height="wrap_content"
                         android:paddingHorizontal="5dp"
                         android:paddingVertical="2dp"
-                        android:text="My orders"
-                        android:textColor="@color/black"
-                        android:textSize="22dp" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:paddingHorizontal="5dp"
-                        android:paddingVertical="2dp"
-                        android:text="Already have 10 orders"
+                        android:text="Name"
                         android:textColor="#777777"
                         android:textSize="18dp" />
 
+                    <TextView
+                        android:id="@+id/txtName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingHorizontal="5dp"
+                        android:paddingVertical="2dp"
+                        android:text="Nguyen Van A"
+                        android:textColor="@color/black"
+                        android:textSize="22dp" />
                 </LinearLayout>
-
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="end|center"
-                    android:layout_margin="10dp"
-                    android:src="@drawable/ic_more" />
             </androidx.cardview.widget.CardView>
 
             <androidx.cardview.widget.CardView
+                android:id="@+id/CvAddress"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"
                 android:layout_marginHorizontal="20dp"
                 android:layout_marginVertical="10dp"
                 android:padding="10dp"
-                android:id="@+id/CvSettings"
-                app:cardElevation="4dp">
-
+                app:cardElevation="8dp">
 
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -158,39 +115,31 @@
                         android:layout_height="wrap_content"
                         android:paddingHorizontal="5dp"
                         android:paddingVertical="2dp"
-                        android:text="Settings"
-                        android:textColor="@color/black"
-                        android:textSize="22dp" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:paddingHorizontal="5dp"
-                        android:paddingVertical="2dp"
-                        android:text="Change information and settings"
+                        android:text="Address"
                         android:textColor="#777777"
                         android:textSize="18dp" />
 
+                    <TextView
+                        android:id="@+id/txtAddress"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingHorizontal="5dp"
+                        android:paddingVertical="2dp"
+                        android:text="Address"
+                        android:textColor="@color/black"
+                        android:textSize="22dp" />
                 </LinearLayout>
-
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="end|center"
-                    android:layout_margin="10dp"
-                    android:src="@drawable/ic_more" />
             </androidx.cardview.widget.CardView>
 
             <androidx.cardview.widget.CardView
+                android:id="@+id/CvPhoneNumber"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"
                 android:layout_marginHorizontal="20dp"
                 android:layout_marginVertical="10dp"
                 android:padding="10dp"
-                android:id="@+id/CvCreateStaff"
-                app:cardElevation="4dp">
-
+                app:cardElevation="8dp">
 
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -204,38 +153,33 @@
                         android:layout_height="wrap_content"
                         android:paddingHorizontal="5dp"
                         android:paddingVertical="2dp"
-                        android:text="Create an Staff account"
-                        android:textColor="@color/black"
-                        android:textSize="22dp" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:paddingHorizontal="5dp"
-                        android:paddingVertical="2dp"
-                        android:text="Create accounts for staffs"
+                        android:text="Phone number"
                         android:textColor="#777777"
                         android:textSize="18dp" />
 
+                    <TextView
+                        android:id="@+id/txtPhoneNumber"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingHorizontal="5dp"
+                        android:paddingVertical="2dp"
+                        android:text="0987654321"
+                        android:textColor="@color/black"
+                        android:textSize="22dp" />
                 </LinearLayout>
-
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="end|center"
-                    android:layout_margin="10dp"
-                    android:src="@drawable/ic_more" />
             </androidx.cardview.widget.CardView>
 
+
+
             <androidx.cardview.widget.CardView
+                android:id="@+id/CvEmail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"
                 android:layout_marginHorizontal="20dp"
                 android:layout_marginVertical="10dp"
                 android:padding="10dp"
-                app:cardElevation="4dp">
-
+                app:cardElevation="8dp">
 
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -249,37 +193,41 @@
                         android:layout_height="wrap_content"
                         android:paddingHorizontal="5dp"
                         android:paddingVertical="2dp"
-                        android:text="Payment Methods"
-                        android:textColor="@color/black"
-                        android:textSize="22dp" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:paddingHorizontal="5dp"
-                        android:paddingVertical="2dp"
-                        android:text="You have 02 cards"
+                        android:text="Email"
                         android:textColor="#777777"
                         android:textSize="18dp" />
 
+                    <TextView
+                        android:id="@+id/txtEmail"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingHorizontal="5dp"
+                        android:paddingVertical="2dp"
+                        android:text="nguyenvana@gmail.com"
+                        android:textColor="@color/black"
+                        android:textSize="22dp" />
                 </LinearLayout>
-
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="end|center"
-                    android:layout_margin="10dp"
-                    android:src="@drawable/ic_more" />
             </androidx.cardview.widget.CardView>
 
+            <TextView
+                android:id="@+id/txtPasswordtitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginTop="20dp"
+                android:drawableRight="@drawable/ic_edit_pen"
+                android:text="Password"
+                android:textSize="20sp" />
+
             <androidx.cardview.widget.CardView
+                android:id="@+id/CvPassword"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"
                 android:layout_marginHorizontal="20dp"
                 android:layout_marginVertical="10dp"
                 android:padding="10dp"
-                app:cardElevation="4dp">
+                app:cardElevation="8dp">
 
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -293,30 +241,146 @@
                         android:layout_height="wrap_content"
                         android:paddingHorizontal="5dp"
                         android:paddingVertical="2dp"
-                        android:text="My Reviews"
-                        android:textColor="@color/black"
-                        android:textSize="22dp" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:paddingHorizontal="5dp"
-                        android:paddingVertical="2dp"
-                        android:text="Reviews for 10 items"
+                        android:text="Password"
                         android:textColor="#777777"
                         android:textSize="18dp" />
 
+                    <TextView
+                        android:id="@+id/txtPassword"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:inputType="textPassword"
+                        android:paddingHorizontal="5dp"
+                        android:paddingVertical="2dp"
+                        android:text="nguyenvana@gmail.com"
+                        android:textColor="@color/black"
+                        android:textSize="22dp" />
                 </LinearLayout>
+            </androidx.cardview.widget.CardView>
 
-                <ImageView
-                    android:layout_width="wrap_content"
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginTop="20dp"
+                android:text="Notification"
+                android:textSize="20sp" />
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginTop="15dp"
+                android:padding="10dp"
+                app:cardElevation="6dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="end|center"
-                    android:layout_margin="10dp"
-                    android:src="@drawable/ic_more" />
+                    android:orientation="horizontal"
+                    android:paddingVertical="10dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:layout_weight="1"
+                        android:paddingHorizontal="5dp"
+                        android:paddingVertical="2dp"
+                        android:text="Sales"
+                        android:textColor="@color/black"
+                        android:textSize="22dp" />
+
+                    <Switch
+                        android:id="@+id/SwSales"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginHorizontal="10dp" />
+                </LinearLayout>
             </androidx.cardview.widget.CardView>
 
             <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginTop="15dp"
+                android:padding="10dp"
+                app:cardElevation="6dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:paddingVertical="10dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:layout_weight="1"
+                        android:paddingHorizontal="5dp"
+                        android:paddingVertical="2dp"
+                        android:text="New Arrivals"
+                        android:textColor="@color/black"
+                        android:textSize="22dp" />
+
+                    <Switch
+                        android:id="@+id/SwNewArrivals"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginHorizontal="10dp" />
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginTop="15dp"
+                android:padding="10dp"
+                app:cardElevation="6dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:paddingVertical="10dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:layout_weight="1"
+                        android:paddingHorizontal="5dp"
+                        android:paddingVertical="2dp"
+                        android:text="Delivery status changes"
+                        android:textColor="@color/black"
+                        android:textSize="22dp" />
+
+                    <Switch
+                        android:id="@+id/SwDelivery"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginHorizontal="10dp" />
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginTop="20dp"
+                android:text="Help center"
+                android:textSize="20sp" />
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/CvFAQ"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"
@@ -325,32 +389,16 @@
                 android:padding="10dp"
                 app:cardElevation="4dp">
 
-                <LinearLayout
+                <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginVertical="10dp"
-                    android:layout_marginLeft="5dp"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:paddingHorizontal="5dp"
-                        android:paddingVertical="2dp"
-                        android:text="Setting"
-                        android:textColor="@color/black"
-                        android:textSize="22dp" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:paddingHorizontal="5dp"
-                        android:paddingVertical="2dp"
-                        android:text="Notifications, Password...."
-                        android:textColor="#777777"
-                        android:textSize="18dp" />
-
-                </LinearLayout>
+                    android:layout_gravity="start|center"
+                    android:layout_marginLeft="10dp"
+                    android:paddingHorizontal="5dp"
+                    android:paddingVertical="2dp"
+                    android:text="FAQ"
+                    android:textColor="@color/black"
+                    android:textSize="22dp" />
 
                 <ImageView
                     android:layout_width="wrap_content"
@@ -358,10 +406,11 @@
                     android:layout_gravity="end|center"
                     android:layout_margin="10dp"
                     android:src="@drawable/ic_more" />
+
             </androidx.cardview.widget.CardView>
 
             <androidx.cardview.widget.CardView
-                android:id="@+id/cv_cate_manage"
+                android:id="@+id/CvContact"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"
@@ -370,32 +419,16 @@
                 android:padding="10dp"
                 app:cardElevation="4dp">
 
-                <LinearLayout
+                <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginVertical="10dp"
-                    android:layout_marginLeft="5dp"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:paddingHorizontal="5dp"
-                        android:paddingVertical="2dp"
-                        android:text="Category Management"
-                        android:textColor="@color/black"
-                        android:textSize="22dp" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:paddingHorizontal="5dp"
-                        android:paddingVertical="2dp"
-                        android:text="Create/update category"
-                        android:textColor="#777777"
-                        android:textSize="18dp" />
-
-                </LinearLayout>
+                    android:layout_gravity="start|center"
+                    android:layout_marginLeft="10dp"
+                    android:paddingHorizontal="5dp"
+                    android:paddingVertical="2dp"
+                    android:text="Contact us"
+                    android:textColor="@color/black"
+                    android:textSize="22dp" />
 
                 <ImageView
                     android:layout_width="wrap_content"
@@ -403,10 +436,11 @@
                     android:layout_gravity="end|center"
                     android:layout_margin="10dp"
                     android:src="@drawable/ic_more" />
+
             </androidx.cardview.widget.CardView>
 
             <androidx.cardview.widget.CardView
-                android:id="@+id/cv_prod_manage"
+                android:id="@+id/CvPrivacy"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"
@@ -415,32 +449,16 @@
                 android:padding="10dp"
                 app:cardElevation="4dp">
 
-                <LinearLayout
+                <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginVertical="10dp"
-                    android:layout_marginLeft="5dp"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:paddingHorizontal="5dp"
-                        android:paddingVertical="2dp"
-                        android:text="Product Management"
-                        android:textColor="@color/black"
-                        android:textSize="22dp" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:paddingHorizontal="5dp"
-                        android:paddingVertical="2dp"
-                        android:text="Create/update/delete product"
-                        android:textColor="#777777"
-                        android:textSize="18dp" />
-
-                </LinearLayout>
+                    android:layout_gravity="start|center"
+                    android:layout_marginLeft="10dp"
+                    android:paddingHorizontal="5dp"
+                    android:paddingVertical="2dp"
+                    android:text="Privacy and Terms"
+                    android:textColor="@color/black"
+                    android:textSize="22dp" />
 
                 <ImageView
                     android:layout_width="wrap_content"
@@ -448,94 +466,9 @@
                     android:layout_gravity="end|center"
                     android:layout_margin="10dp"
                     android:src="@drawable/ic_more" />
+
             </androidx.cardview.widget.CardView>
 
-            <androidx.cardview.widget.CardView
-                android:id="@+id/btnMyVoucher"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="start"
-                android:layout_marginHorizontal="20dp"
-                android:layout_marginVertical="10dp"
-                android:padding="10dp"
-                app:cardElevation="4dp">
-
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginVertical="10dp"
-                    android:layout_marginLeft="5dp"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:paddingHorizontal="5dp"
-                        android:paddingVertical="2dp"
-                        android:text="Voucher Mangement"
-                        android:textColor="@color/black"
-                        android:textSize="22dp" />
-
-                    <TextView
-                        android:id="@+id/txtCountVoucher"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:paddingHorizontal="5dp"
-                        android:paddingVertical="2dp"
-                        android:text="03 voucher"
-                        android:textColor="#777777"
-                        android:textSize="18dp" />
-
-                </LinearLayout>
-
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="end|center"
-                    android:layout_margin="10dp"
-                    android:src="@drawable/ic_more" />
-            </androidx.cardview.widget.CardView>
-            <androidx.cardview.widget.CardView
-                android:id="@+id/btnStatistic"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="start"
-                android:layout_marginHorizontal="20dp"
-                android:layout_marginVertical="10dp"
-                android:padding="10dp"
-                app:cardElevation="4dp">
-
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginVertical="10dp"
-                    android:layout_marginLeft="5dp"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:paddingHorizontal="5dp"
-                        android:paddingVertical="2dp"
-                        android:text="Our Statistical"
-                        android:textColor="@color/black"
-                        android:textSize="22dp" />
-
-
-                </LinearLayout>
-
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="end|center"
-                    android:layout_margin="10dp"
-                    android:src="@drawable/ic_more" />
-            </androidx.cardview.widget.CardView>
         </LinearLayout>
-
-
     </ScrollView>
-
 </LinearLayout>

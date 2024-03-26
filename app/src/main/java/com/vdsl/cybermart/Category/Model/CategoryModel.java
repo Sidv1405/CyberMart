@@ -1,4 +1,4 @@
-package com.vdsl.cybermart.Home.Model;
+package com.vdsl.cybermart.Category.Model;
 
 public class CategoryModel {
     private String id;

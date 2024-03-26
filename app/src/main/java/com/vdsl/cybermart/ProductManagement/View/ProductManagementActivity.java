@@ -27,7 +27,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.vdsl.cybermart.Home.Model.ProductModel;
+import com.vdsl.cybermart.Product.Model.ProductModel;
 import com.vdsl.cybermart.ProductManagement.Adapter.ProdManageAdapter;
 import com.vdsl.cybermart.R;
 import com.vdsl.cybermart.databinding.DialogAddProductBinding;
@@ -40,9 +40,7 @@ public class ProductManagementActivity extends AppCompatActivity {
     private DatabaseReference prodReference;
     private ProdManageAdapter adapter;
     private RecyclerView rcvProduct;
-    private DatabaseReference categoryReference;
     private Spinner spinnerCategory;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -133,7 +131,6 @@ public class ProductManagementActivity extends AppCompatActivity {
                 String description = Objects.requireNonNull(addProdBinding.edtAddDescProd.getText()).toString();
                 String image = Objects.requireNonNull(addProdBinding.edtAddUrlProd.getText()).toString();
                 String cateName = spinnerCategory.getSelectedItem().toString();
-                String cateId = getIdFromTitle(cateName);
 
                 prodReference.orderByChild("name").equalTo(name).addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
@@ -141,11 +138,9 @@ public class ProductManagementActivity extends AppCompatActivity {
                         if (dataSnapshot.exists()) {
                             Toast.makeText(getApplicationContext(), "Had same title", Toast.LENGTH_SHORT).show();
                         } else {
-
                             DatabaseReference newProdRef = prodReference.push();
-                            String prodId = newProdRef.getKey();
 
-                            ProductModel productModel = new ProductModel(prodId, name, description, price, quantity, image, cateId, true);
+                            ProductModel productModel = new ProductModel(name, description, price, quantity, image, cateName, true);
 
                             newProdRef.setValue(productModel);
                             alertDialog.dismiss();
@@ -162,28 +157,6 @@ public class ProductManagementActivity extends AppCompatActivity {
         });
     }
 
-    private String getIdFromTitle(String title) {
-        DatabaseReference peopleReference = FirebaseDatabase.getInstance().getReference().child("categories");
-        final String[] cateId = {null};
-        peopleReference.orderByChild("title").equalTo(title).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if (dataSnapshot.exists()) {
-                    for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
-                        cateId[0] = dataSnapshot1.getKey();
-                        break;
-                    }
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-            }
-        });
-        return cateId[0];
-    }
-
-
     private void readDataProduct() {
         prodReference = FirebaseDatabase.getInstance().getReference().child("products");
         rcvProduct.setLayoutManager(new GridLayoutManager(this, 2));
@@ -198,6 +171,11 @@ public class ProductManagementActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+    }
+
+    @Override
     protected void onStart() {
         super.onStart();
         if (adapter != null) // Check if adapter is not null before calling startListening()
@@ -207,7 +185,7 @@ public class ProductManagementActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        if (adapter != null) // Check if adapter is not null before calling stopListening()
+        if (adapter != null)
             adapter.stopListening();
     }
 

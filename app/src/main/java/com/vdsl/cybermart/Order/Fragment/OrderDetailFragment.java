@@ -20,7 +20,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
-import com.vdsl.cybermart.Home.Model.ProductModel;
+import com.vdsl.cybermart.Product.Model.ProductModel;
 import com.vdsl.cybermart.Order.Adapter.ProductsListAdapterInOrder;
 import com.vdsl.cybermart.Order.Model.Order;
 import com.vdsl.cybermart.databinding.FragmentOrderDetailBinding;

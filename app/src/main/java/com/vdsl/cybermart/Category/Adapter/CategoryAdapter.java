@@ -1,4 +1,4 @@
-package com.vdsl.cybermart.Home.Adapter;
+package com.vdsl.cybermart.Category.Adapter;
 
 import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
@@ -11,13 +11,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.squareup.picasso.Picasso;
-import com.vdsl.cybermart.Home.Model.CategoryModel;
+import com.vdsl.cybermart.Category.Model.CategoryModel;
 import com.vdsl.cybermart.databinding.ItemCategoryBinding;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class CategoryAdapter extends FirebaseRecyclerAdapter<CategoryModel, CategoryAdapter.CateViewHolder> {
+    private CategoryClickListener categoryClickListener;
 
     private final List<CategoryModel> visibleItems = new ArrayList<>();
 
@@ -26,10 +27,24 @@ public class CategoryAdapter extends FirebaseRecyclerAdapter<CategoryModel, Cate
         updateVisibleItems();
     }
 
+    public void setCategoryClickListener(CategoryClickListener listener) {
+        this.categoryClickListener = listener;
+    }
+
     @Override
     protected void onBindViewHolder(@NonNull CateViewHolder holder, int position, @NonNull CategoryModel model) {
         CategoryModel categoryModel = visibleItems.get(position);
         holder.bind(categoryModel.getTitle(), categoryModel.getImage(), categoryModel.isStatus());
+
+        holder.itemView.setOnClickListener(v -> {
+            if (categoryClickListener != null) {
+                categoryClickListener.onCategoryClicked(categoryModel);
+            }
+        });
+    }
+
+    public interface CategoryClickListener {
+        void onCategoryClicked(CategoryModel categoryModel);
     }
 
     @NonNull
