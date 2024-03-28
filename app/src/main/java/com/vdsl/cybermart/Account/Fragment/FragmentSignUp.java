@@ -57,7 +57,6 @@ public class FragmentSignUp extends Fragment {
 
 
         binding.btnSignUp.setOnClickListener(v -> {
-//            String userName = binding.edtUserNameSignUp.getText().toString().trim();
             String fullName = binding.edtFullNameSignUp.getText().toString().trim();
             String email = binding.edtEmailSignUp.getText().toString().trim();
             String password = binding.edtPassSignUp.getText().toString().trim();
@@ -66,10 +65,6 @@ public class FragmentSignUp extends Fragment {
             boolean error = false;
             String emailPattern = "[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}";
 
-//            if (TextUtils.isEmpty(userName)) {
-//                binding.edtUserNameSignUp.setError("Please enter your User name!");
-//                error = true;
-//            }
             if (TextUtils.isEmpty(fullName)) {
                 binding.edtFullNameSignUp.setError("Please enter your Full name!");
                 error = true;
@@ -85,7 +80,7 @@ public class FragmentSignUp extends Fragment {
             userDatabase.orderByChild("email").equalTo(email).addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    if (snapshot.exists()){
+                    if (snapshot.exists()) {
                         binding.edtEmailSignUp.setError("Email already exists. Please use another email!");
                     }
                 }
@@ -138,10 +133,6 @@ public class FragmentSignUp extends Fragment {
                                     currentUserDB.child("fullName").setValue(fullName);
                                     currentUserDB.child("email").setValue(email);
                                     currentUserDB.child("role").setValue("Customer");
-//                                    currentUserDB.child("UserName").setValue(userName);
-//                                    currentUserDB.child("Password").setValue(password);
-//                                    currentUserDB.child("PhoneNumber").setValue("");
-//                                    currentUserDB.child("Address").setValue("");
 
                                     Toast.makeText(getActivity(), "Sign Up Successful.", Toast.LENGTH_SHORT).show();
                                     FragmentLogIn fragmentLogIn = new FragmentLogIn();
@@ -160,8 +151,6 @@ public class FragmentSignUp extends Fragment {
                     }
                 });
             }
-
-
         });
     }
 }

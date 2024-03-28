@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.firebase.ui.database.FirebaseRecyclerOptions;
@@ -41,12 +42,13 @@ public class FragmentAddress extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        View bottomMenu = getActivity().findViewById(R.id.nav_bottom);
         if (getActivity() != null) {
-            View bottomMenu = getActivity().findViewById(R.id.nav_bottom);
             if (bottomMenu != null) {
                 bottomMenu.setVisibility(View.GONE);
             }
         }
+
 
         binding.rcAddress.setLayoutManager(new LinearLayoutManager(getActivity()));
 
@@ -56,6 +58,7 @@ public class FragmentAddress extends Fragment {
 
         binding.imgBack.setOnClickListener(v -> {
             if (getActivity() != null) {
+                bottomMenu.setVisibility(View.VISIBLE);
                 getActivity().getSupportFragmentManager().popBackStack();
             }
         });
@@ -83,14 +86,16 @@ public class FragmentAddress extends Fragment {
             });
         }
 
-        binding.btnAddAddress.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
+        binding.btnAddAddress.setOnClickListener(v -> {
+            FragmentAddAddress fragmentAddAddress = new FragmentAddAddress();
+            FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+            transaction.replace(R.id.frag_container_main, fragmentAddAddress);
+            transaction.addToBackStack(null);
+            transaction.commit();
         });
 
     }
+
 
     private void setupRecyclerView() {
         FirebaseRecyclerOptions<AddressModel> options =
@@ -101,6 +106,7 @@ public class FragmentAddress extends Fragment {
         binding.rcAddress.setAdapter(addressAdapter);
         addressAdapter.startListening();
     }
+
 
     @Override
     public void onStart() {

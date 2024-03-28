@@ -30,7 +30,7 @@
             android:layout_weight="1"
             android:fontFamily="serif"
             android:gravity="center_horizontal"
-            android:text="Shipping Address"
+            android:text="Shipping Addresses"
             android:textColor="@color/black"
             android:textSize="24dp"
             android:textStyle="bold" />

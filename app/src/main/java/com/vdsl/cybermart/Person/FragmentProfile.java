@@ -38,7 +38,6 @@ import com.vdsl.cybermart.databinding.FragmentProfileBinding;
 public class FragmentProfile extends Fragment {
 
     FragmentProfileBinding binding;
-
     private FirebaseAuth auth;
     DatabaseReference databaseReference;
     SharedPreferences sharedPreferences;
@@ -69,8 +68,7 @@ public class FragmentProfile extends Fragment {
             if (getActivity() != null) {
                 getActivity().getSupportFragmentManager().popBackStack();
             }
-        });
-        //end
+        });//end
 
         //sign out
         binding.imgLogout.setOnClickListener(v -> {
@@ -95,8 +93,6 @@ public class FragmentProfile extends Fragment {
         });
         //end
 
-
-        //go to frag create staff account
         binding.CvCreateStaff.setOnClickListener(v -> {
             FragmentAddStaff fragmentAddStaff = new FragmentAddStaff();
             FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
@@ -104,12 +100,9 @@ public class FragmentProfile extends Fragment {
             transaction.addToBackStack(null);
             transaction.commit();
         });
-        //end
-
         binding.btnMyOrder.setOnClickListener(v -> {
             General.loadFragment(getParentFragmentManager(), new FragmentContainer(), null);
         });
-
         binding.cvCateManage.setOnClickListener(v -> {
             startActivity(new Intent(getContext(), CategoryManagementActivity.class));
         });
@@ -180,51 +173,6 @@ public class FragmentProfile extends Fragment {
 
                 }
             });
-//            databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
-//                @Override
-//                public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                    if (snapshot.exists()) {
-//
-//                    }
-//                }
-//
-//                @Override
-//                public void onCancelled(@NonNull DatabaseError error) {
-//
-//                }
-//            });
-            //
-
-//            String FullName = sharedPreferences.getString("fullName", "nothing to show");
-//            String Email = sharedPreferences.getString("email", "nothing to show");
-//            String Avatar = sharedPreferences.getString("avatar", null);
-//            String Role = sharedPreferences.getString("role", "nothing");
-//            binding.txtYourName.setText(FullName);
-//            binding.txtYourEmail.setText(Email);
-//            Log.d("infor", "" + FullName);
-//            Log.d("infor", "" + Email);
-//            if (Avatar != null && !Avatar.isEmpty()) {
-//                Picasso.get().load(Avatar).into(binding.imgAvatar, new Callback() {
-//                    @Override
-//                    public void onSuccess() {
-//                        Log.d("Avatar", "Avatar: " + Avatar);
-//                    }
-//
-//                    @Override
-//                    public void onError(Exception e) {
-//                        binding.imgAvatar.setImageResource(R.drawable.img_default_profile_image);
-//                    }
-//                });
-//            } else {
-//                binding.imgAvatar.setImageResource(R.drawable.img_default_profile_image);
-//            }
-//            if (!Role.isEmpty() && Role.equals("Admin")) {
-//                binding.CvCreateStaff.setVisibility(View.VISIBLE);
-//                Log.d("Role", "Role: " + Role);
-//            }else{
-//                binding.CvCreateStaff.setVisibility(View.GONE);
-//                Log.d("Role", "Role: " + Role);
-//            }
         } else {
             Log.d("loginnow", "not logged in");
         }

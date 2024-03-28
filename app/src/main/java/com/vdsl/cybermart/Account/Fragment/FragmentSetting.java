@@ -146,32 +146,6 @@ public class FragmentSetting extends Fragment {
                 }
             });
 
-//            String FullName = preferencesGetInfor.getString("fullName", "nothing to show");
-//            String Email = preferencesGetInfor.getString("email", "nothing to show");
-//            String Password = preferencesGetPass.getString("password", "nothing to show");
-//            String Address = preferencesGetInfor.getString("address", "No address yet");
-//            String PhoneNumber = preferencesGetInfor.getString("phoneNumber", "No phone number yet");
-//
-//            binding.txtName.setText(FullName);
-//            binding.txtEmail.setText(Email);
-//            binding.txtPassword.setText(Password);
-////            binding.txtAddress.setText(Address);
-//            binding.txtPhoneNumber.setText(PhoneNumber);
-//            if (FullName.equals("nothing to show")) {
-//                binding.txtName.setTextColor(Color.RED);
-//            } else {
-//                binding.txtName.setTextColor(Color.BLACK);
-//            }
-////            if (Address.equals("No address yet")) {
-////                binding.txtAddress.setTextColor(Color.RED);
-////            } else {
-////                binding.txtAddress.setTextColor(Color.BLACK);
-////            }
-//            if (PhoneNumber.equals("No phone number yet")) {
-//                binding.txtPhoneNumber.setTextColor(Color.RED);
-//            } else {
-//                binding.txtPhoneNumber.setTextColor(Color.BLACK);
-//            }
 
         } else {
             Log.d("loginnow", "not logged in");
@@ -190,12 +164,7 @@ public class FragmentSetting extends Fragment {
         dialog.show();
 
         dialogInformation.edtName.setText(binding.txtName.getText().toString());
-        if (binding.txtAddress.getText().toString().equals("No address yet")) {
-            dialogInformation.edtAddress.setText(null);
-        } else {
-            dialogInformation.edtAddress.setText(binding.txtAddress.getText().toString());
-        }
-        if (binding.txtPhoneNumber.getText().toString().equals("No phone number yet")) {
+        if (binding.txtPhoneNumber.getText() == null) {
             dialogInformation.edtPhoneNumber.setText(null);
         } else {
             dialogInformation.edtPhoneNumber.setText(binding.txtPhoneNumber.getText().toString());
@@ -208,48 +177,59 @@ public class FragmentSetting extends Fragment {
 
         dialogInformation.btnDone.setOnClickListener(v -> {
             String newName = dialogInformation.edtName.getText().toString();
-            String newEmail = dialogInformation.edtEmail.getText().toString();
+            String newphoneNumber = dialogInformation.edtPhoneNumber.getText().toString();
             boolean error = false;
-            String emailPattern = "[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}";
             FirebaseUser user = auth.getCurrentUser();
 
             if (newName.isEmpty()) {
                 dialogInformation.edtName.setError("Please enter your name!");
                 error = true;
-            }
-            if (newEmail.isEmpty()) {
-                dialogInformation.edtEmail.setError("Please enter your email!");
-                error = true;
-            } else if (!newEmail.matches(emailPattern)) {
-                dialogInformation.edtEmail.setError("Wrong email format!!");
-                error = true;
-            }
-
-            if (!error) {
-                if (user != null) {
-                    if (user.isEmailVerified()) {
-                        user.updateEmail(newEmail).addOnCompleteListener(task -> {
-                            if (task.isSuccessful()) {
-                                Toast.makeText(getActivity(), "Email đã được cập nhật thành công", Toast.LENGTH_SHORT).show();
-                            } else {
-                                Log.d("error", "showInformationDialog: " + task.getException().getMessage());
-                                Toast.makeText(getActivity(), "Không thể cập nhật email trên Firebase Authentication", Toast.LENGTH_SHORT).show();
-                            }
-                        });
-                    } else {
-                        user.sendEmailVerification().addOnCompleteListener(task -> {
-                            if (task.isSuccessful()) {
-                                Toast.makeText(getActivity(), "Một email xác thực đã được gửi đến địa chỉ email của bạn. Vui lòng kiểm tra và xác nhận trước khi cập nhật email.", Toast.LENGTH_LONG).show();
-                            } else {
-                                Toast.makeText(getActivity(), "Không thể gửi email xác thực. Vui lòng thử lại sau.", Toast.LENGTH_SHORT).show();
-                            }
-                        });
+            } else {
+                if (newphoneNumber.isEmpty()) {
+                    dialogInformation.edtPhoneNumber.setError("Please enter your phoen number!");
+                    error = true;
+                }
+                if (!newphoneNumber.startsWith("0")) {
+                    dialogInformation.edtPhoneNumber.setError("Please start with '0'!");
+                    error = true;
+                } else {
+                    if (newphoneNumber.length() < 10) {
+                        dialogInformation.edtPhoneNumber.setError("Do not enter less than 10 numbers!");
+                        error = true;
                     }
+                    if (newphoneNumber.length() > 10) {
+                        dialogInformation.edtPhoneNumber.setError("Do not enter more than 10 numbers!");
+                        error = true;
+                    }
+                }
+                if (!newphoneNumber.matches("\\d+")) {
+                    dialogInformation.edtPhoneNumber.setError("Please enter numbers only!");
+                    error = true;
                 }
             }
 
-        });
+            if (!error) {
+                databaseReference.orderByChild("email").equalTo(currentUser.getEmail()).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if (snapshot.exists()) {
+                            for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                                String userId = dataSnapshot.getKey();
+                                DatabaseReference userRef = databaseReference.child(userId);
+                                userRef.child("fullName").setValue(newName);
+                                userRef.child("phoneNumber").setValue(newphoneNumber);
+                                Toast.makeText(requireActivity(), "Successfully", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    }
 
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+            }
+        });
     }
 
     private void showPassDialog() {

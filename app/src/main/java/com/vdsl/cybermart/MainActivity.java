@@ -1,9 +1,13 @@
 package com.vdsl.cybermart;
 
 import android.os.Bundle;
+import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
+import com.vdsl.cybermart.Account.Fragment.FragmentAddress;
 import com.vdsl.cybermart.Favourite.Favourite_Fragment;
 import com.vdsl.cybermart.Home.View.HomeFragment;
 import com.vdsl.cybermart.Notify.Notify_Fragment;
@@ -40,4 +44,15 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    /** @noinspection deprecation*/
+    @Override
+    public void onBackPressed() {
+        View bottomMenu = findViewById(R.id.nav_bottom);
+        FragmentAddress fragmentAddress= new FragmentAddress();
+        Fragment currentFragment = fragmentAddress;
+        if (currentFragment instanceof FragmentAddress) {
+            bottomMenu.setVisibility(View.VISIBLE);
+        }
+        super.onBackPressed();
+    }
 }

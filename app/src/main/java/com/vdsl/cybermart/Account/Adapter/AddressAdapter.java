@@ -19,8 +19,7 @@ import com.vdsl.cybermart.R;
 public class AddressAdapter extends FirebaseRecyclerAdapter<AddressModel, AddressAdapter.AddressViewHolder> {
 
     private int selectedPosition = -1;
-    private SharedPreferences sharedPreferences,addressPref;
-
+    private SharedPreferences sharedPreferences, addressPref;
 
     public AddressAdapter(@NonNull FirebaseRecyclerOptions<AddressModel> options, Context context) {
         super(options);
@@ -57,7 +56,7 @@ public class AddressAdapter extends FirebaseRecyclerAdapter<AddressModel, Addres
                 if (position != RecyclerView.NO_POSITION) {
                     selectedPosition = position;
                     notifyDataSetChanged();
-                    SharedPreferences.Editor editor= addressPref.edit();
+                    SharedPreferences.Editor editor = addressPref.edit();
                     editor.putString("address", txtAddress.getText().toString());
                     editor.apply();
                     saveSelectedPosition(selectedPosition);

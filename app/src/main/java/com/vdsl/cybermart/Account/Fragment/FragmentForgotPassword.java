@@ -67,36 +67,33 @@ public class FragmentForgotPassword extends Fragment {
                 }
 
                 if (!error) {
-
-
                     mDatabase.orderByChild("email").equalTo(email).addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
                             if (snapshot.exists()) {
                                 for (DataSnapshot userSnapshot : snapshot.getChildren()) {
-                                    mAuth.sendPasswordResetEmail(email)
-                                            .addOnCompleteListener(task1 -> {
-                                                if (task1.isSuccessful()) {
-                                                    progressDialog.dismiss();
-                                                    binding.edtEmailForgotPass.setVisibility(View.GONE);
-                                                    binding.textInputLayout.setVisibility(View.GONE);
-                                                    binding.txtText.setVisibility(View.VISIBLE);
-                                                    binding.txtTitle.setText("Verify Successfully");
-                                                    binding.txtText.setText("Please check your email to change password");
-                                                    binding.btnVerify.setText("Back to sign in");
-                                                    binding.btnVerify.setOnClickListener(v1 -> {
-                                                        FragmentLogIn fragmentLogIn = new FragmentLogIn();
-                                                        FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-                                                        transaction.replace(R.id.fr_framemain, fragmentLogIn);
-                                                        transaction.addToBackStack(null);
-                                                        transaction.commit();
-                                                    });
-
-                                                    Toast.makeText(getActivity(), "Password reset email sent", Toast.LENGTH_SHORT).show();
-                                                } else {
-                                                    Toast.makeText(getActivity(), "Failed to send password reset email", Toast.LENGTH_SHORT).show();
-                                                }
+                                    mAuth.sendPasswordResetEmail(email).addOnCompleteListener(task1 -> {
+                                        if (task1.isSuccessful()) {
+                                            progressDialog.dismiss();
+                                            binding.edtEmailForgotPass.setVisibility(View.GONE);
+                                            binding.textInputLayout.setVisibility(View.GONE);
+                                            binding.txtText.setVisibility(View.VISIBLE);
+                                            binding.txtTitle.setText("Verify Successfully");
+                                            binding.txtText.setText("Please check your email to change password");
+                                            binding.btnVerify.setText("Back to sign in");
+                                            binding.btnVerify.setOnClickListener(v1 -> {
+                                                FragmentLogIn fragmentLogIn = new FragmentLogIn();
+                                                FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+                                                transaction.replace(R.id.fr_framemain, fragmentLogIn);
+                                                transaction.addToBackStack(null);
+                                                transaction.commit();
                                             });
+
+                                            Toast.makeText(getActivity(), "Password reset email sent", Toast.LENGTH_SHORT).show();
+                                        } else {
+                                            Toast.makeText(getActivity(), "Failed to send password reset email", Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
                                     return;
                                 }
                             } else {
