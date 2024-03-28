@@ -58,6 +58,7 @@ public class ProductManagementActivity extends AppCompatActivity {
 
         rcvProduct = findViewById(R.id.rcv_product_management);
 
+        readDataProduct();
 
         createDataProduct();
 
@@ -177,8 +178,7 @@ public class ProductManagementActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        readDataProduct();
-        if (adapter != null)
+        if (adapter != null) // Check if adapter is not null before calling startListening()
             adapter.startListening();
     }
 
@@ -188,4 +188,5 @@ public class ProductManagementActivity extends AppCompatActivity {
         if (adapter != null)
             adapter.stopListening();
     }
+
 }

@@ -32,6 +32,7 @@ import com.vdsl.cybermart.General;
 import com.vdsl.cybermart.Order.Fragment.FragmentContainer;
 import com.vdsl.cybermart.ProductManagement.View.ProductManagementActivity;
 import com.vdsl.cybermart.R;
+import com.vdsl.cybermart.Statistic.Fragment.StatisticFragment;
 import com.vdsl.cybermart.Voucher.View.VoucherActivity;
 import com.vdsl.cybermart.databinding.FragmentProfileBinding;
 
@@ -119,6 +120,9 @@ public class FragmentProfile extends Fragment {
             transaction.replace(R.id.frag_container_main, fragmentSetting);
             transaction.addToBackStack(null);
             transaction.commit();
+        });
+        binding.btnStatistic.setOnClickListener(v -> {
+            General.loadFragment(getParentFragmentManager(),new StatisticFragment(),null);
         });
     }
 
