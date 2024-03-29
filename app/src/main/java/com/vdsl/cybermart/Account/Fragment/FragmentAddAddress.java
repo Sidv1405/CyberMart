@@ -19,8 +19,10 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.vdsl.cybermart.Account.Model.AddressModel;
 import com.vdsl.cybermart.databinding.FragmentAddAddressBinding;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class FragmentAddAddress extends Fragment {
     FragmentAddAddressBinding binding;
@@ -36,7 +38,9 @@ public class FragmentAddAddress extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-//        databaseReference = FirebaseDatabase.getInstance().getReference().child("Account").child("Id9").child("address");
+
+        binding.btnDeleteAddress.setVisibility(View.GONE);
+
         databaseReference = FirebaseDatabase.getInstance().getReference().child("Account");
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
 
@@ -81,8 +85,11 @@ public class FragmentAddAddress extends Fragment {
                                         if (userId != null) {
                                             String addressId = databaseReference.push().getKey();
                                             addressRef = FirebaseDatabase.getInstance().getReference().child("Account").child(userId).child("address");
-                                            AddressModel addressModel = new AddressModel(fullName, country + " - " + city + " - " + district + " - " + descriptiom);
-                                            addressRef.child(addressId).setValue(addressModel).addOnSuccessListener(new OnSuccessListener<Void>() {
+//                                            AddressModel addressModel = new AddressModel(fullName, country + " - " + city + " - " + district + " - " + descriptiom);
+                                            Map<String, Object> updateAddress = new HashMap<>();
+                                            updateAddress.put("fullName", fullName);
+                                            updateAddress.put("address", country + " - " + city + " - " + district + " - " + descriptiom);
+                                            addressRef.child(addressId).setValue(updateAddress).addOnSuccessListener(new OnSuccessListener<Void>() {
                                                 @Override
                                                 public void onSuccess(Void unused) {
                                                     Toast.makeText(getActivity(), "Đã thêm địa chỉ mới thành công", Toast.LENGTH_SHORT).show();
@@ -105,43 +112,6 @@ public class FragmentAddAddress extends Fragment {
                         });
 
                     }
-//                    databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
-//                        @Override
-//                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                            for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-//                                String userId = dataSnapshot.getKey();
-//                                if (userId != null) {
-//                                    String addressId = databaseReference.push().getKey();
-//                                    addressRef = FirebaseDatabase.getInstance().getReference().child("Account").child(userId).child("address");
-//                                    AddressModel addressModel = new AddressModel(fullName, country + " - " + city + " - " + district + " - " + descriptiom);
-////                                    addressRef.child(addressId).setValue(addressModel).addOnCompleteListener(new OnCompleteListener<Void>() {
-////                                        @Override
-////                                        public void onComplete(@NonNull Task<Void> task) {
-////                                            Toast.makeText(getActivity(), "Đã thêm địa chỉ mới thành công", Toast.LENGTH_SHORT).show();
-////                                        }
-////                                    });
-//                                    addressRef.child(addressId).setValue(addressModel).addOnSuccessListener(new OnSuccessListener<Void>() {
-//                                        @Override
-//                                        public void onSuccess(Void unused) {
-//                                            Toast.makeText(getActivity(), "Đã thêm địa chỉ mới thành công", Toast.LENGTH_SHORT).show();
-//                                        }
-//                                    }).addOnFailureListener(new OnFailureListener() {
-//                                        @Override
-//                                        public void onFailure(@NonNull Exception e) {
-//                                            Toast.makeText(getActivity(), "Không thể thêm địa chỉ mới: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-//                                        }
-//                                    });
-//                                }
-//                            }
-//                        }
-//
-//                        @Override
-//                        public void onCancelled(@NonNull DatabaseError error) {
-//
-//                        }
-//                    });
-
-
                 }
             }
         });

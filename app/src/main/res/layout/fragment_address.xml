@@ -36,6 +36,15 @@
             android:textStyle="bold" />
     </LinearLayout>
 
+    <TextView
+        android:id="@+id/txtNoAddress"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:visibility="gone"
+        android:text="There are no addresses yet"
+        />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rcAddress"
         android:layout_width="match_parent"

@@ -113,8 +113,9 @@ public class FragmentSetting extends Fragment {
                                 binding.txtPassword.setText(Password);
                                 String FullName = dataSnapshot.child("fullName").getValue(String.class);
                                 String Email = dataSnapshot.child("email").getValue(String.class);
-                                String Address = addressPref.getString("address", "No address yet");
                                 String PhoneNumber = dataSnapshot.child("phoneNumber").getValue(String.class);
+                                long AddressCount = dataSnapshot.child("address").getChildrenCount();
+                                String Address = addressPref.getString("address", "No address yet");
 
                                 binding.txtName.setText(FullName);
                                 binding.txtEmail.setText(Email);
@@ -125,7 +126,8 @@ public class FragmentSetting extends Fragment {
                                 } else {
                                     binding.txtName.setTextColor(Color.BLACK);
                                 }
-                                if (Address.equals("No address yet")) {
+                                if (Address.equals("No address yet") || AddressCount==0) {
+                                    binding.txtAddress.setText("No address yet");
                                     binding.txtAddress.setTextColor(Color.RED);
                                 } else {
                                     binding.txtAddress.setTextColor(Color.BLACK);

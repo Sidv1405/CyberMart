@@ -14,6 +14,9 @@ public class AddressModel {
         this.address = address;
     }
 
+    public AddressModel(String address) {
+        this.address = address;
+    }
 
     public String getFullName() {
         return fullName;

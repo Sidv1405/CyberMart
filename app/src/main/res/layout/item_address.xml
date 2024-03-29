@@ -20,6 +20,7 @@
         android:layout_marginHorizontal="20dp"
         android:layout_marginVertical="10dp"
         app:cardCornerRadius="10dp"
+        android:id="@+id/CvItemAddress"
         app:cardElevation="4dp">
 
         <LinearLayout

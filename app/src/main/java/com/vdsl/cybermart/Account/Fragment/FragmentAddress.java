@@ -73,6 +73,21 @@ public class FragmentAddress extends Fragment {
                             if (userId != null) {
                                 databaseReference = FirebaseDatabase.getInstance().getReference().child("Account").child(userId).child("address");
                                 setupRecyclerView();
+                                databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                        long adCount= snapshot.getChildrenCount();
+                                        if (adCount==0){
+                                          binding.rcAddress.setVisibility(View.GONE);
+                                          binding.txtNoAddress.setVisibility(View.VISIBLE);
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError error) {
+
+                                    }
+                                });
                             } else {
                             }
                         }
@@ -102,9 +117,10 @@ public class FragmentAddress extends Fragment {
                 new FirebaseRecyclerOptions.Builder<AddressModel>()
                         .setQuery(databaseReference, AddressModel.class)
                         .build();
-        addressAdapter = new AddressAdapter(options, getActivity());
+        addressAdapter = new AddressAdapter(options, getActivity(), getActivity());
         binding.rcAddress.setAdapter(addressAdapter);
         addressAdapter.startListening();
+
     }
 
 
