@@ -1,5 +1,7 @@
 package com.vdsl.cybermart.Voucher.Adapter;
 
+import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.vdsl.cybermart.Cart.View.CartActivity;
 import com.vdsl.cybermart.Order.Adapter.OrderListAdapter;
 import com.vdsl.cybermart.Order.Model.Order;
 import com.vdsl.cybermart.Voucher.Voucher;
@@ -21,10 +24,17 @@ import java.util.List;
 public class VoucherListAdapter extends FirebaseRecyclerAdapter<Voucher,VoucherListAdapter.ViewHolderVoucher> {
     private List<Voucher> voucherList;
 
+    Context context;
+
     private FirebaseRecyclerOptions<Voucher> options;
 
-    public VoucherListAdapter(@NonNull FirebaseRecyclerOptions<Voucher> options) {
+    /*public VoucherListAdapter(@NonNull FirebaseRecyclerOptions<Voucher> options) {
         super(options);
+    }*/
+
+    public VoucherListAdapter(@NonNull FirebaseRecyclerOptions<Voucher> options, Context context) {
+        super(options);
+        this.context = context;
     }
 
     @Override
@@ -36,6 +46,14 @@ public class VoucherListAdapter extends FirebaseRecyclerAdapter<Voucher,VoucherL
             if (mListener != null) {
                 mListener.onItemClick(i, voucher);
             }
+        });
+
+        viewHolderVoucher.binding.btnVoucher.setOnClickListener(v -> {
+            String voucherCode = voucher.getCode();
+            Intent intent = new Intent(context, CartActivity.class);
+            intent.putExtra("voucherCode", voucherCode);
+            intent.putExtra("discount", voucher.getDiscount());
+            context.startActivity(intent);
         });
     }
 

@@ -11,14 +11,21 @@
         android:title="Favourite" />
 
     <item
+        android:id="@+id/nav_bot_chat"
+        android:icon="@drawable/ic_chat"
+        android:title="Hỗ Trợ" />
+
+    <item
         android:id="@+id/nav_bot_notify"
         android:icon="@drawable/ic_notify"
         android:title="Thông Báo" />
+
 
     <item
         android:id="@+id/nav_bot_member"
         android:icon="@drawable/ic_person"
         android:title="Thành viên" />
+
 
 
 </menu>

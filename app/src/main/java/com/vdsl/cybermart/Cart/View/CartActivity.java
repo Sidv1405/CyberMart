@@ -1,9 +1,11 @@
 package com.vdsl.cybermart.Cart.View;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -17,16 +19,28 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.saadahmedsoft.popupdialog.listener.OnDialogButtonClickListener;
 import com.vdsl.cybermart.Cart.Adapter.CartAdapter;
 import com.vdsl.cybermart.Cart.Model.CartModel;
+import com.vdsl.cybermart.General;
 import com.vdsl.cybermart.Product.Model.ProductModel;
 import com.vdsl.cybermart.R;
+import com.vdsl.cybermart.Voucher.Voucher;
+import com.vdsl.cybermart.databinding.ActivityCartBinding;
+import com.vdsl.cybermart.databinding.ActivityVoucherBinding;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Locale;
 
 public class CartActivity extends AppCompatActivity implements CartAdapter.TotalPriceListener {
     private CartAdapter adapter;
     private TextView txtTotalPrice;
+
+    ActivityCartBinding binding;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,7 +50,35 @@ public class CartActivity extends AppCompatActivity implements CartAdapter.Total
 
         ImageView btnBack = findViewById(R.id.c_ic_back);
         btnBack.setOnClickListener(v -> finish());
+
+        binding = ActivityCartBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
+
+        binding.btnVoucher.setOnClickListener(v -> {
+            String promoCode = binding.textPromoCode.getText().toString().trim();
+            DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Voucher");
+            reference.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
+                    for (DataSnapshot snapshot1 : snapshot.getChildren()){
+                        /*String voucherCode = snapshot1.child("code").getValue(String.class);*/
+                        Voucher voucher = snapshot1.getValue(Voucher.class);
+                        if (voucher.getCode() != null && voucher.getCode().equals(promoCode)) {
+                            applyVoucher(voucher);
+                            return;
+                        }
+                    }
+                    Log.d("CartActivity", "Invalid voucher code or voucher does not exist");
+                }
+
+                @Override
+                public void onCancelled(@androidx.annotation.NonNull DatabaseError error) {
+
+                }
+            });
+        });
     }
+
 
     private void readData() {
         RecyclerView rcvCart = findViewById(R.id.rcv_cart);
@@ -80,6 +122,102 @@ public class CartActivity extends AppCompatActivity implements CartAdapter.Total
         String formattedPrice = String.format(Locale.getDefault(), "%.2f", totalPriceSum);
         txtTotalPrice.setText(String.format("%s $", formattedPrice));
     }
+
+    private void applyVoucher(Voucher voucher) {
+        SharedPreferences sharedPreferences = getSharedPreferences("Users", Context.MODE_PRIVATE);
+        String accountId = sharedPreferences.getString("ID", "");
+        String cartDetailName = "cartDetail_" + accountId;
+        SharedPreferences cartSharedPreferences = getSharedPreferences(cartDetailName, Context.MODE_PRIVATE);
+        String cartId = cartSharedPreferences.getString("id", "");
+        String voucherCode = voucher.getCode();
+        double discount = ((double) voucher.getDiscount() / 100);
+        Date currentDate = new Date();
+        DatabaseReference userVouchersRef = FirebaseDatabase.getInstance().getReference("UserVouchers").child(accountId);
+        DatabaseReference totalPriceRef = FirebaseDatabase.getInstance().getReference("carts/" + cartId + "/totalPrice");
+
+        String dateString = voucher.getExpiryDate();
+        try {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+            Date expiryDate = dateFormat.parse(dateString);
+
+            if (expiryDate != null && expiryDate.before(currentDate)) {
+                Log.d("check30", "applyVoucher: " + currentDate + expiryDate);
+                Log.d("CartActivity", "Voucher has expired");
+                General.showFailurePopup(CartActivity.this, "Sử Dụng Voucher", "Voucher đã hết hạn!", new OnDialogButtonClickListener() {
+                    @Override
+                    public void onDismissClicked(Dialog dialog) {
+                        super.onDismissClicked(dialog);
+                    }
+                });
+                return;
+            }
+        } catch (ParseException e) {
+            Log.e("CartActivity", "Error parsing expiry date", e);
+        }
+        userVouchersRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    if (snapshot.exists()) {
+                        if (snapshot.child(voucherCode).exists()) {
+                            // Nếu voucher đã được sử dụng, hiển thị thông báo
+                            Log.d("CartActivity", "Voucher đã được sử dụng trước đó");
+                            General.showFailurePopup(CartActivity.this, "Sử Dụng Voucher", "Bạn đã dùng voucher này!", new OnDialogButtonClickListener() {
+                                @Override
+                                public void onDismissClicked(Dialog dialog) {
+                                    super.onDismissClicked(dialog);
+                                }
+                            });
+                        } else {
+                            updateTotalPriceAndMarkVoucherUsed(totalPriceRef, userVouchersRef, voucherCode, discount);
+                        }
+                    } else {
+                        userVouchersRef.child(voucherCode).setValue(true).addOnCompleteListener(task -> {
+                            if (task.isSuccessful()) {
+                                updateTotalPriceAndMarkVoucherUsed(totalPriceRef, userVouchersRef, voucherCode, discount);
+                            }
+                        });
+                    }
+                }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
+        });
+    }
+
+    private void updateTotalPriceAndMarkVoucherUsed(DatabaseReference totalPriceRef, DatabaseReference userVouchersRef, String voucherCode, double discount) {
+        totalPriceRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    double totalPrice = snapshot.getValue(Double.class);
+                    double totalCartPrice = totalPrice * (1 - discount);
+                    totalPriceRef.setValue(totalCartPrice);
+                    String formattedPrice = String.format(Locale.getDefault(), "%.2f", totalCartPrice);
+                    txtTotalPrice.setText(String.format("%s $", formattedPrice));
+                    General.showSuccessPopup(CartActivity.this, "Sử Dụng Voucher", "Sử Dụng Voucher thành công", new OnDialogButtonClickListener() {
+                        @Override
+                        public void onDismissClicked(Dialog dialog) {
+                            super.onDismissClicked(dialog);
+                        }
+                    });
+
+                    // Đánh dấu voucher đã sử dụng
+                    userVouchersRef.child(voucherCode).setValue(true);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
+        });
+    }
+
+
+
+
+
+
+
 
     @Override
     protected void onResume() {
