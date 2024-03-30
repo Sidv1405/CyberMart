@@ -43,11 +43,11 @@ public class PrepareFragment extends Fragment {
         String role = sharedPreferences.getString("Role", "");
         if (role.equals("Customers")) {
             query = FirebaseDatabase.getInstance().getReference("Orders")
-                    .orderByChild("status").equalTo("prepare");
+                    .orderByChild("status").equalTo("Prepare");
             query.orderByChild("idUser").equalTo(id);
         } else {
             query = FirebaseDatabase.getInstance().getReference("Orders")
-                    .orderByChild("status").equalTo("prepare");
+                    .orderByChild("status").equalTo("Prepare");
         }
         FirebaseRecyclerOptions<Order> options = new FirebaseRecyclerOptions.Builder<Order>()
                 .setQuery(query, Order.class).build();

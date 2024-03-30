@@ -58,7 +58,7 @@ public class OrderDetailFragment extends Fragment {
                 if (!role.equals("Customer")) {
                     //Chưa test
                     binding.txtStatus.setOnClickListener(v -> {
-                        String[] status = new String[]{"Delevered", "Processing", "Cancelde"};
+                        String[] status = new String[]{"Delevered", "Processing", "Canceled"};
                         AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
                         builder.setTitle("Cập nhật trạng thái đơn hàng");
                         builder.setSingleChoiceItems(status, 0, (dialog, which) -> {
@@ -66,6 +66,8 @@ public class OrderDetailFragment extends Fragment {
                             DatabaseReference referenceOrder = FirebaseDatabase.getInstance().
                                     getReference("Orders").child(order.getSeri());
                             referenceOrder.setValue(order);
+                            binding.txtStatus.setText(status[which]);
+                            dialog.cancel();
                         });
                         AlertDialog alertDialog = builder.create();
                         alertDialog.show();
