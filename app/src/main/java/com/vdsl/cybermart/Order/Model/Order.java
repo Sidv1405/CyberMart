@@ -1,13 +1,18 @@
 package com.vdsl.cybermart.Order.Model;
 
+import com.vdsl.cybermart.Cart.Model.CartModel;
+
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
 public class Order implements Serializable {
-    private String seri,idUser, idStaff, address, date, status, paymentMethod;
-    private int totalPrice, voucher;
-    private Map<String,Integer> productList;
+    private String seri, idStaff, address, status, paymentMethod,voucher;
+
+    private CartModel cartModel;
+
+    public Order() {
+    }
 
     public String getSeri() {
         return seri;
@@ -15,14 +20,6 @@ public class Order implements Serializable {
 
     public void setSeri(String seri) {
         this.seri = seri;
-    }
-
-    public String getIdUser() {
-        return idUser;
-    }
-
-    public void setIdUser(String idUser) {
-        this.idUser = idUser;
     }
 
     public String getIdStaff() {
@@ -41,14 +38,6 @@ public class Order implements Serializable {
         this.address = address;
     }
 
-    public String getDate() {
-        return date;
-    }
-
-    public void setDate(String date) {
-        this.date = date;
-    }
-
     public String getStatus() {
         return status;
     }
@@ -65,27 +54,28 @@ public class Order implements Serializable {
         this.paymentMethod = paymentMethod;
     }
 
-    public int getTotalPrice() {
-        return totalPrice;
-    }
-
-    public void setTotalPrice(int totalPrice) {
-        this.totalPrice = totalPrice;
-    }
-
-    public int getVoucher() {
+    public String getVoucher() {
         return voucher;
     }
 
-    public void setVoucher(int voucher) {
+    public void setVoucher(String voucher) {
         this.voucher = voucher;
     }
 
-    public Map<String, Integer> getProductList() {
-        return productList;
+    public CartModel getCartModel() {
+        return cartModel;
     }
 
-    public void setProductList(Map<String, Integer> productList) {
-        this.productList = productList;
+    public void setCartModel(CartModel cartModel) {
+        this.cartModel = cartModel;
+    }
+
+    public Order(String seri, String address, String status, String paymentMethod, String voucher, CartModel cartModel) {
+        this.seri = seri;
+        this.address = address;
+        this.status = status;
+        this.paymentMethod = paymentMethod;
+        this.voucher = voucher;
+        this.cartModel = cartModel;
     }
 }

@@ -77,7 +77,7 @@ public class OrderDetailFragment extends Fragment {
 
     private void setTextUser(Order order) {
         DatabaseReference referenceNameUser = FirebaseDatabase.getInstance().
-                getReference("Account").child(order.getIdUser());
+                getReference("Account").child(order.getCartModel().getAccountId());
         referenceNameUser.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {

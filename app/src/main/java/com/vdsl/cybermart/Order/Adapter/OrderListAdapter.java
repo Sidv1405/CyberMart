@@ -43,7 +43,7 @@ public class OrderListAdapter extends FirebaseRecyclerAdapter<Order, OrderListAd
         }
         public void bind(Order order,OnDetailListener listener) {
             binding.seriNumber.setText(order.getSeri());
-            binding.date.setText(order.getDate());
+            binding.date.setText(order.getCartModel().getDate());
             binding.status.setText(order.getStatus());
             binding.btnDetail.setOnClickListener(v -> {
                 listener.onOrderClick(order);

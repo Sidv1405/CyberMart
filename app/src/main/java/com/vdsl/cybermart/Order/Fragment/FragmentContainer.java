@@ -32,15 +32,16 @@ public class FragmentContainer extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         fragments = new ArrayList<>();
-        fragments.add(new DeliveredFragment());
+        fragments.add(new PrepareFragment());
         fragments.add(new ProcessingOrderFragment());
+        fragments.add(new DeliveredFragment());
         fragments.add(new CanceledOrderFragment());
         ViewPager2Adapter adapter = new ViewPager2Adapter(requireActivity(),fragments);
         binding.vpOrder.setAdapter(adapter);
         TabLayoutMediator mediator = new TabLayoutMediator(binding.tabLayout,binding.vpOrder,((tab, i) -> {
             switch (i){
                 case 0:{
-                    tab.setText("Delivered");
+                    tab.setText("Prepare");
                     break;
                 }
                 case 1:{
@@ -48,6 +49,10 @@ public class FragmentContainer extends Fragment {
                     break;
                 }
                 case 2:{
+                    tab.setText("Delivered");
+                    break;
+                }
+                case 3:{
                     tab.setText("Canceled");
                     break;
                 }

@@ -43,7 +43,8 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rcv_cart"
         android:layout_width="match_parent"
-        android:layout_height="550dp"
+        android:layout_height="0dp"
+        android:layout_weight="1"
         android:layout_below="@id/search"
         android:layout_marginStart="20dp"
         android:layout_marginTop="5dp"
@@ -96,6 +97,42 @@
         </androidx.cardview.widget.CardView>
     </FrameLayout>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="27dp"
+        android:orientation="horizontal"
+        android:layout_marginStart="40dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="40dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="27dp"
+            android:layout_gravity="left"
+            android:singleLine="true"
+            android:text="Payment:"
+            android:textColor="#FF808080"
+            android:textSize="19sp"
+            tools:ignore="RtlHardcoded" />
+        <RadioGroup
+            android:id="@+id/rdoPayment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <RadioButton
+                android:id="@+id/rdoCredit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="19sp"
+                android:text="Credit Card"/>
+            <RadioButton
+                android:id="@+id/rdoCash"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="19sp"
+                android:text="Cash"/>
+        </RadioGroup>
+    </LinearLayout>
     <FrameLayout
         android:id="@+id/container_group"
         android:layout_width="match_parent"
@@ -130,17 +167,17 @@
             android:textStyle="bold"
             tools:ignore="RtlHardcoded" />
     </FrameLayout>
-
     <androidx.cardview.widget.CardView
         android:layout_width="325dp"
         android:layout_height="60dp"
         android:layout_marginStart="45dp"
         android:layout_marginTop="5dp"
         app:cardBackgroundColor="@color/black"
+        android:layout_marginBottom="10dp"
         app:cardCornerRadius="8dp">
 
         <Button
-            android:id="@+id/btn_add_to_cart"
+            android:id="@+id/btn_check_out_cart"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
