@@ -1,15 +1,30 @@
 package com.vdsl.cybermart.Person;
 
+import static android.app.Activity.RESULT_OK;
+
+import android.Manifest;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageView;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -36,7 +51,33 @@ import com.vdsl.cybermart.Statistic.Fragment.StatisticFragment;
 import com.vdsl.cybermart.Voucher.View.VoucherActivity;
 import com.vdsl.cybermart.databinding.FragmentProfileBinding;
 
+import java.io.IOException;
+
 public class FragmentProfile extends Fragment {
+
+
+    //new
+    private static final int MY_REQUEST_CODE = 99;
+    private ActivityResultLauncher activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
+        @Override
+        public void onActivityResult(ActivityResult o) {
+            if (o.getResultCode() == RESULT_OK) {
+                Intent intent = o.getData();
+                if (intent == null) {
+                    return;
+                }
+
+                Uri uri = intent.getData();
+                try {
+                    //noinspection deprecation
+                    Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), uri);
+                    saveImageToFirebase(uri);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    });
 
     FragmentProfileBinding binding;
     private FirebaseAuth auth;
@@ -94,6 +135,13 @@ public class FragmentProfile extends Fragment {
         });
         //end
 
+        binding.imgAvatar.setOnClickListener(v -> {
+            openAvatarDialog();
+        });
+        binding.imgEditAvatar.setOnClickListener(v -> {
+            openAvatarDialog();
+        });
+
         binding.CvCreateStaff.setOnClickListener(v -> {
             FragmentAddStaff fragmentAddStaff = new FragmentAddStaff();
             FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
@@ -122,9 +170,10 @@ public class FragmentProfile extends Fragment {
             transaction.commit();
         });
         binding.btnStatistic.setOnClickListener(v -> {
-            General.loadFragment(getParentFragmentManager(),new StatisticFragment(),null);
+            General.loadFragment(getParentFragmentManager(), new StatisticFragment(), null);
         });
     }
+
 
     private void showInitInfor() {
         if (auth.getCurrentUser() != null) {
@@ -179,6 +228,106 @@ public class FragmentProfile extends Fragment {
             });
         } else {
             Log.d("loginnow", "not logged in");
+        }
+    }
+
+    //new
+    public void openAvatarDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        View view = getLayoutInflater().inflate(R.layout.dialog_update_avatar, null);
+        builder.setView(view);
+        Dialog dialog = builder.create();
+        dialog.show();
+
+        ImageView dialogAvatar = view.findViewById(R.id.dialogAvatar);
+        Button btnEdit = view.findViewById(R.id.btnEdit);
+        Button btnDone = view.findViewById(R.id.btnDone);
+
+        if (auth.getCurrentUser() != null) {
+            Log.d("loginnow", "logged in");
+            databaseReference.orderByChild("email").equalTo(currentUser.getEmail()).addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    if (snapshot.exists()) {
+                        for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                            String userId = dataSnapshot.getKey();
+                            if (userId != null) {
+                                String Avatar = dataSnapshot.child("avatar").getValue(String.class);
+                                if (Avatar != null && !Avatar.isEmpty()) {
+                                    Picasso.get().load(Avatar).into(dialogAvatar, new Callback() {
+                                        @Override
+                                        public void onSuccess() {
+                                            Log.d("Avatar", "Avatar: " + Avatar);
+                                        }
+
+                                        @Override
+                                        public void onError(Exception e) {
+                                            dialogAvatar.setImageResource(R.drawable.img_default_profile_image);
+                                        }
+                                    });
+                                } else {
+                                    dialogAvatar.setImageResource(R.drawable.img_default_profile_image);
+                                }
+                            }
+                        }
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
+        } else {
+            Log.d("loginnow", "not logged in");
+        }
+
+        btnEdit.setOnClickListener(v -> {
+            upDateAvatar();
+        });
+        btnDone.setOnClickListener(v -> {
+            dialog.dismiss();
+        });
+    }
+
+    //new
+    private void upDateAvatar() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            openGallery();
+            return;
+        }
+        if (getActivity().checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+            openGallery();
+        } else {
+            String[] permission = {Manifest.permission.READ_EXTERNAL_STORAGE};
+            getActivity().requestPermissions(permission, MY_REQUEST_CODE);
+        }
+    }
+
+    //new
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == MY_REQUEST_CODE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                openGallery();
+            }
+        }
+    }
+
+    //new
+    private void openGallery() {
+        Intent intent = new Intent();
+        intent.setType("image/");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        activityResultLauncher.launch(Intent.createChooser(intent, "Select picture!"));
+    }
+
+    private void saveImageToFirebase(Uri imageUri) {
+        if (imageUri != null) {
+            String uid = sharedPreferences.getString("ID", null);
+            DatabaseReference userRef = FirebaseDatabase.getInstance().getReference().child("Account").child(uid);
+            userRef.child("avatar").setValue(imageUri.toString());
         }
     }
 }

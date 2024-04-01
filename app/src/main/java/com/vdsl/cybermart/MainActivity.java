@@ -5,7 +5,6 @@ import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 
 import com.vdsl.cybermart.Account.Fragment.FragmentAddress;
 import com.vdsl.cybermart.Favourite.Favourite_Fragment;
@@ -17,7 +16,7 @@ import com.vdsl.cybermart.databinding.ActivityMainBinding;
 public class MainActivity extends AppCompatActivity {
 
     ActivityMainBinding binding;
-
+    public int MY_REQUEST_CODE=99;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

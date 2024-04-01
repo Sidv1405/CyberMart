@@ -126,17 +126,20 @@ public class FragmentSetting extends Fragment {
                                 } else {
                                     binding.txtName.setTextColor(Color.BLACK);
                                 }
-                                if (Address.equals("No address yet") || AddressCount==0) {
+                                if (Address.equals("No address yet") || AddressCount == 0) {
                                     binding.txtAddress.setText("No address yet");
                                     binding.txtAddress.setTextColor(Color.RED);
                                 } else {
                                     binding.txtAddress.setTextColor(Color.BLACK);
                                 }
-                                if (PhoneNumber.equals(null)) {
-                                    binding.txtPhoneNumber.setTextColor(Color.RED);
-                                } else {
+                                if (PhoneNumber != null && !PhoneNumber.isEmpty()) {
+                                    binding.txtPhoneNumber.setText(PhoneNumber);
                                     binding.txtPhoneNumber.setTextColor(Color.BLACK);
+                                } else {
+                                    binding.txtPhoneNumber.setText("No phone number");
+                                    binding.txtPhoneNumber.setTextColor(Color.RED);
                                 }
+
                             }
                         }
                     }
