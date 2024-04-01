@@ -19,6 +19,9 @@
         android:theme="@style/Theme.CyberMart"
         tools:targetApi="31">
         <activity
+            android:name=".Message.MessageActivity"
+            android:exported="false" />
+        <activity
             android:name=".Account.Activity.SettingsActivity"
             android:exported="false" />
         <activity
@@ -38,7 +41,9 @@
             android:exported="false" />
         <activity
             android:name=".Cart.View.CartActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:windowSoftInputMode="adjustPan"
+            />
         <activity
             android:name=".Account.Activity.LoginActivity"
             android:exported="false" />

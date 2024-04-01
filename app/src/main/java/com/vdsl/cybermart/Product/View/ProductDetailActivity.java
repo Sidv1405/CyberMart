@@ -141,6 +141,10 @@ public class ProductDetailActivity extends AppCompatActivity {
                             String cartId = cartSnapshot.getKey();
                             CartModel existingCart = cartSnapshot.getValue(CartModel.class);
 
+                            if (existingCart.getCartDetail() == null) {
+                                existingCart.setCartDetail(new HashMap<>());
+                            }
+
                             existingCart.getCartDetail().put(productDetail.getName(), productDetail);
 
                             existingCart.setTotalPrice(existingCart.getTotalPrice() + totalMoney);

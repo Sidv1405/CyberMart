@@ -1,8 +1,10 @@
 package com.vdsl.cybermart.Voucher.View;
 
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -53,6 +55,8 @@ public class VoucherActivity extends AppCompatActivity {
 
     DatabaseReference voucherRef;
 
+    String role;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,21 +70,17 @@ public class VoucherActivity extends AppCompatActivity {
         binding = ActivityVoucherBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        showAdminOption();
+        SharedPreferences preferences = VoucherActivity.this.getSharedPreferences("Users",MODE_PRIVATE);
+         role =preferences.getString("role","");
 
         readDataVoucher();
 
-        binding.flAddVoucher.setOnClickListener(v -> {
-            Intent intent = new Intent(VoucherActivity.this, VoucherAddActivity.class);
-            startActivity(intent);
-        });
+        showAdminOption();
 
-        adapter.setOnItemClick(new VoucherListAdapter.OnItemClick() {
-            @Override
-            public void onItemClick(int position, Voucher voucher) {
-                showDialogDetail(adapter.getVoucherAtPosition(position));
-            }
-        });
+
+
+
+
 
         binding.btnBack.setOnClickListener(v -> {
             super.onBackPressed();
@@ -99,7 +99,7 @@ public class VoucherActivity extends AppCompatActivity {
                 FirebaseRecyclerOptions<Voucher> options = new FirebaseRecyclerOptions.Builder<Voucher>()
                         .setQuery(query, Voucher.class).build();
 
-                VoucherListAdapter newAdapter = new VoucherListAdapter(options);
+                VoucherListAdapter newAdapter = new VoucherListAdapter(options,VoucherActivity.this);
 
                 binding.rcvVoucher.setAdapter(newAdapter);
 
@@ -183,6 +183,22 @@ public class VoucherActivity extends AppCompatActivity {
 
     private void showAdminOption() {
 
+        if (role.equals("Admin")){
+
+            Log.e("checkIfelse", "onCreate: " + role );
+            adapter.setOnItemClick(new VoucherListAdapter.OnItemClick() {
+                @Override
+                public void onItemClick(int position, Voucher voucher) {
+                    showDialogDetail(adapter.getVoucherAtPosition(position));
+                }
+            });
+            binding.flAddVoucher.setOnClickListener(v -> {
+                Intent intent = new Intent(VoucherActivity.this, VoucherAddActivity.class);
+                startActivity(intent);
+            });
+        }else{
+            binding.flAddVoucher.setVisibility(View.GONE);
+        }
     }
 
     private void readDataVoucher() {
@@ -214,7 +230,7 @@ public class VoucherActivity extends AppCompatActivity {
             }
         });
 
-        adapter = new VoucherListAdapter(options);
+        adapter = new VoucherListAdapter(options,VoucherActivity.this);
         binding.rcvVoucher.setAdapter(adapter);
     }
 
