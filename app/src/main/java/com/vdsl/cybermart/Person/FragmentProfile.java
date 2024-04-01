@@ -92,13 +92,13 @@ public class FragmentProfile extends Fragment {
 
 
         //go to frag create staff account
-        binding.CvCreateStaff.setOnClickListener(v -> {
+        /*binding.CvCreateStaff.setOnClickListener(v -> {
             FragmentAddStaff fragmentAddStaff = new FragmentAddStaff();
             FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
             transaction.replace(R.id.frag_container_main, fragmentAddStaff);
             transaction.addToBackStack(null);
             transaction.commit();
-        });
+        });*/
         //end
 
         binding.btnMyOrder.setOnClickListener(v -> {
