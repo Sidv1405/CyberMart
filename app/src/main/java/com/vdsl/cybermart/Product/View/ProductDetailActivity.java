@@ -130,7 +130,7 @@ public class ProductDetailActivity extends AppCompatActivity {
             double totalMoney = productDetail.getPrice() * productDetail.getQuantity();
 
             Date currentDate = new Date();
-            @SuppressLint("SimpleDateFormat") SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+            @SuppressLint("SimpleDateFormat") SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
             String date = dateFormat.format(currentDate);
 
             cartRef.orderByChild("accountId").equalTo(accountId).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -140,6 +140,10 @@ public class ProductDetailActivity extends AppCompatActivity {
                         for (DataSnapshot cartSnapshot : snapshot.getChildren()) {
                             String cartId = cartSnapshot.getKey();
                             CartModel existingCart = cartSnapshot.getValue(CartModel.class);
+
+                            if (existingCart.getCartDetail() == null) {
+                                existingCart.setCartDetail(new HashMap<>());
+                            }
 
                             existingCart.getCartDetail().put(productDetail.getName(), productDetail);
 

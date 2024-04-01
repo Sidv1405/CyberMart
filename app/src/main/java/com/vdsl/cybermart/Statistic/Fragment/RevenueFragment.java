@@ -138,8 +138,7 @@ public class RevenueFragment extends Fragment {
                     for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
 
                         Order order = dataSnapshot.getValue(Order.class);
-                        total[0] = order.getTotalPrice();
-                        Log.d("TAG", "totalPrice" + order.getTotalPrice() + "  ");
+                        total[0] = (int) order.getCartModel().getTotalPrice();
                         DataSnapshot totalSnapshot = dataSnapshot.child("total");
                         if (totalSnapshot.exists()) {
                             float totalData = Objects.requireNonNull(totalSnapshot.getValue(Float.class));

@@ -142,6 +142,7 @@ public class FragmentProfile extends Fragment {
             openAvatarDialog();
         });
 
+
         binding.CvCreateStaff.setOnClickListener(v -> {
             FragmentAddStaff fragmentAddStaff = new FragmentAddStaff();
             FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();

@@ -1,6 +1,8 @@
 package com.vdsl.cybermart;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -13,10 +15,11 @@ import com.vdsl.cybermart.Notify.Notify_Fragment;
 import com.vdsl.cybermart.Person.FragmentProfile;
 import com.vdsl.cybermart.databinding.ActivityMainBinding;
 
-public class MainActivity extends AppCompatActivity {
+    public class MainActivity extends AppCompatActivity {
 
     ActivityMainBinding binding;
     public int MY_REQUEST_CODE=99;
+    String role;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -26,6 +29,8 @@ public class MainActivity extends AppCompatActivity {
         onClickListenerNavBottom();
         getSupportFragmentManager().beginTransaction().add(R.id.frag_container_main, new HomeFragment()).commit();
 
+        SharedPreferences preferences = MainActivity.this.getSharedPreferences("Users",MODE_PRIVATE);
+        role =preferences.getString("role","");
     }
 
     private void onClickListenerNavBottom() {
@@ -38,6 +43,13 @@ public class MainActivity extends AppCompatActivity {
                 General.loadFragment(getSupportFragmentManager(), new Notify_Fragment(), null);
             } else if (item.getItemId() == R.id.nav_bot_member) {
                 General.loadFragment(getSupportFragmentManager(), new FragmentProfile(), null);
+            }else if(item.getItemId() == R.id.nav_bot_chat){
+                Log.e("checkIf", "onCreate: " + role );
+               if (role.equals("Staff") || role.equals("Admin")){
+                   General.loadFragment(getSupportFragmentManager(), new FragmentMessage(), null);
+               }else{
+                   General.loadFragment(getSupportFragmentManager(), new FragmentMessage(), null);
+               }
             }
             return true;
         });
