@@ -94,13 +94,23 @@ public class FragmentProfile extends Fragment {
         });
         //end
 
+
         binding.CvCreateStaff.setOnClickListener(v -> {
+
+        //go to frag create staff account
+        /*binding.CvCreateStaff.setOnClickListener(v -> {
+
             FragmentAddStaff fragmentAddStaff = new FragmentAddStaff();
             FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
             transaction.replace(R.id.frag_container_main, fragmentAddStaff);
             transaction.addToBackStack(null);
             transaction.commit();
+
         });
+
+        });*/
+        //end
+
         binding.btnMyOrder.setOnClickListener(v -> {
             General.loadFragment(getParentFragmentManager(), new FragmentContainer(), null);
         });

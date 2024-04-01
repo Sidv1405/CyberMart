@@ -9,7 +9,7 @@ public class CartModel {
     private String accountId;
     private Map<String, ProductModel> cartDetail;
     private double totalPrice;
-    private String creatAt;
+    private String date;
 
     public CartModel() {
     }
@@ -38,12 +38,12 @@ public class CartModel {
         this.totalPrice = totalPrice;
     }
 
-    public String getCreatAt() {
-        return creatAt;
+    public String getDate() {
+        return date;
     }
 
-    public void setCreatAt(String creatAt) {
-        this.creatAt = creatAt;
+    public void setDate(String date) {
+        this.date = date;
     }
 
     public Map<String, ProductModel> getCartDetail() {
@@ -54,11 +54,11 @@ public class CartModel {
         this.cartDetail = cartDetail;
     }
 
-    public CartModel(String cartId, String accountId, Map<String, ProductModel> cartDetail, double totalPrice, String creatAt) {
+    public CartModel(String cartId, String accountId, Map<String, ProductModel> cartDetail, double totalPrice, String date) {
         this.cartId = cartId;
         this.accountId = accountId;
         this.cartDetail = cartDetail;
         this.totalPrice = totalPrice;
-        this.creatAt = creatAt;
+        this.date = date;
     }
 }

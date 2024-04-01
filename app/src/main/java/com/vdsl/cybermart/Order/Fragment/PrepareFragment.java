@@ -3,13 +3,14 @@ package com.vdsl.cybermart.Order.Fragment;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.firebase.database.FirebaseDatabase;
@@ -17,21 +18,23 @@ import com.google.firebase.database.Query;
 import com.vdsl.cybermart.General;
 import com.vdsl.cybermart.Order.Adapter.OrderListAdapter;
 import com.vdsl.cybermart.Order.Model.Order;
-import com.vdsl.cybermart.databinding.FragmentProgressingOrderBinding;
+import com.vdsl.cybermart.R;
+import com.vdsl.cybermart.databinding.FragmentDeliverdedBinding;
+import com.vdsl.cybermart.databinding.FragmentPrepareBinding;
 
-public class ProcessingOrderFragment extends Fragment {
-    FragmentProgressingOrderBinding binding;
+
+public class PrepareFragment extends Fragment {
+
+    FragmentPrepareBinding binding;
     OrderListAdapter adapter;
-    SharedPreferences sharedPreferences;
     Query query;
-
+    SharedPreferences sharedPreferences;
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        binding = FragmentProgressingOrderBinding.inflate(inflater, container, false);
+        binding = FragmentPrepareBinding.inflate(inflater,container,false);
         return binding.getRoot();
     }
-
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -40,20 +43,20 @@ public class ProcessingOrderFragment extends Fragment {
         String role = sharedPreferences.getString("Role", "");
         if (role.equals("Customers")) {
             query = FirebaseDatabase.getInstance().getReference("Orders")
-                    .orderByChild("status").equalTo("Processing");
+                    .orderByChild("status").equalTo("Prepare");
             query.orderByChild("idUser").equalTo(id);
         } else {
             query = FirebaseDatabase.getInstance().getReference("Orders")
-                    .orderByChild("status").equalTo("Processing");
+                    .orderByChild("status").equalTo("Prepare");
         }
         FirebaseRecyclerOptions<Order> options = new FirebaseRecyclerOptions.Builder<Order>()
                 .setQuery(query, Order.class).build();
         adapter = new OrderListAdapter(options, order -> {
             Bundle bundle = new Bundle();
-            bundle.putSerializable("Order",order);
-            General.loadFragment(getParentFragmentManager(),new OrderDetailFragment(),bundle);
+            bundle.putSerializable("Order", order);
+            General.loadFragment(getParentFragmentManager(), new OrderDetailFragment(), bundle);
         });
-        binding.rvProcessingList.setAdapter(adapter);
+        binding.rvPrepareList.setAdapter(adapter);
     }
 
     @Override

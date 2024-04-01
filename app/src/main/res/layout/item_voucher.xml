@@ -137,6 +137,7 @@
             android:layout_gravity="center">
 
             <Button
+                android:id="@+id/btnVoucher"
                 android:layout_width="70dp"
                 android:layout_height="wrap_content"
                 android:text="Dùng Sau"
