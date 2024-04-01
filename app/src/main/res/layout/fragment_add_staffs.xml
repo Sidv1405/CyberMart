@@ -107,6 +107,7 @@
                     android:layout_height="wrap_content"
                     android:background="@drawable/password_bottomline_custom"
                     android:hint="Password"
+                    android:inputType="textPassword"
                     android:textSize="20dp" />
 
             </com.google.android.material.textfield.TextInputLayout>
@@ -125,6 +126,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/password_bottomline_custom"
+                    android:inputType="textPassword"
                     android:hint="Confirm Password"
                     android:textSize="20dp" />
 

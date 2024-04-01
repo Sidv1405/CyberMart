@@ -113,14 +113,17 @@ public class FragmentLogIn extends Fragment {
                                             String FullName = userSnapshot.child("fullName").getValue(String.class);
                                             String Email = userSnapshot.child("email").getValue(String.class);
                                             String Role = userSnapshot.child("role").getValue(String.class);
+
                                             String Avatar = userSnapshot.child("avatar").getValue(String.class);
                                             /*String Address = userSnapshot.child("address").getValue(String.class);*/
+
                                             String PhoneNumber = userSnapshot.child("phoneNumber").getValue(String.class);
 
                                             editor.putString("ID", ID);
                                             editor.putString("fullName", FullName);
                                             editor.putString("email", Email);
                                             editor.putString("role", Role);
+
                                             if (!TextUtils.isEmpty(Avatar)) {
                                                 editor.putString("avatar", Avatar);
                                                 Log.d("Avatar", "onViewCreated: " + Avatar);
@@ -129,6 +132,7 @@ public class FragmentLogIn extends Fragment {
                                                 Log.d("Avatar", "Avatar is empty");
                                             }
                                             /*editor.putString("address", Address);*/
+
                                             editor.putString("phoneNumber", PhoneNumber);
                                             editor.apply();
                                             Intent intent = new Intent(requireActivity(), MainActivity.class);
