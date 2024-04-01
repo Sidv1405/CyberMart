@@ -5,11 +5,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-
-import android.widget.Button;
-
 import android.util.Log;
-
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -30,19 +27,15 @@ import com.saadahmedsoft.popupdialog.listener.OnDialogButtonClickListener;
 import com.vdsl.cybermart.Cart.Adapter.CartAdapter;
 import com.vdsl.cybermart.Cart.Model.CartModel;
 import com.vdsl.cybermart.General;
-
 import com.vdsl.cybermart.Order.Fragment.PrepareFragment;
 import com.vdsl.cybermart.Order.Model.Order;
-
 import com.vdsl.cybermart.Product.Model.ProductModel;
 import com.vdsl.cybermart.R;
 import com.vdsl.cybermart.Voucher.Voucher;
 import com.vdsl.cybermart.databinding.ActivityCartBinding;
-import com.vdsl.cybermart.databinding.ActivityVoucherBinding;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
@@ -52,23 +45,22 @@ public class CartActivity extends AppCompatActivity implements CartAdapter.Total
     Button btnCheckOut;
     RadioGroup radioGroup;
     RadioButton rdoCash, rdoCredit;
+    ActivityCartBinding binding;
     private CartAdapter adapter;
     private TextView txtTotalPrice, txtVoucher;
-
-    ActivityCartBinding binding;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_cart);
+        binding = ActivityCartBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
         findViews();
         readData();
         radioGroup.check(R.id.rdoCredit);
         btnBack.setOnClickListener(v -> finish());
 
         btnCheckOut.setOnClickListener(v -> {
-            if (cart.getCartDetail()!=null) {
+            if (cart.getCartDetail() != null) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
                 builder.setTitle("Thông báo");
                 builder.setMessage("Xác nhận thanh toán?");
@@ -85,10 +77,10 @@ public class CartActivity extends AppCompatActivity implements CartAdapter.Total
                             String address = sharedPreferences.getString("address", "");
                             String role = sharedPreferences.getString("Role", "");
                             String payment = rdoCash.isChecked() ? "Cash" : "Credit Card";
-                            String voucher = txtVoucher.getText().toString().isEmpty()?"0":txtVoucher.getText().toString();
-                            Order order = new Order(id, address, "prepare", payment,voucher,cart );
+                            String voucher = txtVoucher.getText().toString().isEmpty() ? "0" : txtVoucher.getText().toString();
+                            Order order = new Order(id, address, "prepare", payment, voucher, cart);
                             newOrderRef.setValue(order);
-                            General.loadFragment(getSupportFragmentManager(),new PrepareFragment(),null);
+                            General.loadFragment(getSupportFragmentManager(), new PrepareFragment(), null);
                             finish();
                         }
 
@@ -111,17 +103,14 @@ public class CartActivity extends AppCompatActivity implements CartAdapter.Total
                 dialog.show();
             }
 
-
-        binding = ActivityCartBinding.inflate(getLayoutInflater());
-        setContentView(binding.getRoot());
-
-        binding.btnVoucher.setOnClickListener(v -> {
+        });
+        binding.btnVoucher.setOnClickListener(v1 -> {
             String promoCode = binding.textPromoCode.getText().toString().trim();
             DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Voucher");
             reference.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
-                    for (DataSnapshot snapshot1 : snapshot.getChildren()){
+                    for (DataSnapshot snapshot1 : snapshot.getChildren()) {
                         /*String voucherCode = snapshot1.child("code").getValue(String.class);*/
                         Voucher voucher = snapshot1.getValue(Voucher.class);
                         if (voucher.getCode() != null && voucher.getCode().equals(promoCode)) {
@@ -139,7 +128,6 @@ public class CartActivity extends AppCompatActivity implements CartAdapter.Total
             });
         });
     }
-
 
     private void readData() {
         RecyclerView rcvCart = findViewById(R.id.rcv_cart);
@@ -218,34 +206,36 @@ public class CartActivity extends AppCompatActivity implements CartAdapter.Total
         userVouchersRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    if (snapshot.exists()) {
-                        if (snapshot.child(voucherCode).exists()) {
-                            // Nếu voucher đã được sử dụng, hiển thị thông báo
-                            Log.d("CartActivity", "Voucher đã được sử dụng trước đó");
-                            General.showFailurePopup(CartActivity.this, "Sử Dụng Voucher", "Bạn đã dùng voucher này!", new OnDialogButtonClickListener() {
-                                @Override
-                                public void onDismissClicked(Dialog dialog) {
-                                    super.onDismissClicked(dialog);
-                                }
-                            });
-                        } else {
-                            updateTotalPriceAndMarkVoucherUsed(totalPriceRef, userVouchersRef, voucherCode, discount);
-                        }
-                    } else {
-                        userVouchersRef.child(voucherCode).setValue(true).addOnCompleteListener(task -> {
-                            if (task.isSuccessful()) {
-                                updateTotalPriceAndMarkVoucherUsed(totalPriceRef, userVouchersRef, voucherCode, discount);
+                if (snapshot.exists()) {
+                    if (snapshot.child(voucherCode).exists()) {
+                        // Nếu voucher đã được sử dụng, hiển thị thông báo
+                        Log.d("CartActivity", "Voucher đã được sử dụng trước đó");
+                        General.showFailurePopup(CartActivity.this, "Sử Dụng Voucher", "Bạn đã dùng voucher này!", new OnDialogButtonClickListener() {
+                            @Override
+                            public void onDismissClicked(Dialog dialog) {
+                                super.onDismissClicked(dialog);
                             }
                         });
+                    } else {
+                        updateTotalPriceAndMarkVoucherUsed(totalPriceRef, userVouchersRef, voucherCode, discount);
                     }
+                } else {
+                    userVouchersRef.child(voucherCode).setValue(true).addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            updateTotalPriceAndMarkVoucherUsed(totalPriceRef, userVouchersRef, voucherCode, discount);
+                        }
+                    });
                 }
+            }
+
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
             }
         });
     }
 
-    private void updateTotalPriceAndMarkVoucherUsed(DatabaseReference totalPriceRef, DatabaseReference userVouchersRef, String voucherCode, double discount) {
+    private void updateTotalPriceAndMarkVoucherUsed(DatabaseReference
+                                                            totalPriceRef, DatabaseReference userVouchersRef, String voucherCode, double discount) {
         totalPriceRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -272,12 +262,6 @@ public class CartActivity extends AppCompatActivity implements CartAdapter.Total
             }
         });
     }
-
-
-
-
-
-
 
 
     @Override
