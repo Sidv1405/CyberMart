@@ -97,7 +97,7 @@ public class FragmentProfile extends Fragment {
 
         binding.CvCreateStaff.setOnClickListener(v -> {
 
-        //go to frag create staff account
+            //go to frag create staff account
         /*binding.CvCreateStaff.setOnClickListener(v -> {
 
             FragmentAddStaff fragmentAddStaff = new FragmentAddStaff();
@@ -109,33 +109,33 @@ public class FragmentProfile extends Fragment {
         });
 
         });*/
-        //end
+            //end
 
-        binding.btnMyOrder.setOnClickListener(v -> {
-            General.loadFragment(getParentFragmentManager(), new FragmentContainer(), null);
-        });
-        binding.cvCateManage.setOnClickListener(v -> {
-            startActivity(new Intent(getContext(), CategoryManagementActivity.class));
-        });
-        binding.cvProdManage.setOnClickListener(v -> {
-            startActivity(new Intent(getContext(), ProductManagementActivity.class));
-        });
-        binding.btnMyVoucher.setOnClickListener(v -> {
-            Intent intent = new Intent(getContext(), VoucherActivity.class);
-            startActivity(intent);
-        });
-        binding.CvSettings.setOnClickListener(v -> {
-            FragmentSetting fragmentSetting = new FragmentSetting();
-            FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-            transaction.replace(R.id.frag_container_main, fragmentSetting);
-            transaction.addToBackStack(null);
-            transaction.commit();
-        });
-        binding.btnStatistic.setOnClickListener(v -> {
-            General.loadFragment(getParentFragmentManager(),new StatisticFragment(),null);
+            binding.btnMyOrder.setOnClickListener(v1 -> {
+                General.loadFragment(getParentFragmentManager(), new FragmentContainer(), null);
+            });
+            binding.cvCateManage.setOnClickListener(v2 -> {
+                startActivity(new Intent(getContext(), CategoryManagementActivity.class));
+            });
+            binding.cvProdManage.setOnClickListener(v3 -> {
+                startActivity(new Intent(getContext(), ProductManagementActivity.class));
+            });
+            binding.btnMyVoucher.setOnClickListener(v4 -> {
+                Intent intent = new Intent(getContext(), VoucherActivity.class);
+                startActivity(intent);
+            });
+            binding.CvSettings.setOnClickListener(v5 -> {
+                FragmentSetting fragmentSetting = new FragmentSetting();
+                FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+                transaction.replace(R.id.frag_container_main, fragmentSetting);
+                transaction.addToBackStack(null);
+                transaction.commit();
+            });
+            binding.btnStatistic.setOnClickListener(v6 -> {
+                General.loadFragment(getParentFragmentManager(), new StatisticFragment(), null);
+            });
         });
     }
-
     private void showInitInfor() {
         if (auth.getCurrentUser() != null) {
             Log.d("loginnow", "logged in");
