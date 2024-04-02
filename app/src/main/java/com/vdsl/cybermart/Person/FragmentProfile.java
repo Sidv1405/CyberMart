@@ -25,7 +25,6 @@ import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.vdsl.cybermart.Account.Activity.LoginActivity;
-import com.vdsl.cybermart.Account.Fragment.FragmentAddStaff;
 import com.vdsl.cybermart.Account.Fragment.FragmentSetting;
 import com.vdsl.cybermart.CategoryManagement.View.CategoryManagementActivity;
 import com.vdsl.cybermart.General;
@@ -39,10 +38,10 @@ import com.vdsl.cybermart.databinding.FragmentProfileBinding;
 public class FragmentProfile extends Fragment {
 
     FragmentProfileBinding binding;
-    private FirebaseAuth auth;
     DatabaseReference databaseReference;
     SharedPreferences sharedPreferences;
     FirebaseUser currentUser;
+    private FirebaseAuth auth;
 
     @Nullable
     @Override
@@ -98,44 +97,44 @@ public class FragmentProfile extends Fragment {
         binding.CvCreateStaff.setOnClickListener(v -> {
 
             //go to frag create staff account
-        /*binding.CvCreateStaff.setOnClickListener(v -> {
+//        binding.CvCreateStaff.setOnClickListener(v -> {
+//
+//            FragmentAddStaff fragmentAddStaff = new FragmentAddStaff();
+//            FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+//            transaction.replace(R.id.frag_container_main, fragmentAddStaff);
+//            transaction.addToBackStack(null);
+//            transaction.commit();
+//
+//        });
 
-            FragmentAddStaff fragmentAddStaff = new FragmentAddStaff();
+        });
+        //end
+
+        binding.btnMyOrder.setOnClickListener(v -> {
+            General.loadFragment(getParentFragmentManager(), new FragmentContainer(), null);
+        });
+        binding.cvCateManage.setOnClickListener(v -> {
+            startActivity(new Intent(getContext(), CategoryManagementActivity.class));
+        });
+        binding.cvProdManage.setOnClickListener(v -> {
+            startActivity(new Intent(getContext(), ProductManagementActivity.class));
+        });
+        binding.btnMyVoucher.setOnClickListener(v -> {
+            Intent intent = new Intent(getContext(), VoucherActivity.class);
+            startActivity(intent);
+        });
+        binding.CvSettings.setOnClickListener(v -> {
+            FragmentSetting fragmentSetting = new FragmentSetting();
             FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-            transaction.replace(R.id.frag_container_main, fragmentAddStaff);
+            transaction.replace(R.id.frag_container_main, fragmentSetting);
             transaction.addToBackStack(null);
             transaction.commit();
-
         });
-
-        });*/
-            //end
-
-            binding.btnMyOrder.setOnClickListener(v1 -> {
-                General.loadFragment(getParentFragmentManager(), new FragmentContainer(), null);
-            });
-            binding.cvCateManage.setOnClickListener(v2 -> {
-                startActivity(new Intent(getContext(), CategoryManagementActivity.class));
-            });
-            binding.cvProdManage.setOnClickListener(v3 -> {
-                startActivity(new Intent(getContext(), ProductManagementActivity.class));
-            });
-            binding.btnMyVoucher.setOnClickListener(v4 -> {
-                Intent intent = new Intent(getContext(), VoucherActivity.class);
-                startActivity(intent);
-            });
-            binding.CvSettings.setOnClickListener(v5 -> {
-                FragmentSetting fragmentSetting = new FragmentSetting();
-                FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-                transaction.replace(R.id.frag_container_main, fragmentSetting);
-                transaction.addToBackStack(null);
-                transaction.commit();
-            });
-            binding.btnStatistic.setOnClickListener(v6 -> {
-                General.loadFragment(getParentFragmentManager(), new StatisticFragment(), null);
-            });
+        binding.btnStatistic.setOnClickListener(v -> {
+            General.loadFragment(getParentFragmentManager(), new StatisticFragment(), null);
         });
     }
+
     private void showInitInfor() {
         if (auth.getCurrentUser() != null) {
             Log.d("loginnow", "logged in");
