@@ -18,6 +18,7 @@
             android:layout_height="50dp"
             android:background="@drawable/border1"
             android:src="@drawable/clothes_nightwear_outfit_svgrepo_com" />
+
         <TextView
 
             android:id="@+id/title_category"
