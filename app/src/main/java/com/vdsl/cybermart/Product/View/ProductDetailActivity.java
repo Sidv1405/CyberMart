@@ -24,6 +24,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 import com.vdsl.cybermart.Cart.Model.CartModel;
+import com.vdsl.cybermart.Favourite.Model.FavoriteModel;
 import com.vdsl.cybermart.Product.Model.ProductModel;
 import com.vdsl.cybermart.R;
 
@@ -38,7 +39,9 @@ public class ProductDetailActivity extends AppCompatActivity {
     ImageView productImageView;
     TextView productPriceTextView;
     TextView productDescriptionTextView;
+    ImageView imgHeart;
 
+    boolean isFavorite = false;
 
     @SuppressLint({"SetTextI18n", "UseCompatLoadingForDrawables"})
     @Override
@@ -102,18 +105,6 @@ public class ProductDetailActivity extends AppCompatActivity {
             }
         });
 
-        ImageView imgHeart = findViewById(R.id.ic_heart);
-        AtomicBoolean check = new AtomicBoolean(false);
-        imgHeart.setOnClickListener(v -> {
-            if (!check.get()) {
-                imgHeart.setImageDrawable(getDrawable(R.drawable.ic_heart_red));
-                check.set(true);
-            } else {
-                imgHeart.setImageDrawable(getDrawable(R.drawable.ic_heart_black));
-                check.set(false);
-            }
-        });
-
 // add to cart
         Button btnAddToCart = findViewById(R.id.btn_add_to_cart);
         btnAddToCart.setOnClickListener(v -> {
@@ -142,6 +133,10 @@ public class ProductDetailActivity extends AppCompatActivity {
                         for (DataSnapshot cartSnapshot : snapshot.getChildren()) {
                             String cartId = cartSnapshot.getKey();
                             CartModel existingCart = cartSnapshot.getValue(CartModel.class);
+                            if (!cartSnapshot.hasChild("cartDetail")) {
+                                Map<String, ProductModel> cartDetail = new HashMap<>();
+                                existingCart.setCartDetail(cartDetail);
+                            }
 
                             if (existingCart.getCartDetail() == null) {
                                 existingCart.setCartDetail(new HashMap<>());
@@ -182,11 +177,107 @@ public class ProductDetailActivity extends AppCompatActivity {
                 }
             });
         });
+
+        //    add to favorites
+
+        imgHeart = findViewById(R.id.ic_heart);
+        SharedPreferences sharedPreferences = getSharedPreferences("Users", MODE_PRIVATE);
+        String accountId = sharedPreferences.getString("ID", "");
+        imgHeart.setOnClickListener(v -> {
+            DatabaseReference favRef = FirebaseDatabase.getInstance().getReference().child("favorites");
+
+            ProductModel productDetailF = new ProductModel(productNameTextView.getText().toString(), productDescription.toString(), Double.parseDouble(productPriceTextView.getText().toString().substring(1)), productImage);
+            productDetailF.setImage(productImage);
+            Map<String, ProductModel> listFav = new HashMap<>();
+            listFav.put(accountId, productDetailF);
+
+            favRef.orderByChild("accountId").equalTo(accountId).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    if (snapshot.exists()) {
+                        for (DataSnapshot favoritesSnapshot : snapshot.getChildren()) {
+                            String favoritesId = favoritesSnapshot.getKey();
+                            FavoriteModel existingFavorites = favoritesSnapshot.getValue(FavoriteModel.class);
+
+                            Map<String, ProductModel> listFav = existingFavorites.getListFavorites();
+                            if (listFav == null) {
+                                listFav = new HashMap<>();
+                                existingFavorites.setListFavorites(listFav);
+                            }
+
+                            if (listFav.containsKey(productDetailF.getName())) {
+                                listFav.remove(productDetailF.getName());
+                                imgHeart.setImageDrawable(getDrawable(R.drawable.ic_heart_black));
+                                favRef.child(favoritesId).setValue(existingFavorites);
+                            } else {
+                                listFav.put(productDetailF.getName(), productDetailF);
+                                imgHeart.setImageDrawable(getDrawable(R.drawable.ic_heart_red));
+                            }
+                            String favoritesDetailName = "favoritesDetail_" + accountId;
+                            SharedPreferences favoritesSharedPreferences = getSharedPreferences(favoritesDetailName, Context.MODE_PRIVATE);
+                            SharedPreferences.Editor favoritesEditor = favoritesSharedPreferences.edit();
+                            favoritesEditor.putString("favoritesId", favoritesId);
+                            favoritesEditor.apply();
+
+                            favRef.child(favoritesId).setValue(existingFavorites);
+
+                            break;
+                        }
+                    } else {
+                        DatabaseReference newFavoritesRef = favRef.push();
+                        String favoritesId = newFavoritesRef.getKey();
+                        FavoriteModel favoritesModel = new FavoriteModel(favoritesId, accountId, listFav);
+
+                        String favoritesDetailName = "favoritesDetail_" + accountId;
+                        SharedPreferences favoritesSharedPreferences = getSharedPreferences(favoritesDetailName, Context.MODE_PRIVATE);
+                        SharedPreferences.Editor favoritesEditor = favoritesSharedPreferences.edit();
+                        favoritesEditor.putString("favoritesId", favoritesId);
+                        favoritesEditor.apply();
+
+                        newFavoritesRef.setValue(favoritesModel);
+                        finish();
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                }
+            });
+        });
+
+        String favoritesDetailName = "favoritesDetail_" + accountId;
+        SharedPreferences sharedPreferences2 = getSharedPreferences(favoritesDetailName, MODE_PRIVATE);
+        String favoritesId = sharedPreferences2.getString("favoritesId", "");
+
+        DatabaseReference favRef = FirebaseDatabase.getInstance().getReference()
+                .child("favorites")
+                .child(favoritesId)
+                .child("listFavorites")
+                .child(productNameTextView.getText().toString());
+
+        favRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    imgHeart.setImageDrawable(getDrawable(R.drawable.ic_heart_red));
+                } else {
+                    imgHeart.setImageDrawable(getDrawable(R.drawable.ic_heart_black));
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
+        });
+
+
+
     }
 
     private void back() {
         ImageView btnBack = findViewById(R.id.container_back);
         btnBack.setOnClickListener(v -> finish());
     }
+
 
 }
