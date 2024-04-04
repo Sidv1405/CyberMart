@@ -4,7 +4,7 @@ import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.vdsl.cybermart.Favourite.Favourite_Fragment;
+import com.vdsl.cybermart.Favourite.View.Favourite_Fragment;
 import com.vdsl.cybermart.Home.View.HomeFragment;
 import com.vdsl.cybermart.Notify.Notify_Fragment;
 import com.vdsl.cybermart.Person.FragmentProfile;

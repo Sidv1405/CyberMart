@@ -33,6 +33,7 @@ public class CartActivity extends AppCompatActivity implements CartAdapter.Total
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cart);
+
         readData();
 
         ImageView btnBack = findViewById(R.id.c_ic_back);
