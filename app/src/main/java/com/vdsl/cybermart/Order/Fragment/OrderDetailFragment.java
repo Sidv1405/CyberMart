@@ -20,10 +20,13 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
-import com.vdsl.cybermart.Product.Model.ProductModel;
 import com.vdsl.cybermart.Order.Adapter.ProductsListAdapterInOrder;
 import com.vdsl.cybermart.Order.Model.Order;
+import com.vdsl.cybermart.Product.Model.ProductModel;
 import com.vdsl.cybermart.databinding.FragmentOrderDetailBinding;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class OrderDetailFragment extends Fragment {
     FragmentOrderDetailBinding binding;
@@ -42,7 +45,6 @@ public class OrderDetailFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         getOrderAndSetData();
-
     }
 
     private void getOrderAndSetData() {
@@ -58,7 +60,7 @@ public class OrderDetailFragment extends Fragment {
                 if (!role.equals("Customer")) {
                     //Chưa test
                     binding.txtStatus.setOnClickListener(v -> {
-                        String[] status = new String[]{"Delevered", "Processing", "Cancelde"};
+                        String[] status = new String[]{"Delevered", "Processing", "Canceled"};
                         AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
                         builder.setTitle("Cập nhật trạng thái đơn hàng");
                         builder.setSingleChoiceItems(status, 0, (dialog, which) -> {
@@ -66,6 +68,8 @@ public class OrderDetailFragment extends Fragment {
                             DatabaseReference referenceOrder = FirebaseDatabase.getInstance().
                                     getReference("Orders").child(order.getSeri());
                             referenceOrder.setValue(order);
+                            binding.txtStatus.setText(status[which]);
+                            dialog.cancel();
                         });
                         AlertDialog alertDialog = builder.create();
                         alertDialog.show();
@@ -77,7 +81,7 @@ public class OrderDetailFragment extends Fragment {
 
     private void setTextUser(Order order) {
         DatabaseReference referenceNameUser = FirebaseDatabase.getInstance().
-                getReference("Account").child(order.getIdUser());
+                getReference("Account").child(order.getCartModel().getAccountId());
         referenceNameUser.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {

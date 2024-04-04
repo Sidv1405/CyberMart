@@ -81,7 +81,19 @@ public class FragmentAddStaff extends Fragment {
                 binding.edtConfirmPassSignUp.setError("Password is not match!");
                 error = true;
             }
+            userDatabase.orderByChild("email").equalTo(email).addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    if (snapshot.exists()) {
+                        binding.edtEmailSignUp.setError("Email already exists. Please use another email!");
+                    }
+                }
 
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
             if (!error) {
                 userAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
@@ -106,11 +118,6 @@ public class FragmentAddStaff extends Fragment {
                                     currentUserDB.child("fullName").setValue(userName);
                                     currentUserDB.child("email").setValue(email);
                                     currentUserDB.child("role").setValue("Staff");
-//                                    currentUserDB.child("Password").setValue(password);
-//                                    currentUserDB.child("UserName").setValue(userName);
-//                                    currentUserDB.child("PhoneNumber").setValue("");
-//                                    currentUserDB.child("Address").setValue("");
-
                                     Toast.makeText(getActivity(), "Add Staff Successfully.", Toast.LENGTH_SHORT).show();
                                 }
 
@@ -123,8 +130,6 @@ public class FragmentAddStaff extends Fragment {
                     }
                 });
             }
-
-
         });
     }
 }

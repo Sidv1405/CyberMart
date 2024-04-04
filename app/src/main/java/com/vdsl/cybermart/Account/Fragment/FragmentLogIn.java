@@ -50,7 +50,7 @@ public class FragmentLogIn extends Fragment {
         userAuth = FirebaseAuth.getInstance();
         userDatabase = FirebaseDatabase.getInstance().getReference().child("Account");
 
-        sharedPreferences = getActivity().getSharedPreferences("LOGIN_PREFS", Context.MODE_PRIVATE);
+        sharedPreferences = requireActivity().getSharedPreferences("LOGIN_PREFS", Context.MODE_PRIVATE);
         binding.edtEmailSignIn.setText(sharedPreferences.getString("email", ""));
         binding.edtPassSignIn.setText(sharedPreferences.getString("password", ""));
         binding.chkRemember.setChecked(sharedPreferences.getBoolean("remember", false));
@@ -99,12 +99,12 @@ public class FragmentLogIn extends Fragment {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
 
-                            userDatabase.orderByChild("email").equalTo(email).addValueEventListener(new ValueEventListener() {
+                            userDatabase.orderByChild("email").equalTo(email).addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                                     if (snapshot.exists()) {
                                         for (DataSnapshot userSnapshot : snapshot.getChildren()) {
-                                            Toast.makeText(getActivity(), "Log in Successful", Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(requireActivity(), "Log in Successful", Toast.LENGTH_SHORT).show();
                                             rememberUser(email, password, binding.chkRemember.isChecked());
 
                                             sharedPreferences = getActivity().getSharedPreferences("Users", Context.MODE_PRIVATE);
@@ -113,14 +113,17 @@ public class FragmentLogIn extends Fragment {
                                             String FullName = userSnapshot.child("fullName").getValue(String.class);
                                             String Email = userSnapshot.child("email").getValue(String.class);
                                             String Role = userSnapshot.child("role").getValue(String.class);
+
                                             String Avatar = userSnapshot.child("avatar").getValue(String.class);
-                                            String Address = userSnapshot.child("address").getValue(String.class);
+                                            /*String Address = userSnapshot.child("address").getValue(String.class);*/
+
                                             String PhoneNumber = userSnapshot.child("phoneNumber").getValue(String.class);
 
                                             editor.putString("ID", ID);
                                             editor.putString("fullName", FullName);
                                             editor.putString("email", Email);
                                             editor.putString("role", Role);
+
                                             if (!TextUtils.isEmpty(Avatar)) {
                                                 editor.putString("avatar", Avatar);
                                                 Log.d("Avatar", "onViewCreated: " + Avatar);
@@ -128,10 +131,11 @@ public class FragmentLogIn extends Fragment {
                                                 editor.putString("avatar", null);
                                                 Log.d("Avatar", "Avatar is empty");
                                             }
-                                            editor.putString("address", Address);
+                                            /*editor.putString("address", Address);*/
+
                                             editor.putString("phoneNumber", PhoneNumber);
                                             editor.apply();
-                                            Intent intent = new Intent(getActivity(), MainActivity.class);
+                                            Intent intent = new Intent(requireActivity(), MainActivity.class);
                                             startActivity(intent);
                                             getActivity().finish();
                                             Log.d("ID", "ID " + ID);
@@ -160,7 +164,7 @@ public class FragmentLogIn extends Fragment {
     }
 
     private void rememberUser(String email, String password, boolean checked) {
-        SharedPreferences pref = getActivity().getSharedPreferences("LOGIN_PREFS", getActivity().MODE_PRIVATE);
+        SharedPreferences pref = requireActivity().getSharedPreferences("LOGIN_PREFS", getActivity().MODE_PRIVATE);
         SharedPreferences.Editor editor = pref.edit();
         if (!checked) {
             editor.clear();
