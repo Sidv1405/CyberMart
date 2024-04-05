@@ -64,7 +64,7 @@ public class CartActivity extends AppCompatActivity implements CartAdapter.Total
         readData();
         radioGroup.check(R.id.rdoCredit);
         btnBack.setOnClickListener(v -> finish());
-
+        //thanh toán tạo hóa đơn
         btnCheckOut.setOnClickListener(v -> {
             if (cart.getCartDetail() != null) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -81,13 +81,12 @@ public class CartActivity extends AppCompatActivity implements CartAdapter.Total
                             String id = newOrderRef.getKey();
                             SharedPreferences sharedPreferences = getSharedPreferences("Users", Context.MODE_PRIVATE);
                             String address = sharedPreferences.getString("address", "");
-                            String role = sharedPreferences.getString("Role", "");
                             String payment = rdoCash.isChecked() ? "Cash" : "Credit Card";
                             String voucher = txtVoucher.getText().toString().isEmpty() ? "0" : txtVoucher.getText().toString();
-                            Order order = new Order(id, address, "prepare", payment, voucher, cart);
+                            Order order = new Order(id, address, "Prepare", payment, voucher, cart);
                             newOrderRef.setValue(order);
-                            General.loadFragment(getSupportFragmentManager(), new PrepareFragment(), null);
-                            finish();
+                           finish();
+
                         }
 
                         @Override

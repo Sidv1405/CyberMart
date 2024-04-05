@@ -28,7 +28,6 @@ import com.google.firebase.messaging.FirebaseMessaging;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.vdsl.cybermart.Account.Activity.LoginActivity;
-import com.vdsl.cybermart.Account.Fragment.FragmentAddStaff;
 import com.vdsl.cybermart.Account.Fragment.FragmentSetting;
 import com.vdsl.cybermart.CategoryManagement.View.CategoryManagementActivity;
 import com.vdsl.cybermart.General;
@@ -42,10 +41,10 @@ import com.vdsl.cybermart.databinding.FragmentProfileBinding;
 public class FragmentProfile extends Fragment {
 
     FragmentProfileBinding binding;
-    private FirebaseAuth auth;
     DatabaseReference databaseReference;
     SharedPreferences sharedPreferences;
     FirebaseUser currentUser;
+    private FirebaseAuth auth;
 
     @Nullable
     @Override
@@ -109,13 +108,15 @@ public class FragmentProfile extends Fragment {
         //go to frag create staff account
         binding.CvCreateStaff.setOnClickListener(v -> {
 
-            FragmentAddStaff fragmentAddStaff = new FragmentAddStaff();
+
             FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-            transaction.replace(R.id.frag_container_main, fragmentAddStaff);
+            transaction.replace(R.id.frag_container_main, fragmentSetting);
             transaction.addToBackStack(null);
             transaction.commit();
-
         });
+
+        binding.btnStatistic.setOnClickListener(v -> {
+
         //end
 
         binding.btnMyOrder.setOnClickListener(v1 -> {

@@ -3,14 +3,15 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginTop="5dp"
     android:orientation="vertical"
     app:cardCornerRadius="7dp">
 
     <RelativeLayout
-        android:id="@+id/mask_group"
+
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/border1"
+        android:background="#DEDBDB"
         android:orientation="vertical">
 
         <ImageView

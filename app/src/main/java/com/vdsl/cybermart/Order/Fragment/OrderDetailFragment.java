@@ -1,6 +1,8 @@
 package com.vdsl.cybermart.Order.Fragment;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
@@ -45,38 +47,64 @@ public class OrderDetailFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         getOrderAndSetData();
+
     }
 
+    @SuppressLint("SetTextI18n")
     private void getOrderAndSetData() {
         Bundle bundle = getArguments();
         if (bundle != null) {
             Order order = (Order) bundle.getSerializable("Order");
             if (order != null) {
                 binding.txtSeriNumber.setText(order.getSeri());
+                binding.totalValue.setText(order.getCartModel().getTotalPrice()+"");
+                binding.txtAddressName.setText(order.getAddress());
+                binding.txtStatus.setText(order.getStatus());
+                binding.txtPaymentName.setText(order.getPaymentMethod());
+                binding.txtDate.setText(order.getCartModel().getDate());
                 setTextUser(order);
+                getProductInOrder(order);
                 SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("Users", Context.MODE_PRIVATE);
                 String id = sharedPreferences.getString("ID", "");
                 String role = sharedPreferences.getString("Role", "");
                 if (!role.equals("Customer")) {
-                    //Chưa test
-                    binding.txtStatus.setOnClickListener(v -> {
-                        String[] status = new String[]{"Delevered", "Processing", "Canceled"};
-                        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
-                        builder.setTitle("Cập nhật trạng thái đơn hàng");
-                        builder.setSingleChoiceItems(status, 0, (dialog, which) -> {
-                            order.setStatus(status[which]);
-                            DatabaseReference referenceOrder = FirebaseDatabase.getInstance().
-                                    getReference("Orders").child(order.getSeri());
-                            referenceOrder.setValue(order);
-                            binding.txtStatus.setText(status[which]);
-                            dialog.cancel();
+                    if(!order.getStatus().equals("Delivered")){
+                        binding.txtStatus.setOnClickListener(v -> {
+                            String[] status = new String[]{"Processing", "Canceled","Delivered"};
+                            AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+                            builder.setTitle("Cập nhật trạng thái đơn hàng");
+                            builder.setSingleChoiceItems(status, 0, (dialog, which) -> {
+                                if(which==2){
+                                    AlertDialog.Builder builder1 = new AlertDialog.Builder(requireContext());
+                                    builder1.setTitle("Cảnh báo");
+                                    builder1.setMessage("Khi chuyển qua trạng thái \"Delivered\" thì bạn không thể thay đổi!");
+                                    builder1.setPositiveButton("OK",(dialog1, which1) -> {
+                                        setStatus(dialog, order, status[which]);
+                                        // trừ số hàng đã nhận vào số hàng trong kho
+                                    });
+                                    builder1.setNegativeButton("Cancel",(dialog1, which1) -> {});
+                                    AlertDialog alertDialog = builder1.create();
+                                    alertDialog.show();
+                                }else {
+                                    setStatus(dialog, order, status[which]);
+                                }
+                            });
+                            AlertDialog alertDialog = builder.create();
+                            alertDialog.show();
                         });
-                        AlertDialog alertDialog = builder.create();
-                        alertDialog.show();
-                    });
+                    }
                 }
             }
         }
+    }
+
+    private void setStatus(DialogInterface dialog, Order order, String status) {
+        order.setStatus(status);
+        DatabaseReference referenceOrder = FirebaseDatabase.getInstance().
+                getReference("Orders").child(order.getSeri());
+        referenceOrder.setValue(order);
+        binding.txtStatus.setText(status);
+        dialog.cancel();
     }
 
     private void setTextUser(Order order) {
@@ -86,7 +114,7 @@ public class OrderDetailFragment extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.exists()) {
-                    String nameUser = snapshot.child("FullName").getValue(String.class);
+                    String nameUser = snapshot.child("fullName").getValue(String.class);
                     binding.txtCustomerName.setText(nameUser);
                 }
             }
@@ -99,27 +127,24 @@ public class OrderDetailFragment extends Fragment {
     }
 
     private void getProductInOrder(Order order) {
-        //tạo cartmodel để lưu danh sách các sản phẩm và số lượng sẽ lấy từ đó
-        DatabaseReference refProducts = FirebaseDatabase.getInstance().getReference("Orders/Id01/product");
-        refProducts.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for (DataSnapshot data : snapshot.getChildren()) {
+        query = FirebaseDatabase.getInstance().getReference().child("Orders")
+                .child(order.getSeri()).child("cartModel").child("cartDetail");
 
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-        query = FirebaseDatabase.getInstance().getReference("Orders")
-                .orderByChild("status").equalTo("delivered");
         FirebaseRecyclerOptions<ProductModel> options = new FirebaseRecyclerOptions.Builder<ProductModel>()
                 .setQuery(query, ProductModel.class).build();
         adapter = new ProductsListAdapterInOrder(options);
         binding.rvProductList.setAdapter(adapter);
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        adapter.startListening();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        adapter.startListening();
+    }
 }
