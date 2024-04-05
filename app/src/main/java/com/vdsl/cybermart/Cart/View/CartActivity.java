@@ -2,10 +2,12 @@ package com.vdsl.cybermart.Cart.View;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RadioButton;
@@ -31,8 +33,10 @@ import com.vdsl.cybermart.Order.Fragment.PrepareFragment;
 import com.vdsl.cybermart.Order.Model.Order;
 import com.vdsl.cybermart.Product.Model.ProductModel;
 import com.vdsl.cybermart.R;
+import com.vdsl.cybermart.Voucher.View.VoucherActivity;
 import com.vdsl.cybermart.Voucher.Voucher;
 import com.vdsl.cybermart.databinding.ActivityCartBinding;
+import com.vdsl.cybermart.databinding.FragmentVoucherBinding;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -48,6 +52,8 @@ public class CartActivity extends AppCompatActivity implements CartAdapter.Total
     ActivityCartBinding binding;
     private CartAdapter adapter;
     private TextView txtTotalPrice, txtVoucher;
+
+    FragmentVoucherBinding voucherBinding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -126,7 +132,16 @@ public class CartActivity extends AppCompatActivity implements CartAdapter.Total
                 }
             });
         });
+
+        binding.btnListVoucher.setOnClickListener(v -> {
+            Intent intent = new Intent(CartActivity.this, VoucherActivity.class);
+            startActivity(intent);
+        });
+        String reCode = getIntent().getStringExtra("voucherCode");
+        Log.e("check34", "onCreate: " + reCode );
+        binding.textPromoCode.setText(reCode);
     }
+
 
     private void readData() {
         RecyclerView rcvCart = findViewById(R.id.rcv_cart);
@@ -261,6 +276,12 @@ public class CartActivity extends AppCompatActivity implements CartAdapter.Total
             }
         });
     }
+
+    private void showVoucherList() {
+
+    }
+
+
 
 
     @Override

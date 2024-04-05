@@ -63,13 +63,20 @@
         android:layout_marginEnd="20dp"
         android:background="@drawable/border1">
 
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_list"
+            android:layout_gravity="center_vertical"
+            android:id="@+id/btnListVoucher"
+            />
 
         <EditText
             android:backgroundTint="@android:color/transparent"
             android:id="@+id/text_promo_code"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
+            android:layout_marginLeft="60dp"
             android:layout_marginTop="11dp"
             android:layout_marginBottom="11dp"
             android:gravity="left|center_vertical"
