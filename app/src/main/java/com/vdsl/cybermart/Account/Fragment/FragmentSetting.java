@@ -169,7 +169,7 @@ public class FragmentSetting extends Fragment {
         dialog.show();
 
         dialogInformation.edtName.setText(binding.txtName.getText().toString());
-        if (binding.txtPhoneNumber.getText() == null) {
+        if (binding.txtPhoneNumber.getText().toString().trim().equals("No phone number")) {
             dialogInformation.edtPhoneNumber.setText(null);
         } else {
             dialogInformation.edtPhoneNumber.setText(binding.txtPhoneNumber.getText().toString());

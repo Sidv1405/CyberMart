@@ -1,17 +1,12 @@
 package com.vdsl.cybermart.Person;
 
-import static android.app.Activity.RESULT_OK;
-
-import android.Manifest;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
@@ -20,16 +15,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Toast;
 
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -40,7 +34,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.vdsl.cybermart.Account.Activity.LoginActivity;
-import com.vdsl.cybermart.Account.Fragment.FragmentAddStaff;
+import com.vdsl.cybermart.Account.Fragment.FragmentManagementStaff;
 import com.vdsl.cybermart.Account.Fragment.FragmentSetting;
 import com.vdsl.cybermart.CategoryManagement.View.CategoryManagementActivity;
 import com.vdsl.cybermart.General;
@@ -51,40 +45,38 @@ import com.vdsl.cybermart.Statistic.Fragment.StatisticFragment;
 import com.vdsl.cybermart.Voucher.View.VoucherActivity;
 import com.vdsl.cybermart.databinding.FragmentProfileBinding;
 
-import java.io.IOException;
-
 public class FragmentProfile extends Fragment {
 
 
     //new
     private static final int MY_REQUEST_CODE = 99;
-    private ActivityResultLauncher activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
-        @Override
-        public void onActivityResult(ActivityResult o) {
-            if (o.getResultCode() == RESULT_OK) {
-                Intent intent = o.getData();
-                if (intent == null) {
-                    return;
-                }
-
-                Uri uri = intent.getData();
-                try {
-                    //noinspection deprecation
-                    Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), uri);
-                    saveImageToFirebase(uri);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-    });
+//    private ActivityResultLauncher activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
+//        @Override
+//        public void onActivityResult(ActivityResult o) {
+//            if (o.getResultCode() == RESULT_OK) {
+//                Intent intent = o.getData();
+//                if (intent == null) {
+//                    return;
+//                }
+//
+//                Uri uri = intent.getData();
+//                try {
+//                    //noinspection deprecation
+//                    Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), uri);
+//                    saveImageToFirebase(uri);
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        }
+//    });
 
     FragmentProfileBinding binding;
     private FirebaseAuth auth;
     DatabaseReference databaseReference;
     SharedPreferences sharedPreferences;
     FirebaseUser currentUser;
-
+ProgressDialog progressDialog;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -100,7 +92,7 @@ public class FragmentProfile extends Fragment {
         databaseReference = FirebaseDatabase.getInstance().getReference().child("Account");
         sharedPreferences = getActivity().getSharedPreferences("Users", Context.MODE_PRIVATE);
         currentUser = auth.getCurrentUser();
-
+        progressDialog= new ProgressDialog(getActivity());
         //show infor
         showInitInfor();
         //end
@@ -123,6 +115,8 @@ public class FragmentProfile extends Fragment {
             });
 
             builder.setPositiveButton("YES", (dialog, which) -> {
+                progressDialog.setMessage("Loging out...");
+                progressDialog.show();
                 FirebaseAuth.getInstance().signOut();
                 Intent intent = new Intent(getActivity(), LoginActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -144,9 +138,9 @@ public class FragmentProfile extends Fragment {
 
 
         binding.CvCreateStaff.setOnClickListener(v -> {
-            FragmentAddStaff fragmentAddStaff = new FragmentAddStaff();
+            FragmentManagementStaff fragmentManagementStaff = new FragmentManagementStaff();
             FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-            transaction.replace(R.id.frag_container_main, fragmentAddStaff);
+            transaction.replace(R.id.frag_container_main, fragmentManagementStaff);
             transaction.addToBackStack(null);
             transaction.commit();
         });
@@ -192,9 +186,9 @@ public class FragmentProfile extends Fragment {
                                 String Role = dataSnapshot.child("role").getValue(String.class);
                                 binding.txtYourName.setText(FullName);
                                 binding.txtYourEmail.setText(Email);
-                                Log.d("loginnow", "onDataChange: " + FullName);
-                                Log.d("loginnow", "onDataChange: " + Email);
-                                Log.d("loginnow", "onDataChange: " + Avatar);
+                                Log.d("loginnow", "fname: " + FullName);
+                                Log.d("loginnow", "email: " + Email);
+                                Log.d("loginnow", "avatar: " + Avatar);
                                 if (Avatar != null && !Avatar.isEmpty()) {
                                     Picasso.get().load(Avatar).into(binding.imgAvatar, new Callback() {
                                         @Override
@@ -284,51 +278,81 @@ public class FragmentProfile extends Fragment {
         }
 
         btnEdit.setOnClickListener(v -> {
-            upDateAvatar();
+            Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+            startActivityForResult(intent, MY_REQUEST_CODE);
         });
         btnDone.setOnClickListener(v -> {
             dialog.dismiss();
         });
     }
 
-    //new
-    private void upDateAvatar() {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            openGallery();
-            return;
-        }
-        if (getActivity().checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-            openGallery();
-        } else {
-            String[] permission = {Manifest.permission.READ_EXTERNAL_STORAGE};
-            getActivity().requestPermissions(permission, MY_REQUEST_CODE);
-        }
-    }
-
-    //new
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == MY_REQUEST_CODE) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                openGallery();
-            }
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == MY_REQUEST_CODE && resultCode == getActivity().RESULT_OK && data != null && data.getData() != null) {
+            Uri avatarUri = data.getData();
+            updateAvatar(avatarUri);
         }
+    }
+
+    private void updateAvatar(Uri avatarUri) {
+        String ID = sharedPreferences.getString("ID", null);
+        if (ID != null) {
+            String imagePath = avatarUri.toString();
+            databaseReference.child(ID).child("avatar").setValue(imagePath)
+                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if (task.isSuccessful()) {
+                                Toast.makeText(getActivity(), "Avatar updated successfully", Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(getActivity(), "Failed to update avatar", Toast.LENGTH_SHORT).show();
+
+                            }
+                        }
+                    });
+        }
+
     }
 
     //new
-    private void openGallery() {
-        Intent intent = new Intent();
-        intent.setType("image/");
-        intent.setAction(Intent.ACTION_GET_CONTENT);
-        activityResultLauncher.launch(Intent.createChooser(intent, "Select picture!"));
-    }
+//    private void upDateAvatar() {
+//        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+//            openGallery();
+//            return;
+//        }
+//        if (getActivity().checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+//            openGallery();
+//        } else {
+//            String[] permission = {Manifest.permission.READ_EXTERNAL_STORAGE};
+//            getActivity().requestPermissions(permission, MY_REQUEST_CODE);
+//        }
+//    }
 
-    private void saveImageToFirebase(Uri imageUri) {
-        if (imageUri != null) {
-            String uid = sharedPreferences.getString("ID", null);
-            DatabaseReference userRef = FirebaseDatabase.getInstance().getReference().child("Account").child(uid);
-            userRef.child("avatar").setValue(imageUri.toString());
-        }
-    }
+    //new
+//    @Override
+//    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+//        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+//        if (requestCode == MY_REQUEST_CODE) {
+//            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+//                openGallery();
+//            }
+//        }
+//    }
+
+    //new
+//    private void openGallery() {
+//        Intent intent = new Intent();
+//        intent.setType("image/");
+//        intent.setAction(Intent.ACTION_GET_CONTENT);
+//        activityResultLauncher.launch(Intent.createChooser(intent, "Select picture!"));
+//    }
+
+//    private void saveImageToFirebase(Uri imageUri) {
+//        if (imageUri != null) {
+//            String uid = sharedPreferences.getString("ID", null);
+//            DatabaseReference userRef = FirebaseDatabase.getInstance().getReference().child("Account").child(uid);
+//            userRef.child("avatar").setValue(imageUri.toString());
+//        }
+//    }
 }

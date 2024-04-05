@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment;
 import com.vdsl.cybermart.Account.Fragment.FragmentAddress;
 import com.vdsl.cybermart.Favourite.Favourite_Fragment;
 import com.vdsl.cybermart.Home.View.HomeFragment;
+import com.vdsl.cybermart.Message.FragmentMessage;
 import com.vdsl.cybermart.Notify.Notify_Fragment;
 import com.vdsl.cybermart.Person.FragmentProfile;
 import com.vdsl.cybermart.databinding.ActivityMainBinding;

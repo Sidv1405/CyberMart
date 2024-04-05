@@ -6,6 +6,7 @@ public class UserModel {
     private String role;
 
     private String status;
+    private String avatar;
 
     public UserModel() {
     }
@@ -30,6 +31,11 @@ public class UserModel {
         this.phoneNumber = phoneNumber;
         this.role = role;
     }*/
+
+    public UserModel(String fullName, String phoneNumber) {
+        this.fullName = fullName;
+        this.phoneNumber = phoneNumber;
+    }
 
     public UserModel(String userName, String fullName, String email, String password, String phoneNumber, String role, String status) {
         this.userName = userName;
@@ -116,5 +122,13 @@ public class UserModel {
                 ", phoneNumber='" + phoneNumber + '\'' +
                 ", role='" + role + '\'' +
                 '}';
+    }
+
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
     }
 }
