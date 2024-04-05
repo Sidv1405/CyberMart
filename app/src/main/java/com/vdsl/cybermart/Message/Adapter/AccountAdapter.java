@@ -72,6 +72,9 @@ public class AccountAdapter extends RecyclerView.Adapter<AccountAdapter.ViewHold
         holder.itemView.setOnClickListener(v -> {
             Intent intent = new Intent(context, MessageActivity.class);
             intent.putExtra("userEmail",user.getEmail());
+            intent.putExtra("fcmToken",user.getFcmToken());
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            Log.d("check36", "onBindViewHolder: " + user.getEmail());
             context.startActivity(intent);
         });
 

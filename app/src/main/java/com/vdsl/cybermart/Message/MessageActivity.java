@@ -16,6 +16,8 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -33,9 +35,20 @@ import com.vdsl.cybermart.R;
 import com.vdsl.cybermart.databinding.ActivityMessageBinding;
 import com.vdsl.cybermart.databinding.ActivityVoucherBinding;
 
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Objects;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 public class MessageActivity extends AppCompatActivity {
 
@@ -53,7 +66,7 @@ public class MessageActivity extends AppCompatActivity {
 
     ValueEventListener seenListener;
 
-    String userEmail;
+    String userEmail,userFCM;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,6 +97,7 @@ public class MessageActivity extends AppCompatActivity {
 
         intent = getIntent();
         userEmail = intent.getStringExtra("userEmail");
+        userFCM = intent.getStringExtra("fcmToken");
         Log.d("Tagne", "onCreate: " + userEmail);
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
 
@@ -198,10 +212,12 @@ public class MessageActivity extends AppCompatActivity {
         map.put("statusSeen", false);
 
         reference1.child("Chats").push().setValue(map);
+        sendNotification(mesage);
 
         updateChatList(sender, receiver);
         updateChatList(receiver, sender);
     }
+
 
 
     private void updateChatList(String userId, String chatUserId) {
@@ -313,6 +329,71 @@ public class MessageActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+
+    private void sendNotification(String message) {
+        Log.e("check37", "sendNotification: " + firebaseUser.getEmail() );
+        getIdFromEmail(firebaseUser.getEmail(), new FragmentMessage.OnIdReceivedListener() {
+            @Override
+            public void onIdReceived(String id) {
+                Log.e("check40", "onIdReceived: " + id );
+                DatabaseReference userRef = FirebaseDatabase.getInstance().getReference().child("Account").child(id);
+                userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if (snapshot.exists()){
+                            UserModel model = snapshot.getValue(UserModel.class);
+                            try {
+                                JSONObject jsonObject = new JSONObject();
+                                JSONObject notificationObj = new JSONObject();
+                                notificationObj.put("title",model.getFullName());
+                                notificationObj.put("body",message);
+                                JSONObject dataObj = new JSONObject();
+                                dataObj.put("email",model.getEmail());
+
+                                jsonObject.put("notification",notificationObj);
+                                jsonObject.put("data",dataObj);
+                                jsonObject.put("to",userFCM);
+                                Log.e("check39", "onDataChange: " + userFCM );
+                                callApi(jsonObject);
+                            }catch (Exception e){
+
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+            }
+        });
+    }
+
+    void callApi(JSONObject jsonObject){
+        MediaType JSON = MediaType.get("application/json; charset=utf-8");
+
+        OkHttpClient client = new OkHttpClient();
+        String url = "https://fcm.googleapis.com/fcm/send";
+        RequestBody body = RequestBody.create(jsonObject.toString(),JSON);
+        Request request = new Request.Builder()
+                .url(url)
+                .post(body)
+                .header("Authorization","Bearer AAAA5pa11nw:APA91bH9w1IfcYjdTiuQsj-o3Ttrh689JQxiL0ydOQf6qyEeSxlkbznOz7IYG6yC3rVEo6mCAM7CenfstwWe6nXPsirmoI43hcNVqpcxuNZ5uSWhNHImi0fMI-VXbirIX2GX1zWdzf80")
+                .build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+
+            }
+        });
     }
 
     @Override

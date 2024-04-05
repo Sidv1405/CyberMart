@@ -31,10 +31,13 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.vdsl.cybermart.Account.Activity.LoginActivity;
+
 import com.vdsl.cybermart.Account.Fragment.FragmentManagementStaff;
+
 import com.vdsl.cybermart.Account.Fragment.FragmentSetting;
 import com.vdsl.cybermart.CategoryManagement.View.CategoryManagementActivity;
 import com.vdsl.cybermart.General;
@@ -72,11 +75,15 @@ public class FragmentProfile extends Fragment {
 //    });
 
     FragmentProfileBinding binding;
-    private FirebaseAuth auth;
     DatabaseReference databaseReference;
     SharedPreferences sharedPreferences;
     FirebaseUser currentUser;
+
 ProgressDialog progressDialog;
+
+    private FirebaseAuth auth;
+
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -115,6 +122,7 @@ ProgressDialog progressDialog;
             });
 
             builder.setPositiveButton("YES", (dialog, which) -> {
+
                 progressDialog.setMessage("Loging out...");
                 progressDialog.show();
                 FirebaseAuth.getInstance().signOut();
@@ -122,6 +130,20 @@ ProgressDialog progressDialog;
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
                 getActivity().finish();
+
+                FirebaseMessaging.getInstance().deleteToken().addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if(task.isSuccessful()){
+                            FirebaseAuth.getInstance().signOut();
+                            Intent intent = new Intent(getActivity(), LoginActivity.class);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                            startActivity(intent);
+                            getActivity().finish();
+                        }
+                    }
+                });
+
             });
 
             builder.create().show();
@@ -135,6 +157,7 @@ ProgressDialog progressDialog;
         binding.imgEditAvatar.setOnClickListener(v -> {
             openAvatarDialog();
         });
+
 
 
         binding.CvCreateStaff.setOnClickListener(v -> {
@@ -158,13 +181,37 @@ ProgressDialog progressDialog;
             startActivity(intent);
         });
         binding.CvSettings.setOnClickListener(v -> {
+
+
+        binding.btnStatistic.setOnClickListener(v -> {
+
+        //end
+
+        binding.btnMyOrder.setOnClickListener(v1 -> {
+            General.loadFragment(getParentFragmentManager(), new FragmentContainer(), null);
+        });
+        binding.cvCateManage.setOnClickListener(v2 -> {
+            startActivity(new Intent(getContext(), CategoryManagementActivity.class));
+        });
+        binding.cvProdManage.setOnClickListener(v3 -> {
+            startActivity(new Intent(getContext(), ProductManagementActivity.class));
+        });
+        binding.btnMyVoucher.setOnClickListener(v4 -> {
+            Intent intent = new Intent(getContext(), VoucherActivity.class);
+            startActivity(intent);
+        });
+        binding.CvSettings.setOnClickListener(v5 -> {
+
             FragmentSetting fragmentSetting = new FragmentSetting();
             FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
             transaction.replace(R.id.frag_container_main, fragmentSetting);
             transaction.addToBackStack(null);
             transaction.commit();
         });
-        binding.btnStatistic.setOnClickListener(v -> {
+
+
+        binding.btnStatistic.setOnClickListener(v6 -> {
+
             General.loadFragment(getParentFragmentManager(), new StatisticFragment(), null);
         });
     }

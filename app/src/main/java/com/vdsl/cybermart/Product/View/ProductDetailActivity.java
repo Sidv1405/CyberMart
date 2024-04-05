@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -132,6 +133,7 @@ public class ProductDetailActivity extends AppCompatActivity {
             Date currentDate = new Date();
             @SuppressLint("SimpleDateFormat") SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
             String date = dateFormat.format(currentDate);
+            Log.d("TAG", "onCreate: "+date);
 
             cartRef.orderByChild("accountId").equalTo(accountId).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override

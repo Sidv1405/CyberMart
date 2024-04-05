@@ -19,8 +19,10 @@
         <ImageView
             android:id="@+id/img_product"
             android:layout_width="match_parent"
-            android:layout_height="155dp"
-            android:scaleType="fitXY"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:adjustViewBounds="true"
+            android:scaleType="centerCrop"
             android:src="@drawable/clothes_nightwear_outfit_svgrepo_com" />
 
         <LinearLayout
@@ -37,7 +39,8 @@
                 android:paddingLeft="5dp"
                 android:text="Iphone 1"
                 android:textColor="@android:color/black"
-                android:textSize="15sp" />
+                android:textSize="15sp"
+                android:fontFamily="sans-serif-condensed-medium"/>
         </LinearLayout>
 
         <LinearLayout
@@ -56,7 +59,8 @@
                 android:paddingLeft="5dp"
                 android:text="999$"
                 android:textColor="#FF0000"
-                android:textSize="13sp" />
+                android:textSize="15sp"
+                android:fontFamily="sans-serif-condensed-medium"/>
         </LinearLayout>
     </LinearLayout>
 

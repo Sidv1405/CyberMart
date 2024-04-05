@@ -8,6 +8,8 @@ public class UserModel {
     private String status;
     private String avatar;
 
+    private String fcmToken;
+
     public UserModel() {
     }
 
@@ -109,6 +111,14 @@ public class UserModel {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public String getFcmToken() {
+        return fcmToken;
+    }
+
+    public void setFcmToken(String fcmToken) {
+        this.fcmToken = fcmToken;
     }
 
     @Override

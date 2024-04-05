@@ -10,10 +10,28 @@ public class ProductModel {
     private String categoryId;
     private boolean status;
 
+    public ProductModel(String name, String description, Double price, String image) {
+        this.name = name;
+        this.description = description;
+        this.price = price;
+        this.image = image;
+    }
+
     public ProductModel(String name, Double price, int quantity, String image) {
         this.name = name;
         this.price = price;
         this.quantity = quantity;
+    }
+
+    public ProductModel(String name, String image) {
+        this.name = name;
+        this.image = image;
+    }
+
+    public ProductModel(String name, Double price, String image) {
+        this.name = name;
+        this.price = price;
+        this.image = image;
     }
 
     public ProductModel(String name, String description, Double price, int quantity, String image, String categoryId, boolean status) {

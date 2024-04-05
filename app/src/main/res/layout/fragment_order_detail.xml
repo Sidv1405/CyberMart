@@ -24,7 +24,7 @@
         android:id="@+id/txtSeri"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Order: "
+        android:text="Seri: "
         android:textColor="#323131"
         android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -41,7 +41,7 @@
         android:layout_toEndOf="@id/txtSeri"
         android:text="178Dh45810"
         android:textColor="@color/black"
-        android:textSize="20sp"
+        android:textSize="18sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@+id/txtSeri"
         app:layout_constraintEnd_toEndOf="parent"
@@ -113,7 +113,7 @@
         app:layout_constraintVertical_bias="0.0" />
 
     <TextView
-        android:id="@+id/date"
+        android:id="@+id/txtDate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
@@ -173,7 +173,7 @@
         android:layout_alignParentEnd="true"
         android:layout_marginStart="2dp"
         android:gravity="center_vertical"
-        android:text="Deliver"
+        android:text="Cash"
         android:textColor="#060606"
         android:layout_marginTop="10dp"
         android:textSize="20sp"
