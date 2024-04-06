@@ -52,7 +52,6 @@ public class VoucherListAdapter extends FirebaseRecyclerAdapter<Voucher,VoucherL
             String voucherCode = voucher.getCode();
             Intent intent = new Intent(context, CartActivity.class);
             intent.putExtra("voucherCode", voucherCode);
-            intent.putExtra("discount", voucher.getDiscount());
             context.startActivity(intent);
         });
     }
@@ -92,6 +91,7 @@ public class VoucherListAdapter extends FirebaseRecyclerAdapter<Voucher,VoucherL
             binding.tvId.setText(voucher.getCode());
             binding.tvName.setText(voucher.getTitle());
             binding.tvPrice.setText(voucher.getDiscount() + "%");
+            binding.tvDate.setText(voucher.getExpiryDate());
         }
     }
 
