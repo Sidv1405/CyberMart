@@ -1,5 +1,6 @@
 package com.vdsl.cybermart.Account.Fragment;
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -29,6 +30,7 @@ public class FragmentAddStaff extends Fragment {
     DatabaseReference userDatabase;
     FirebaseUser currentUser;
     int latestUserID = 0;
+    ProgressDialog progressDialog;
 
     @Nullable
     @Override
@@ -44,7 +46,7 @@ public class FragmentAddStaff extends Fragment {
         userAuth = FirebaseAuth.getInstance();
         userDatabase = FirebaseDatabase.getInstance().getReference().child("Account");
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
-
+        progressDialog = new ProgressDialog(getActivity());
         binding.btnSignUp.setOnClickListener(v -> {
             String userName = binding.edtUserNameSignUp.getText().toString().trim();
             String email = binding.edtEmailSignUp.getText().toString().trim();
@@ -64,6 +66,21 @@ public class FragmentAddStaff extends Fragment {
             } else if (!email.matches(emailPattern)) {
                 binding.edtEmailSignUp.setError("Wrong email format!");
                 error = true;
+            } else {
+                userDatabase.orderByChild("email").equalTo(email).addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if (snapshot.exists()) {
+                            binding.edtEmailSignUp.setError("Email already exists. Please use another email!");
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+                error = true;
             }
             if (TextUtils.isEmpty(password)) {
                 binding.edtPassSignUp.setError("Please enter Password!");
@@ -81,20 +98,10 @@ public class FragmentAddStaff extends Fragment {
                 binding.edtConfirmPassSignUp.setError("Password is not match!");
                 error = true;
             }
-            userDatabase.orderByChild("email").equalTo(email).addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    if (snapshot.exists()) {
-                        binding.edtEmailSignUp.setError("Email already exists. Please use another email!");
-                    }
-                }
 
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
-
-                }
-            });
             if (!error) {
+                progressDialog.setMessage("loading...");
+                progressDialog.show();
                 userAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
@@ -118,14 +125,17 @@ public class FragmentAddStaff extends Fragment {
                                     currentUserDB.child("fullName").setValue(userName);
                                     currentUserDB.child("email").setValue(email);
                                     currentUserDB.child("role").setValue("Staff");
+                                    progressDialog.dismiss();
                                     Toast.makeText(getActivity(), "Add Staff Successfully.", Toast.LENGTH_SHORT).show();
                                 }
 
                                 @Override
                                 public void onCancelled(@NonNull DatabaseError error) {
-
+                                    progressDialog.dismiss();
                                 }
                             });
+                        } else {
+                            progressDialog.dismiss();
                         }
                     }
                 });

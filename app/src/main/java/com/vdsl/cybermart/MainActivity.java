@@ -1,18 +1,13 @@
 package com.vdsl.cybermart;
 
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-
-import android.view.View;
-
 import android.util.Log;
-
+import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -25,11 +20,9 @@ import com.google.firebase.messaging.FirebaseMessaging;
 import com.vdsl.cybermart.Account.Fragment.FragmentAddress;
 import com.vdsl.cybermart.Favourite.View.Favourite_Fragment;
 import com.vdsl.cybermart.Home.View.HomeFragment;
-import com.vdsl.cybermart.Message.ChatsFragment;
 import com.vdsl.cybermart.Message.FragmentMessage;
 import com.vdsl.cybermart.Notify.Notify_Fragment;
 import com.vdsl.cybermart.Person.FragmentProfile;
-import com.vdsl.cybermart.Voucher.View.VoucherActivity;
 import com.vdsl.cybermart.databinding.ActivityMainBinding;
 
 public class MainActivity extends AppCompatActivity {
@@ -39,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
     FirebaseUser firebaseUser;
 
     ActivityMainBinding binding;
+    public int MY_REQUEST_CODE=99;
     String role;
 
     @Override

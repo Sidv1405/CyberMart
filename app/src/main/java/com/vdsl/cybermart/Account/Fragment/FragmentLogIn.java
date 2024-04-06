@@ -1,5 +1,6 @@
 package com.vdsl.cybermart.Account.Fragment;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -35,6 +36,7 @@ public class FragmentLogIn extends Fragment {
     FirebaseAuth userAuth;
     DatabaseReference userDatabase;
     SharedPreferences sharedPreferences;
+    ProgressDialog progressDialog;
 
     @Nullable
     @Override
@@ -49,7 +51,7 @@ public class FragmentLogIn extends Fragment {
 
         userAuth = FirebaseAuth.getInstance();
         userDatabase = FirebaseDatabase.getInstance().getReference().child("Account");
-
+        progressDialog = new ProgressDialog(getActivity());
         sharedPreferences = requireActivity().getSharedPreferences("LOGIN_PREFS", Context.MODE_PRIVATE);
         binding.edtEmailSignIn.setText(sharedPreferences.getString("email", ""));
         binding.edtPassSignIn.setText(sharedPreferences.getString("password", ""));
@@ -94,6 +96,8 @@ public class FragmentLogIn extends Fragment {
             }
 
             if (!error) {
+                progressDialog.setMessage("Loging now...");
+                progressDialog.show();
                 userAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
@@ -104,7 +108,10 @@ public class FragmentLogIn extends Fragment {
                                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                                     if (snapshot.exists()) {
                                         for (DataSnapshot userSnapshot : snapshot.getChildren()) {
-                                            Toast.makeText(requireContext(), "Log in Successful", Toast.LENGTH_SHORT).show();
+
+                                            progressDialog.dismiss();
+                                            Toast.makeText(requireActivity(), "Log in Successful", Toast.LENGTH_SHORT).show();
+
                                             rememberUser(email, password, binding.chkRemember.isChecked());
 
                                             sharedPreferences = getActivity().getSharedPreferences("Users", Context.MODE_PRIVATE);
@@ -143,6 +150,7 @@ public class FragmentLogIn extends Fragment {
                                             return;
                                         }
                                     } else {
+                                        progressDialog.dismiss();
                                         Toast.makeText(getActivity(), "Email not found!", Toast.LENGTH_SHORT).show();
                                         return;
                                     }
@@ -150,9 +158,11 @@ public class FragmentLogIn extends Fragment {
 
                                 @Override
                                 public void onCancelled(@NonNull DatabaseError error1) {
+                                    progressDialog.dismiss();
                                 }
                             });
                         } else {
+                            progressDialog.dismiss();
                             Toast.makeText(getActivity(), "Failed, Please check your Email or Password", Toast.LENGTH_SHORT).show();
                         }
                     }
