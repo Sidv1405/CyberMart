@@ -1,5 +1,6 @@
 package com.vdsl.cybermart.Account.Fragment;
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -31,6 +32,10 @@ public class FragmentSignUp extends Fragment {
     DatabaseReference userDatabase;
     FirebaseUser currentUser;
     int latestUserID = 0;
+    /**
+     * @noinspection deprecation
+     */
+    ProgressDialog progressDialog;
 
     @Nullable
     @Override
@@ -39,6 +44,9 @@ public class FragmentSignUp extends Fragment {
         return binding.getRoot();
     }
 
+    /**
+     * @noinspection deprecation
+     */
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -46,7 +54,7 @@ public class FragmentSignUp extends Fragment {
         userAuth = FirebaseAuth.getInstance();
         userDatabase = FirebaseDatabase.getInstance().getReference().child("Account");
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
-
+        progressDialog = new ProgressDialog(getActivity());
         binding.txtSignIn.setOnClickListener(v -> {
             FragmentLogIn fragmentLogIn = new FragmentLogIn();
             FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
@@ -110,6 +118,8 @@ public class FragmentSignUp extends Fragment {
 
 
             if (!error) {
+                progressDialog.setMessage("registering...");
+                progressDialog.show();
                 userAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
@@ -134,6 +144,7 @@ public class FragmentSignUp extends Fragment {
                                     currentUserDB.child("email").setValue(email);
                                     currentUserDB.child("role").setValue("Customer");
 
+                                    progressDialog.dismiss();
                                     Toast.makeText(getActivity(), "Sign Up Successful.", Toast.LENGTH_SHORT).show();
                                     FragmentLogIn fragmentLogIn = new FragmentLogIn();
                                     FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
@@ -144,9 +155,11 @@ public class FragmentSignUp extends Fragment {
 
                                 @Override
                                 public void onCancelled(@NonNull DatabaseError error) {
-
+                                    progressDialog.dismiss();
                                 }
                             });
+                        }else {
+                            progressDialog.dismiss();
                         }
                     }
                 });
