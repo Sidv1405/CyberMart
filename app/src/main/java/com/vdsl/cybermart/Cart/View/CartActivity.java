@@ -29,6 +29,7 @@ import com.saadahmedsoft.popupdialog.listener.OnDialogButtonClickListener;
 import com.vdsl.cybermart.Cart.Adapter.CartAdapter;
 import com.vdsl.cybermart.Cart.Model.CartModel;
 import com.vdsl.cybermart.General;
+import com.vdsl.cybermart.Order.Fragment.PrepareFragment;
 import com.vdsl.cybermart.Order.Model.Order;
 import com.vdsl.cybermart.Product.Model.ProductModel;
 import com.vdsl.cybermart.R;
@@ -80,12 +81,13 @@ public class CartActivity extends AppCompatActivity implements CartAdapter.Total
                             String id = newOrderRef.getKey();
                             SharedPreferences sharedPreferences = getSharedPreferences("Users", Context.MODE_PRIVATE);
                             String address = sharedPreferences.getString("address", "");
+                            String role = sharedPreferences.getString("Role", "");
                             String payment = rdoCash.isChecked() ? "Cash" : "Credit Card";
                             String voucher = txtVoucher.getText().toString().isEmpty() ? "0" : txtVoucher.getText().toString();
-                            Order order = new Order(id, address, "Prepare", payment, voucher, cart);
+                            Order order = new Order(id, address, "prepare", payment, voucher, cart);
                             newOrderRef.setValue(order);
+                            General.loadFragment(getSupportFragmentManager(), new PrepareFragment(), null);
                             finish();
-
                         }
 
                         @Override

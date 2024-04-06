@@ -19,7 +19,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
 
     private int type;
 
-    public NotificationAdapter(List<NotifyModel> list) {
+    public NotificationAdapter(List<NotifyModel> list,Context context) {
         this.list = list;
     }
 
@@ -41,8 +41,10 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
     public void onBindViewHolder(@NonNull NotificationViewHolder holder, int position) {
         NotifyModel notifyModel = list.get(position);
         holder.bind(notifyModel);
-        if (type == 1){
+        if (notifyModel.getType() == 2){
             holder.binding.txtTitle.setText(notifyModel.getTitle() + " đã gửi bạn một tin nhắn");
+        }else{
+            holder.binding.txtTitle.setText("trạng đơn hàng " + notifyModel.getTitle() + " đã thay đổi");
         }
     }
 
