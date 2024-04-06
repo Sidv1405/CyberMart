@@ -217,20 +217,20 @@ public class FragmentProfile extends Fragment {
     private void showInitInfor() {
 //        if (auth.getCurrentUser() != null) {
         Log.d("loginnow", "logged in");
-        String FullName = sharedPreferences.getString("fullName", "nothing to show");
-        String Email = sharedPreferences.getString("email", "nothing to show");
-        String Avatar = sharedPreferences.getString("avatar", "nothing to show");
-        String Role = sharedPreferences.getString("role", "nothing to show");
-        binding.txtYourName.setText(FullName);
-        binding.txtYourEmail.setText(Email);
-        Log.d("loginnow", "fname: " + FullName);
-        Log.d("loginnow", "email: " + Email);
-        Log.d("loginnow", "avatar: " + Avatar);
-        if (!Avatar.equals("nothing to show") && !Avatar.isEmpty()) {
-            Picasso.get().load(Avatar).into(binding.imgAvatar, new Callback() {
+        String fullName = sharedPreferences.getString("fullName", "nothing to show");
+        String email = sharedPreferences.getString("email", "nothing to show");
+        String avatar = sharedPreferences.getString("avatar", "nothing to show");
+        String role = sharedPreferences.getString("role", "nothing to show");
+        binding.txtYourName.setText(fullName);
+        binding.txtYourEmail.setText(email);
+        Log.d("loginnow", "fname: " + fullName);
+        Log.d("loginnow", "email: " + email);
+        Log.d("loginnow", "avatar: " + avatar);
+        if (!avatar.equals("nothing to show") && !avatar.isEmpty()) {
+            Picasso.get().load(avatar).into(binding.imgAvatar, new Callback() {
                 @Override
                 public void onSuccess() {
-                    Log.d("Avatar", "Avatar: " + Avatar);
+                    Log.d("Avatar", "Avatar: " + avatar);
                 }
 
                 @Override
@@ -241,12 +241,12 @@ public class FragmentProfile extends Fragment {
         } else {
             binding.imgAvatar.setImageResource(R.drawable.img_default_profile_image);
         }
-        if (!Role.isEmpty() && !Role.equals("nothing to show") && Role.equals("Admin")) {
+        if (!role.isEmpty() && !role.equals("nothing to show") && role.equals("Admin")) {
             binding.CvCreateStaff.setVisibility(View.VISIBLE);
-            Log.d("loginnow", "Role: " + Role);
+            Log.d("loginnow", "Role: " + role);
         } else {
             binding.CvCreateStaff.setVisibility(View.GONE);
-            Log.d("loginnow", "Role: " + Role);
+            Log.d("loginnow", "Role: " + role);
         }
 //            databaseReference.orderByChild("email").equalTo(currentUser.getEmail()).addValueEventListener(new ValueEventListener() {
 //                @Override
@@ -256,13 +256,13 @@ public class FragmentProfile extends Fragment {
 //                            String userId = dataSnapshot.getKey();
 //                            if (userId != null) {
 //                                String FullName = dataSnapshot.child("fullName").getValue(String.class);
-//                                String Email = dataSnapshot.child("email").getValue(String.class);
+//                                String email = dataSnapshot.child("email").getValue(String.class);
 //                                String Avatar = dataSnapshot.child("avatar").getValue(String.class);
 //                                String Role = dataSnapshot.child("role").getValue(String.class);
 //                                binding.txtYourName.setText(FullName);
-//                                binding.txtYourEmail.setText(Email);
+//                                binding.txtYourEmail.setText(email);
 //                                Log.d("loginnow", "fname: " + FullName);
-//                                Log.d("loginnow", "email: " + Email);
+//                                Log.d("loginnow", "email: " + email);
 //                                Log.d("loginnow", "avatar: " + Avatar);
 //                                if (Avatar != null && !Avatar.isEmpty()) {
 //                                    Picasso.get().load(Avatar).into(binding.imgAvatar, new Callback() {

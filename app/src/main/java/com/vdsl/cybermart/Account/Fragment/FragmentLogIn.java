@@ -114,36 +114,36 @@ public class FragmentLogIn extends Fragment {
                                             sharedPreferences = getActivity().getSharedPreferences("Users", Context.MODE_PRIVATE);
                                             SharedPreferences.Editor editor = sharedPreferences.edit();
                                             String ID = userSnapshot.getKey();
-                                            String FullName = userSnapshot.child("fullName").getValue(String.class);
-                                            String Email = userSnapshot.child("email").getValue(String.class);
-                                            String Role = userSnapshot.child("role").getValue(String.class);
+                                            String fullName = userSnapshot.child("fullName").getValue(String.class);
+                                            String email = userSnapshot.child("email").getValue(String.class);
+                                            String role = userSnapshot.child("role").getValue(String.class);
 
-                                            String Avatar = userSnapshot.child("avatar").getValue(String.class);
+                                            String avatar = userSnapshot.child("avatar").getValue(String.class);
                                             /*String Address = userSnapshot.child("address").getValue(String.class);*/
 
-                                            String PhoneNumber = userSnapshot.child("phoneNumber").getValue(String.class);
+                                            String phoneNumber = userSnapshot.child("phoneNumber").getValue(String.class);
 
                                             editor.putString("ID", ID);
-                                            editor.putString("fullName", FullName);
-                                            editor.putString("email", Email);
-                                            editor.putString("role", Role);
+                                            editor.putString("fullName", fullName);
+                                            editor.putString("email", email);
+                                            editor.putString("role", role);
 
-                                            if (!TextUtils.isEmpty(Avatar)) {
-                                                editor.putString("avatar", Avatar);
-                                                Log.d("Avatar", "onViewCreated: " + Avatar);
+                                            if (!TextUtils.isEmpty(avatar)) {
+                                                editor.putString("avatar", avatar);
+                                                Log.d("Avatar", "onViewCreated: " + avatar);
                                             } else {
                                                 editor.putString("avatar", null);
                                                 Log.d("Avatar", "Avatar is empty");
                                             }
                                             /*editor.putString("address", Address);*/
 
-                                            editor.putString("phoneNumber", PhoneNumber);
+                                            editor.putString("phoneNumber", phoneNumber);
                                             editor.apply();
                                             Intent intent = new Intent(requireActivity(), MainActivity.class);
                                             startActivity(intent);
                                             getActivity().finish();
                                             Log.d("ID", "ID " + ID);
-                                            Log.d("Role", "Role: " + Role);
+                                            Log.d("Role", "Role: " + role);
                                             return;
                                         }
                                     } else {
@@ -192,17 +192,17 @@ public class FragmentLogIn extends Fragment {
                             sharedPreferences = getActivity().getSharedPreferences("Users", Context.MODE_PRIVATE);
                             SharedPreferences.Editor editor = sharedPreferences.edit();
                             String ID = userSnapshot.getKey();
-                            String FullName = userSnapshot.child("fullName").getValue(String.class);
-                            String Role = userSnapshot.child("role").getValue(String.class);
-                            String Avatar = userSnapshot.child("avatar").getValue(String.class);
-                            String PhoneNumber = userSnapshot.child("phoneNumber").getValue(String.class);
+                            String fullName = userSnapshot.child("fullName").getValue(String.class);
+                            String role = userSnapshot.child("role").getValue(String.class);
+                            String avatar = userSnapshot.child("avatar").getValue(String.class);
+                            String phoneNumber = userSnapshot.child("phoneNumber").getValue(String.class);
 
                             editor.putString("ID", ID);
-                            editor.putString("fullName", FullName);
+                            editor.putString("fullName", fullName);
                             editor.putString("email", email); // Lưu email từ người dùng nhập, không phải từ database
-                            editor.putString("role", Role);
-                            editor.putString("avatar", Avatar != null ? Avatar : ""); // Kiểm tra Avatar null
-                            editor.putString("phoneNumber", PhoneNumber != null ? PhoneNumber : ""); // Kiểm tra PhoneNumber null
+                            editor.putString("role", role);
+                            editor.putString("avatar", avatar != null ? avatar : ""); // Kiểm tra Avatar null
+                            editor.putString("phoneNumber", phoneNumber != null ? phoneNumber : ""); // Kiểm tra PhoneNumber null
                             editor.apply();
 
                             // Chuyển đến giao diện trang chủ

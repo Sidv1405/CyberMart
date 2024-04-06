@@ -1,5 +1,6 @@
 package com.vdsl.cybermart.Account.Adapter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -71,6 +72,7 @@ public class AddressAdapter extends FirebaseRecyclerAdapter<AddressModel, Addres
         TextView txtFullName, txtAddress;
         CardView CvItemAddress;
 
+        @SuppressLint("NotifyDataSetChanged")
         public AddressViewHolder(@NonNull View itemView) {
             super(itemView);
             chkUseAddress = itemView.findViewById(R.id.chkUseAddress);
@@ -81,11 +83,11 @@ public class AddressAdapter extends FirebaseRecyclerAdapter<AddressModel, Addres
                 int position = getAdapterPosition();
                 if (position != RecyclerView.NO_POSITION) {
                     selectedPosition = position;
-                    notifyDataSetChanged();
                     SharedPreferences.Editor editor = addressPref.edit();
                     editor.putString("address", txtAddress.getText().toString());
                     editor.apply();
                     saveSelectedPosition(selectedPosition);
+                    notifyDataSetChanged();
                 }
             });
         }

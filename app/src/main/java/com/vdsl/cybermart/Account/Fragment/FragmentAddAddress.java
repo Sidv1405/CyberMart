@@ -1,5 +1,7 @@
 package com.vdsl.cybermart.Account.Fragment;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,7 +29,7 @@ import java.util.Map;
 public class FragmentAddAddress extends Fragment {
     FragmentAddAddressBinding binding;
     DatabaseReference databaseReference, addressRef;
-
+    SharedPreferences sharedPreferences;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -40,7 +42,7 @@ public class FragmentAddAddress extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         binding.btnDeleteAddress.setVisibility(View.GONE);
-
+        sharedPreferences = getActivity().getSharedPreferences("Users", Context.MODE_PRIVATE);
         databaseReference = FirebaseDatabase.getInstance().getReference().child("Account");
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
 
@@ -75,13 +77,14 @@ public class FragmentAddAddress extends Fragment {
                 }
 
                 if ((!error)) {
-                    if (currentUser != null) {
-                        databaseReference.orderByChild("email").equalTo(currentUser.getEmail()).addListenerForSingleValueEvent(new ValueEventListener() {
+//                    if (currentUser != null) {
+                    String email = sharedPreferences.getString("email",null);
+                        databaseReference.orderByChild("email").equalTo(email).addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot snapshot) {
                                 if (snapshot.exists()) {
                                     for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                                        String userId = dataSnapshot.getKey();
+                                        String userId = sharedPreferences.getString("ID",null);
                                         if (userId != null) {
                                             String addressId = databaseReference.push().getKey();
                                             addressRef = FirebaseDatabase.getInstance().getReference().child("Account").child(userId).child("address");
@@ -111,7 +114,7 @@ public class FragmentAddAddress extends Fragment {
                             }
                         });
 
-                    }
+//                    }
                 }
             }
         });
