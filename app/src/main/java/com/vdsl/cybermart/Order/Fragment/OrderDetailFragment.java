@@ -27,14 +27,55 @@ import com.vdsl.cybermart.Order.Model.Order;
 import com.vdsl.cybermart.Product.Model.ProductModel;
 import com.vdsl.cybermart.databinding.FragmentOrderDetailBinding;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Objects;
 
 public class OrderDetailFragment extends Fragment {
     FragmentOrderDetailBinding binding;
     Query query;
     ProductsListAdapterInOrder adapter;
 
+    private static void updateQuantity(Order order) {
+        Query proQuery = FirebaseDatabase.getInstance().getReference().child("Orders")
+                .child(order.getSeri()).child("cartModel").child("cartDetail");
+        proQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                        ProductModel cartPro = dataSnapshot.getValue(ProductModel.class);
+                        if (cartPro != null) {
+                            int quantitySell = cartPro.getQuantity();
+                            String productId = cartPro.getProdId();
+                            // Cập nhật số lượng sản phẩm trong kho
+                            DatabaseReference productRef = FirebaseDatabase.getInstance().getReference()
+                                    .child("products").child(productId).child("quantity");
+                            productRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                    if (snapshot.exists()) {
+                                        int currentQuantity = Objects.requireNonNull(snapshot.getValue(Integer.class));
+                                        int updatedQuantity = currentQuantity - quantitySell;
+                                        productRef.setValue(updatedQuantity);
+
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {
+
+                                }
+                            });
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -57,7 +98,7 @@ public class OrderDetailFragment extends Fragment {
             Order order = (Order) bundle.getSerializable("Order");
             if (order != null) {
                 binding.txtSeriNumber.setText(order.getSeri());
-                binding.totalValue.setText(order.getCartModel().getTotalPrice()+"");
+                binding.totalValue.setText(order.getCartModel().getTotalPrice() + "");
                 binding.txtAddressName.setText(order.getAddress());
                 binding.txtStatus.setText(order.getStatus());
                 binding.txtPaymentName.setText(order.getPaymentMethod());
@@ -65,27 +106,28 @@ public class OrderDetailFragment extends Fragment {
                 setTextUser(order);
                 getProductInOrder(order);
                 SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("Users", Context.MODE_PRIVATE);
-                String id = sharedPreferences.getString("ID", "");
                 String role = sharedPreferences.getString("Role", "");
                 if (!role.equals("Customer")) {
-                    if(!order.getStatus().equals("Delivered")){
+                    if (!order.getStatus().equals("Delivered")) {
                         binding.txtStatus.setOnClickListener(v -> {
-                            String[] status = new String[]{"Processing", "Canceled","Delivered"};
+                            String[] status = new String[]{"Processing", "Canceled", "Delivered"};
                             AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
                             builder.setTitle("Cập nhật trạng thái đơn hàng");
                             builder.setSingleChoiceItems(status, 0, (dialog, which) -> {
-                                if(which==2){
+                                if (which == 2) {
                                     AlertDialog.Builder builder1 = new AlertDialog.Builder(requireContext());
                                     builder1.setTitle("Cảnh báo");
                                     builder1.setMessage("Khi chuyển qua trạng thái \"Delivered\" thì bạn không thể thay đổi!");
-                                    builder1.setPositiveButton("OK",(dialog1, which1) -> {
+                                    builder1.setPositiveButton("OK", (dialog1, which1) -> {
                                         setStatus(dialog, order, status[which]);
                                         // trừ số hàng đã nhận vào số hàng trong kho
+                                        updateQuantity(order);
                                     });
-                                    builder1.setNegativeButton("Cancel",(dialog1, which1) -> {});
+                                    builder1.setNegativeButton("Cancel", (dialog1, which1) -> {
+                                    });
                                     AlertDialog alertDialog = builder1.create();
                                     alertDialog.show();
-                                }else {
+                                } else {
                                     setStatus(dialog, order, status[which]);
                                 }
                             });
@@ -105,6 +147,7 @@ public class OrderDetailFragment extends Fragment {
         referenceOrder.setValue(order);
         binding.txtStatus.setText(status);
         dialog.cancel();
+
     }
 
     private void setTextUser(Order order) {

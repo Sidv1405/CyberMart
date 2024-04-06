@@ -108,8 +108,10 @@ public class FragmentLogIn extends Fragment {
                                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                                     if (snapshot.exists()) {
                                         for (DataSnapshot userSnapshot : snapshot.getChildren()) {
+
                                             progressDialog.dismiss();
                                             Toast.makeText(requireActivity(), "Log in Successful", Toast.LENGTH_SHORT).show();
+
                                             rememberUser(email, password, binding.chkRemember.isChecked());
 
                                             sharedPreferences = getActivity().getSharedPreferences("Users", Context.MODE_PRIVATE);
