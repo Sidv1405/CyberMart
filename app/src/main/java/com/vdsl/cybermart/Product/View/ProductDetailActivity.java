@@ -21,6 +21,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 import com.vdsl.cybermart.Cart.Model.CartModel;
@@ -32,7 +33,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ProductDetailActivity extends AppCompatActivity {
     TextView productNameTextView;
@@ -112,70 +112,97 @@ public class ProductDetailActivity extends AppCompatActivity {
 
             SharedPreferences sharedPreferences = getSharedPreferences("Users", MODE_PRIVATE);
             String accountId = sharedPreferences.getString("ID", "");
-
-            ProductModel productDetail = new ProductModel(productNameTextView.getText().toString(), Double.parseDouble(productPriceTextView.getText().toString().substring(1)), Integer.parseInt(txtQuantity.getText().toString()), productImage);
-            productDetail.setImage(productImage);
-            Map<String, ProductModel> cartDetail = new HashMap<>();
-
-            cartDetail.put(productDetail.getName(), productDetail);
-
-            double totalMoney = productDetail.getPrice() * productDetail.getQuantity();
-
-            Date currentDate = new Date();
-            @SuppressLint("SimpleDateFormat") SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
-            String date = dateFormat.format(currentDate);
-            Log.d("TAG", "onCreate: "+date);
-
-            cartRef.orderByChild("accountId").equalTo(accountId).addListenerForSingleValueEvent(new ValueEventListener() {
+            String proName = productNameTextView.getText().toString();
+            Log.d("TAG", "onDataChange:proName "+proName);
+            Query query = FirebaseDatabase.getInstance().getReference("products").orderByChild("name").equalTo(proName);
+            query.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     if (snapshot.exists()) {
-                        for (DataSnapshot cartSnapshot : snapshot.getChildren()) {
-                            String cartId = cartSnapshot.getKey();
-                            CartModel existingCart = cartSnapshot.getValue(CartModel.class);
-                            if (!cartSnapshot.hasChild("cartDetail")) {
-                                Map<String, ProductModel> cartDetail = new HashMap<>();
-                                existingCart.setCartDetail(cartDetail);
+                        for (DataSnapshot s:snapshot.getChildren()){
+                            ProductModel curPro = s.getValue(ProductModel.class);
+                            if(curPro!=null){
+                                if(curPro.getName().equals(proName)){
+                                    Log.d("TAG", "onDataChange:curPro "+curPro.getProdId());
+                                    ProductModel productDetail = new ProductModel(curPro.getProdId(), proName,
+                                            Double.parseDouble(productPriceTextView.getText().toString().substring(1)),
+                                            Integer.parseInt(txtQuantity.getText().toString()), productImage);
+                                    productDetail.setImage(productImage);
+                                    Map<String, ProductModel> cartDetail = new HashMap<>();
+
+                                    cartDetail.put(productDetail.getName(), productDetail);
+
+                                    double totalMoney = productDetail.getPrice() * productDetail.getQuantity();
+                                    Date currentDate = new Date();
+                                    @SuppressLint("SimpleDateFormat") SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
+                                    String date = dateFormat.format(currentDate);
+                                    Log.d("TAG", "onCreate: " + date);
+
+                                    cartRef.orderByChild("accountId").equalTo(accountId).addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                            if (snapshot.exists()) {
+                                                for (DataSnapshot cartSnapshot : snapshot.getChildren()) {
+                                                    String cartId = cartSnapshot.getKey();
+                                                    CartModel existingCart = cartSnapshot.getValue(CartModel.class);
+                                                    if (!cartSnapshot.hasChild("cartDetail")) {
+                                                        Map<String, ProductModel> cartDetail = new HashMap<>();
+                                                        existingCart.setCartDetail(cartDetail);
+                                                    }
+
+                                                    if (existingCart.getCartDetail() == null) {
+                                                        existingCart.setCartDetail(new HashMap<>());
+                                                    }
+
+                                                    existingCart.getCartDetail().put(productDetail.getName(), productDetail);
+
+                                                    existingCart.setTotalPrice(existingCart.getTotalPrice() + totalMoney);
+
+                                                    String cartDetailName = "cartDetail_" + accountId;
+                                                    SharedPreferences cartSharedPreferences = getSharedPreferences(cartDetailName, Context.MODE_PRIVATE);
+                                                    SharedPreferences.Editor cartEditor = cartSharedPreferences.edit();
+                                                    cartEditor.putString("id", cartId);
+                                                    cartEditor.apply();
+
+                                                    cartRef.child(cartId).setValue(existingCart);
+                                                    finish();
+                                                    break;
+                                                }
+                                            } else {
+                                                DatabaseReference newCartRef = cartRef.push();
+                                                String cartId = newCartRef.getKey();
+                                                CartModel cartModel = new CartModel(cartId, accountId, cartDetail, totalMoney, date);
+
+                                                String cartDetailName = "cartDetail_" + accountId;
+                                                SharedPreferences cartSharedPreferences = getSharedPreferences(cartDetailName, Context.MODE_PRIVATE);
+                                                SharedPreferences.Editor cartEditor = cartSharedPreferences.edit();
+                                                cartEditor.putString("id", cartId);
+                                                cartEditor.apply();
+
+                                                newCartRef.setValue(cartModel);
+                                                finish();
+                                            }
+                                        }
+
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError error) {
+                                        }
+                                    });
+                                }
                             }
 
-                            if (existingCart.getCartDetail() == null) {
-                                existingCart.setCartDetail(new HashMap<>());
-                            }
-
-                            existingCart.getCartDetail().put(productDetail.getName(), productDetail);
-
-                            existingCart.setTotalPrice(existingCart.getTotalPrice() + totalMoney);
-
-                            String cartDetailName = "cartDetail_" + accountId;
-                            SharedPreferences cartSharedPreferences = getSharedPreferences(cartDetailName, Context.MODE_PRIVATE);
-                            SharedPreferences.Editor cartEditor = cartSharedPreferences.edit();
-                            cartEditor.putString("id", cartId);
-                            cartEditor.apply();
-
-                            cartRef.child(cartId).setValue(existingCart);
-                            finish();
-                            break;
                         }
-                    } else {
-                        DatabaseReference newCartRef = cartRef.push();
-                        String cartId = newCartRef.getKey();
-                        CartModel cartModel = new CartModel(cartId, accountId, cartDetail, totalMoney, date);
 
-                        String cartDetailName = "cartDetail_" + accountId;
-                        SharedPreferences cartSharedPreferences = getSharedPreferences(cartDetailName, Context.MODE_PRIVATE);
-                        SharedPreferences.Editor cartEditor = cartSharedPreferences.edit();
-                        cartEditor.putString("id", cartId);
-                        cartEditor.apply();
-
-                        newCartRef.setValue(cartModel);
-                        finish();
                     }
                 }
 
                 @Override
                 public void onCancelled(@NonNull DatabaseError error) {
+
                 }
             });
+
+
         });
 
         //    add to favorites
@@ -269,7 +296,6 @@ public class ProductDetailActivity extends AppCompatActivity {
             public void onCancelled(@NonNull DatabaseError error) {
             }
         });
-
 
 
     }

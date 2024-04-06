@@ -27,7 +27,6 @@ import com.saadahmedsoft.popupdialog.listener.OnDialogButtonClickListener;
 import com.vdsl.cybermart.Cart.Adapter.CartAdapter;
 import com.vdsl.cybermart.Cart.Model.CartModel;
 import com.vdsl.cybermart.General;
-import com.vdsl.cybermart.Order.Fragment.PrepareFragment;
 import com.vdsl.cybermart.Order.Model.Order;
 import com.vdsl.cybermart.Product.Model.ProductModel;
 import com.vdsl.cybermart.R;
@@ -79,7 +78,7 @@ public class CartActivity extends AppCompatActivity implements CartAdapter.Total
                             String voucher = txtVoucher.getText().toString().isEmpty() ? "0" : txtVoucher.getText().toString();
                             Order order = new Order(id, address, "Prepare", payment, voucher, cart);
                             newOrderRef.setValue(order);
-                           finish();
+                            finish();
 
                         }
 
