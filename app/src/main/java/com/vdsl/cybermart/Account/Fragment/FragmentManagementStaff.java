@@ -13,9 +13,12 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 import com.vdsl.cybermart.Account.Adapter.StaffMangeAdapter;
 import com.vdsl.cybermart.Account.Model.UserModel;
 import com.vdsl.cybermart.R;
@@ -27,6 +30,7 @@ public class FragmentManagementStaff extends Fragment {
     DatabaseReference staffRef;
 
     StaffMangeAdapter adapter;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -71,7 +75,43 @@ public class FragmentManagementStaff extends Fragment {
 
             @Override
             public boolean onQueryTextChange(String newText) {
+//                Query query =
+//                        staffRef.orderByChild("role").equalTo("Staff").orderByChild("fullName").startAt(newText).endAt(newText +
+//                        "\uf8ff");
+//                FirebaseRecyclerOptions<UserModel> options =
+//                        new FirebaseRecyclerOptions.Builder<UserModel>().setQuery(query,
+//                                UserModel.class).build();
+//                StaffMangeAdapter staffMangeAdapter = new StaffMangeAdapter(options,
+//                        requireActivity());
+//                binding.rcvStaff.setAdapter(staffMangeAdapter);
+//                staffMangeAdapter.startListening();
+                String searchText = newText.toLowerCase();
 
+                Query query = staffRef.orderByChild("role").equalTo("Staff");
+                query.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                            String fullName = dataSnapshot.child("fullName").getValue(String.class);
+                            dataSnapshot.getRef().child("fullNameIndex").setValue(fullName.toLowerCase());
+                        }
+
+                        Query searchQuery = staffRef.orderByChild("fullNameIndex").startAt(searchText).endAt(searchText + "\uf8ff");
+
+                        FirebaseRecyclerOptions<UserModel> options = new FirebaseRecyclerOptions.Builder<UserModel>()
+                                .setQuery(searchQuery, UserModel.class)
+                                .build();
+
+                        StaffMangeAdapter staffMangeAdapter = new StaffMangeAdapter(options, requireActivity());
+                        binding.rcvStaff.setAdapter(staffMangeAdapter);
+                        staffMangeAdapter.startListening();
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
                 return false;
             }
         });
@@ -88,9 +128,8 @@ public class FragmentManagementStaff extends Fragment {
                 .setQuery(query, UserModel.class)
                 .build();
 
-        adapter = new StaffMangeAdapter(options,getActivity());
+        adapter = new StaffMangeAdapter(options, getActivity());
         binding.rcvStaff.setAdapter(adapter);
-
 
 
     }
