@@ -1,6 +1,8 @@
 package com.vdsl.cybermart.Product.Model;
 
-public class ProductModel {
+import java.io.Serializable;
+
+public class ProductModel implements Serializable {
     private String prodId;
     private String name;
     private String description;

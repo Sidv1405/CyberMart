@@ -99,7 +99,7 @@ ProgressDialog progressDialog;
         databaseReference = FirebaseDatabase.getInstance().getReference().child("Account");
         sharedPreferences = getActivity().getSharedPreferences("Users", Context.MODE_PRIVATE);
         currentUser = auth.getCurrentUser();
-        progressDialog= new ProgressDialog(getActivity());
+        progressDialog = new ProgressDialog(getActivity());
         //show infor
         showInitInfor();
         //end
@@ -134,7 +134,7 @@ ProgressDialog progressDialog;
                 FirebaseMessaging.getInstance().deleteToken().addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
-                        if(task.isSuccessful()){
+                        if (task.isSuccessful()) {
                             FirebaseAuth.getInstance().signOut();
                             Intent intent = new Intent(getActivity(), LoginActivity.class);
                             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -159,7 +159,6 @@ ProgressDialog progressDialog;
         });
 
 
-
         binding.CvCreateStaff.setOnClickListener(v -> {
             FragmentManagementStaff fragmentManagementStaff = new FragmentManagementStaff();
             FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
@@ -180,10 +179,6 @@ ProgressDialog progressDialog;
             Intent intent = new Intent(getContext(), VoucherActivity.class);
             startActivity(intent);
         });
-        binding.CvSettings.setOnClickListener(v -> {
-
-
-        binding.btnStatistic.setOnClickListener(v -> {
 
         //end
 

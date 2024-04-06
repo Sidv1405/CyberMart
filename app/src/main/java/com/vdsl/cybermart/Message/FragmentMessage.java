@@ -18,8 +18,11 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.Picasso;
 import com.vdsl.cybermart.Account.Model.UserModel;
 import com.vdsl.cybermart.Message.Adapter.ViewPagerAdapter;
+import com.vdsl.cybermart.R;
 import com.vdsl.cybermart.databinding.FragmentMessageBinding;
 
 import java.util.HashMap;
@@ -50,6 +53,21 @@ public class FragmentMessage extends Fragment {
 
                             if (user != null) {
                                 binding.txtUsername.setText(user.getFullName());
+                                if (!user.getAvatar().isEmpty() || user.getAvatar() != null){
+                                    Picasso.get().load(user.getAvatar()).into(binding.imgProfile, new Callback() {
+                                        @Override
+                                        public void onSuccess() {
+                                            Log.d("check47", "onSuccess: " + user.getAvatar());
+                                        }
+
+                                        @Override
+                                        public void onError(Exception e) {
+                                            binding.imgProfile.setImageResource(R.drawable.img_default_profile_image);
+                                        }
+                                    });
+                                }else {
+                                    binding.imgProfile.setImageResource(R.drawable.img_default_profile_image);
+                                }
                             }
                         }
 

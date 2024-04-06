@@ -2,6 +2,7 @@ package com.vdsl.cybermart.Message;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -26,6 +27,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Picasso;
 import com.vdsl.cybermart.Account.Model.UserModel;
 import com.vdsl.cybermart.General;
 import com.vdsl.cybermart.MainActivity;
@@ -125,6 +127,25 @@ public class MessageActivity extends AppCompatActivity {
 
                             if (user != null) {
                                 binding.txtUsername.setText(user.getFullName());
+                                SharedPreferences pref = getSharedPreferences("user",MODE_PRIVATE);
+                                SharedPreferences.Editor editor = pref.edit();
+                                editor.putString("avatar", user.getAvatar());
+                                editor.commit();
+
+                            }if (!user.getAvatar().isEmpty() || user.getAvatar() != null){
+                                Picasso.get().load(user.getAvatar()).into(binding.imgProfile, new com.squareup.picasso.Callback() {
+                                    @Override
+                                    public void onSuccess() {
+                                        Log.d("check47", "onSuccess: " + user.getAvatar());
+                                    }
+
+                                    @Override
+                                    public void onError(Exception e) {
+                                        binding.imgProfile.setImageResource(R.drawable.img_default_profile_image);
+                                    }
+                                });
+                            }else {
+                                binding.imgProfile.setImageResource(R.drawable.img_default_profile_image);
                             }
                             readMessage(firebaseUser.getEmail(), userEmail);
                         }
@@ -378,6 +399,7 @@ public class MessageActivity extends AppCompatActivity {
         OkHttpClient client = new OkHttpClient();
         String url = "https://fcm.googleapis.com/fcm/send";
         RequestBody body = RequestBody.create(jsonObject.toString(),JSON);
+        Log.e("check44", "callApi Message: " + jsonObject.toString() );
         Request request = new Request.Builder()
                 .url(url)
                 .post(body)

@@ -2,9 +2,10 @@ package com.vdsl.cybermart.Cart.Model;
 
 import com.vdsl.cybermart.Product.Model.ProductModel;
 
+import java.io.Serializable;
 import java.util.Map;
 
-public class CartModel {
+public class CartModel implements Serializable {
     private String cartId;
     private String accountId;
     private Map<String, ProductModel> cartDetail;

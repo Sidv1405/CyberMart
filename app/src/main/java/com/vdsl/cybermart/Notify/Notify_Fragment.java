@@ -168,7 +168,7 @@ public class Notify_Fragment extends Fragment {
                         notifyList.add(notifyModel);
                     }
                 }
-                adapter = new NotificationAdapter(notifyList, getContext(), 1);
+                adapter = new NotificationAdapter(notifyList, getContext());
                 binding.rcvNotify.setAdapter(adapter);
                 adapter.notifyDataSetChanged();
             }
