@@ -279,17 +279,40 @@ public class FragmentSetting extends Fragment {
             }
 
             if (!error) {
-                user.updatePassword(newPass).addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        if (task.isSuccessful()) {
-                            Toast.makeText(getActivity(), "Change password successfully", Toast.LENGTH_SHORT).show();
-                        } else {
-                            Toast.makeText(getActivity(), "Failed to change password!", Toast.LENGTH_SHORT).show();
+                if (user!=null){
+                    user.updatePassword(newPass).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if (task.isSuccessful()) {
+                                Toast.makeText(getActivity(), "Change password successfully", Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(getActivity(), "Failed to change password!", Toast.LENGTH_SHORT).show();
+
+                            }
+                        }
+                    });
+                }else{
+                    String email=preferencesGetInfor.getString("email","null");
+                    String userId=preferencesGetInfor.getString("ID","null");
+                    databaseReference.orderByChild("email").equalTo(email).addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            if (snapshot.exists()) {
+                                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                                    DatabaseReference userRef = databaseReference.child(userId);
+                                    userRef.child("password").setValue(newPass);
+                                    Toast.makeText(requireActivity(), "Successfully", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
 
                         }
-                    }
-                });
+                    });
+                }
+
             }
         });
     }

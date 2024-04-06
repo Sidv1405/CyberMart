@@ -102,7 +102,6 @@ public class FragmentLogIn extends Fragment {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-
                             userDatabase.orderByChild("email").equalTo(email).addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -159,9 +158,13 @@ public class FragmentLogIn extends Fragment {
                                     progressDialog.dismiss();
                                 }
                             });
-                        } else {
-                            progressDialog.dismiss();
-                            Toast.makeText(getActivity(), "Failed, Please check your Email or Password", Toast.LENGTH_SHORT).show();
+                        } else{
+//                            Intent intent = new Intent(getActivity(), MainActivity.class);
+//                            startActivity(intent);
+//                            getActivity().finish();
+                            loginWithRealtimeDatabase(email,password);
+//                            progressDialog.dismiss();
+//                            Toast.makeText(getActivity(), "Failed, Please check your Email or Password", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
@@ -170,6 +173,64 @@ public class FragmentLogIn extends Fragment {
         });
 
     }
+
+    private void loginWithRealtimeDatabase(String email, String password) {
+        userDatabase.orderByChild("email").equalTo(email).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    // Tìm thấy email trong Realtime Database, kiểm tra mật khẩu
+                    for (DataSnapshot userSnapshot : snapshot.getChildren()) {
+                        String storedPassword = userSnapshot.child("password").getValue(String.class);
+                        if (storedPassword != null && storedPassword.equals(password)) {
+                            // Đăng nhập thành công bằng Realtime Database
+                            progressDialog.dismiss();
+                            Toast.makeText(requireActivity(), "Log in Successful", Toast.LENGTH_SHORT).show();
+                            rememberUser(email, password, binding.chkRemember.isChecked());
+
+                            // Lưu thông tin người dùng vào SharedPreferences
+                            sharedPreferences = getActivity().getSharedPreferences("Users", Context.MODE_PRIVATE);
+                            SharedPreferences.Editor editor = sharedPreferences.edit();
+                            String ID = userSnapshot.getKey();
+                            String FullName = userSnapshot.child("fullName").getValue(String.class);
+                            String Role = userSnapshot.child("role").getValue(String.class);
+                            String Avatar = userSnapshot.child("avatar").getValue(String.class);
+                            String PhoneNumber = userSnapshot.child("phoneNumber").getValue(String.class);
+
+                            editor.putString("ID", ID);
+                            editor.putString("fullName", FullName);
+                            editor.putString("email", email); // Lưu email từ người dùng nhập, không phải từ database
+                            editor.putString("role", Role);
+                            editor.putString("avatar", Avatar != null ? Avatar : ""); // Kiểm tra Avatar null
+                            editor.putString("phoneNumber", PhoneNumber != null ? PhoneNumber : ""); // Kiểm tra PhoneNumber null
+                            editor.apply();
+
+                            // Chuyển đến giao diện trang chủ
+                            Intent intent = new Intent(requireActivity(), MainActivity.class);
+                            startActivity(intent);
+                            getActivity().finish();
+                            return;
+                        }
+                    }
+                    // Mật khẩu không khớp
+                    progressDialog.dismiss();
+                    Toast.makeText(requireActivity(), "Incorrect password", Toast.LENGTH_SHORT).show();
+                } else {
+                    // Không tìm thấy email trong Realtime Database
+                    progressDialog.dismiss();
+                    Toast.makeText(requireActivity(), "Email not found", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error1) {
+                progressDialog.dismiss();
+                Toast.makeText(requireActivity(), "Database error", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+
 
     private void rememberUser(String email, String password, boolean checked) {
         SharedPreferences pref = requireActivity().getSharedPreferences("LOGIN_PREFS", getActivity().MODE_PRIVATE);
@@ -181,8 +242,16 @@ public class FragmentLogIn extends Fragment {
             editor.putString("password", password);
             editor.putBoolean("remember", checked);
         }
-        editor.commit();
+        editor.apply();
 
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (progressDialog != null && progressDialog.isShowing()) {
+            progressDialog.dismiss();
+        }
     }
 
 }

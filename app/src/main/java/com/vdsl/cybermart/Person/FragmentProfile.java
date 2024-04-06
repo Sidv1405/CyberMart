@@ -79,7 +79,7 @@ public class FragmentProfile extends Fragment {
     SharedPreferences sharedPreferences;
     FirebaseUser currentUser;
 
-ProgressDialog progressDialog;
+    ProgressDialog progressDialog;
 
     private FirebaseAuth auth;
 
@@ -99,7 +99,7 @@ ProgressDialog progressDialog;
         databaseReference = FirebaseDatabase.getInstance().getReference().child("Account");
         sharedPreferences = getActivity().getSharedPreferences("Users", Context.MODE_PRIVATE);
         currentUser = auth.getCurrentUser();
-        progressDialog= new ProgressDialog(getActivity());
+        progressDialog = new ProgressDialog(getActivity());
         //show infor
         showInitInfor();
         //end
@@ -124,26 +124,27 @@ ProgressDialog progressDialog;
             builder.setPositiveButton("YES", (dialog, which) -> {
 
                 progressDialog.setMessage("Loging out...");
-                progressDialog.show();
-                FirebaseAuth.getInstance().signOut();
-                Intent intent = new Intent(getActivity(), LoginActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(intent);
-                getActivity().finish();
+//                progressDialog.show();
+//                FirebaseAuth.getInstance().signOut();
+//                Intent intent = new Intent(getActivity(), LoginActivity.class);
+//                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+//                startActivity(intent);
 
                 FirebaseMessaging.getInstance().deleteToken().addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
-                        if(task.isSuccessful()){
+                        if (task.isSuccessful()) {
+//                            progressDialog.dismiss();
                             FirebaseAuth.getInstance().signOut();
-                            Intent intent = new Intent(getActivity(), LoginActivity.class);
-                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                            startActivity(intent);
-                            getActivity().finish();
+                            if (requireActivity() != null) {
+                                Intent intent = new Intent(requireActivity(), LoginActivity.class);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                startActivity(intent);
+                                requireActivity().finish();
+                            }
                         }
                     }
                 });
-
             });
 
             builder.create().show();
@@ -157,7 +158,6 @@ ProgressDialog progressDialog;
         binding.imgEditAvatar.setOnClickListener(v -> {
             openAvatarDialog();
         });
-
 
 
         binding.CvCreateStaff.setOnClickListener(v -> {
@@ -180,10 +180,7 @@ ProgressDialog progressDialog;
             Intent intent = new Intent(getContext(), VoucherActivity.class);
             startActivity(intent);
         });
-        binding.CvSettings.setOnClickListener(v -> {
 
-
-        binding.btnStatistic.setOnClickListener(v -> {
 
         //end
 
@@ -218,59 +215,90 @@ ProgressDialog progressDialog;
 
 
     private void showInitInfor() {
-        if (auth.getCurrentUser() != null) {
-            Log.d("loginnow", "logged in");
-            databaseReference.orderByChild("email").equalTo(currentUser.getEmail()).addValueEventListener(new ValueEventListener() {
+//        if (auth.getCurrentUser() != null) {
+        Log.d("loginnow", "logged in");
+        String FullName = sharedPreferences.getString("fullName", "nothing to show");
+        String Email = sharedPreferences.getString("email", "nothing to show");
+        String Avatar = sharedPreferences.getString("avatar", "nothing to show");
+        String Role = sharedPreferences.getString("role", "nothing to show");
+        binding.txtYourName.setText(FullName);
+        binding.txtYourEmail.setText(Email);
+        Log.d("loginnow", "fname: " + FullName);
+        Log.d("loginnow", "email: " + Email);
+        Log.d("loginnow", "avatar: " + Avatar);
+        if (!Avatar.equals("nothing to show") && !Avatar.isEmpty()) {
+            Picasso.get().load(Avatar).into(binding.imgAvatar, new Callback() {
                 @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    if (snapshot.exists()) {
-                        for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                            String userId = dataSnapshot.getKey();
-                            if (userId != null) {
-                                String FullName = dataSnapshot.child("fullName").getValue(String.class);
-                                String Email = dataSnapshot.child("email").getValue(String.class);
-                                String Avatar = dataSnapshot.child("avatar").getValue(String.class);
-                                String Role = dataSnapshot.child("role").getValue(String.class);
-                                binding.txtYourName.setText(FullName);
-                                binding.txtYourEmail.setText(Email);
-                                Log.d("loginnow", "fname: " + FullName);
-                                Log.d("loginnow", "email: " + Email);
-                                Log.d("loginnow", "avatar: " + Avatar);
-                                if (Avatar != null && !Avatar.isEmpty()) {
-                                    Picasso.get().load(Avatar).into(binding.imgAvatar, new Callback() {
-                                        @Override
-                                        public void onSuccess() {
-                                            Log.d("Avatar", "Avatar: " + Avatar);
-                                        }
-
-                                        @Override
-                                        public void onError(Exception e) {
-                                            binding.imgAvatar.setImageResource(R.drawable.img_default_profile_image);
-                                        }
-                                    });
-                                } else {
-                                    binding.imgAvatar.setImageResource(R.drawable.img_default_profile_image);
-                                }
-                                if (Role != null && Role.equals("Admin")) {
-                                    binding.CvCreateStaff.setVisibility(View.VISIBLE);
-                                    Log.d("loginnow", "Role: " + Role);
-                                } else {
-                                    binding.CvCreateStaff.setVisibility(View.GONE);
-                                    Log.d("loginnow", "Role: " + Role);
-                                }
-                            }
-                        }
-                    }
+                public void onSuccess() {
+                    Log.d("Avatar", "Avatar: " + Avatar);
                 }
 
                 @Override
-                public void onCancelled(@NonNull DatabaseError error) {
-
+                public void onError(Exception e) {
+                    binding.imgAvatar.setImageResource(R.drawable.img_default_profile_image);
                 }
             });
         } else {
-            Log.d("loginnow", "not logged in");
+            binding.imgAvatar.setImageResource(R.drawable.img_default_profile_image);
         }
+        if (!Role.isEmpty() && !Role.equals("nothing to show") && Role.equals("Admin")) {
+            binding.CvCreateStaff.setVisibility(View.VISIBLE);
+            Log.d("loginnow", "Role: " + Role);
+        } else {
+            binding.CvCreateStaff.setVisibility(View.GONE);
+            Log.d("loginnow", "Role: " + Role);
+        }
+//            databaseReference.orderByChild("email").equalTo(currentUser.getEmail()).addValueEventListener(new ValueEventListener() {
+//                @Override
+//                public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                    if (snapshot.exists()) {
+//                        for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+//                            String userId = dataSnapshot.getKey();
+//                            if (userId != null) {
+//                                String FullName = dataSnapshot.child("fullName").getValue(String.class);
+//                                String Email = dataSnapshot.child("email").getValue(String.class);
+//                                String Avatar = dataSnapshot.child("avatar").getValue(String.class);
+//                                String Role = dataSnapshot.child("role").getValue(String.class);
+//                                binding.txtYourName.setText(FullName);
+//                                binding.txtYourEmail.setText(Email);
+//                                Log.d("loginnow", "fname: " + FullName);
+//                                Log.d("loginnow", "email: " + Email);
+//                                Log.d("loginnow", "avatar: " + Avatar);
+//                                if (Avatar != null && !Avatar.isEmpty()) {
+//                                    Picasso.get().load(Avatar).into(binding.imgAvatar, new Callback() {
+//                                        @Override
+//                                        public void onSuccess() {
+//                                            Log.d("Avatar", "Avatar: " + Avatar);
+//                                        }
+//
+//                                        @Override
+//                                        public void onError(Exception e) {
+//                                            binding.imgAvatar.setImageResource(R.drawable.img_default_profile_image);
+//                                        }
+//                                    });
+//                                } else {
+//                                    binding.imgAvatar.setImageResource(R.drawable.img_default_profile_image);
+//                                }
+//                                if (Role != null && Role.equals("Admin")) {
+//                                    binding.CvCreateStaff.setVisibility(View.VISIBLE);
+//                                    Log.d("loginnow", "Role: " + Role);
+//                                } else {
+//                                    binding.CvCreateStaff.setVisibility(View.GONE);
+//                                    Log.d("loginnow", "Role: " + Role);
+//                                }
+//                            }
+//                        }
+//                    }
+//                }
+//
+//                @Override
+//                public void onCancelled(@NonNull DatabaseError error) {
+//
+//                }
+//            });
+//        } else {
+//            Log.d("loginnow", "not logged in");
+//        }
     }
 
     //new
