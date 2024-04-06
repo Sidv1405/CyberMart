@@ -41,7 +41,6 @@ public class ProductDetailActivity extends AppCompatActivity {
     TextView productDescriptionTextView;
     ImageView imgHeart;
 
-    boolean isFavorite = false;
 
     @SuppressLint({"SetTextI18n", "UseCompatLoadingForDrawables"})
     @Override
@@ -83,7 +82,7 @@ public class ProductDetailActivity extends AppCompatActivity {
         imgMinus = findViewById(R.id.img_minus);
         imgPlus = findViewById(R.id.img_plus);
         txtQuantity = findViewById(R.id.txt_quantity);
-
+        
         imgMinus.setOnClickListener(v -> {
             int count = Integer.parseInt(txtQuantity.getText().toString());
             count -= 1;
