@@ -55,13 +55,17 @@ public class MyFirebaseMessaging extends FirebaseMessagingService {
 
     String senderEmail;
 
+    String senderOrder;
+
     private static final String TAG = "MyFirebaseMessaging";
 
     @Override
     public void onMessageReceived(@NonNull RemoteMessage remoteMessage) {
         super.onMessageReceived(remoteMessage);
 
-        String senderEmail = remoteMessage.getData().get("email");
+         senderEmail = remoteMessage.getData().get("email");
+        senderOrder= remoteMessage.getData().get("seri");
+
         Log.e(TAG, "onMessageReceived: " + senderEmail );
 
 
@@ -72,6 +76,8 @@ public class MyFirebaseMessaging extends FirebaseMessagingService {
             // Handle notification here, for example, show notification.
             sendNotification(remoteMessage.getNotification().getTitle(), remoteMessage.getNotification().getBody());
             sendFloatNotification(remoteMessage.getNotification().getTitle(), remoteMessage.getNotification().getBody(),senderEmail);
+
+            Log.e(TAG, "onMessageReceived: " + remoteMessage.getNotification().getTitle() + remoteMessage.getNotification().getBody() );
 
             receiveNotification(remoteMessage.getNotification().getTitle(), remoteMessage.getNotification().getBody());
         }
@@ -86,6 +92,11 @@ public class MyFirebaseMessaging extends FirebaseMessagingService {
         map.put("userId", firebaseUser.getUid());
         map.put("title", title);
         map.put("body", body);
+        if (body.contains("status")){
+            map.put("type",1);
+        }else{
+            map.put("type",2);
+        }
 
 
         notificationsRef.push().setValue(map);
@@ -123,7 +134,7 @@ public class MyFirebaseMessaging extends FirebaseMessagingService {
 
 
         String channelId = "CyberMart";
-        Uri soundUri = Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.thongbao);
+        Uri soundUri = Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.thongbao2);
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, channelId)
                 .setSmallIcon(R.drawable.img_logo)
                 .setContentTitle(title)
@@ -180,8 +191,13 @@ public class MyFirebaseMessaging extends FirebaseMessagingService {
             }
         }
 
+        Bundle bundle = new Bundle();
+        bundle.putString("fcm",senderOrder);
         Intent notificationIntent = new Intent(this, MessageActivity.class);
+
         notificationIntent.putExtra("userEmail",email);
+        notificationIntent.putExtra("fcmToken",bundle);
+
         notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 

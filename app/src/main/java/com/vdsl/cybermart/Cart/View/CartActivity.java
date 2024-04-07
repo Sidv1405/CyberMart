@@ -83,10 +83,9 @@ public class CartActivity extends AppCompatActivity implements CartAdapter.Total
                             String address = sharedPreferences.getString("address", "");
                             String payment = rdoCash.isChecked() ? "Cash" : "Credit Card";
                             String voucher = txtVoucher.getText().toString().isEmpty() ? "0" : txtVoucher.getText().toString();
-                            Order order = new Order(id, address, "Prepare", payment, voucher, cart);
+                            Order order = new Order(id, address, "Prepare", payment, voucher, cart,"Prepare"+cart.getAccountId());
                             newOrderRef.setValue(order);
-                           finish();
-
+                            finish();
                         }
 
                         @Override

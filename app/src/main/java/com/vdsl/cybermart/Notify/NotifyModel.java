@@ -6,6 +6,8 @@ public class NotifyModel {
 
     private String userId;
 
+    private int type;
+
     public NotifyModel() {
     }
 
@@ -42,6 +44,14 @@ public class NotifyModel {
 
     public void setBody(String body) {
         this.body = body;
+    }
+
+    public int getType() {
+        return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
     }
 }
 

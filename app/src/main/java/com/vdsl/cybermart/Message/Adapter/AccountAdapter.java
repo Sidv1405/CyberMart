@@ -20,9 +20,12 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.Picasso;
 import com.vdsl.cybermart.Account.Model.UserModel;
 import com.vdsl.cybermart.Message.MessageActivity;
 import com.vdsl.cybermart.Message.Model.Chat;
+import com.vdsl.cybermart.R;
 import com.vdsl.cybermart.databinding.ItemUserMessageBinding;
 
 import java.util.ArrayList;
@@ -116,6 +119,21 @@ public class AccountAdapter extends RecyclerView.Adapter<AccountAdapter.ViewHold
 
         public void bind(UserModel userModel) {
             binding.txtNameUser.setText(userModel.getFullName());
+            if (userModel.getAvatar() != null && !userModel.getAvatar().isEmpty()) {
+                Picasso.get().load(userModel.getAvatar()).into(binding.imgStaff, new Callback() {
+                    @Override
+                    public void onSuccess() {
+                        Log.d("check47", "onSuccess: " + userModel.getAvatar());
+                    }
+
+                    @Override
+                    public void onError(Exception e) {
+                        binding.imgStaff.setImageResource(R.drawable.img_default_profile_image);
+                    }
+                });
+            } else {
+                binding.imgStaff.setImageResource(R.drawable.img_default_profile_image);
+            }
         }
     }
 
