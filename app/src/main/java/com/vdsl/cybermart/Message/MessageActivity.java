@@ -3,14 +3,19 @@ package com.vdsl.cybermart.Message;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -19,6 +24,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.annotations.concurrent.Background;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -70,6 +76,9 @@ public class MessageActivity extends AppCompatActivity {
 
     String userEmail,userFCM;
 
+    private Drawable defaultBackground;
+    private SharedPreferences sharedPreferences;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -90,6 +99,7 @@ public class MessageActivity extends AppCompatActivity {
             startActivity(intent1);
         });
 
+        sharedPreferences = getSharedPreferences("MyPrefs", MODE_PRIVATE);
 
         binding.rcvChat.setHasFixedSize(true);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(MessageActivity.this, LinearLayoutManager.VERTICAL, false);
@@ -161,6 +171,9 @@ public class MessageActivity extends AppCompatActivity {
             }
         });
         seenMessage(userEmail);
+        defaultBackground = ContextCompat.getDrawable(this, R.drawable.bg_chat);
+        int backgroundColor = sharedPreferences.getInt("backgroundColor", R.drawable.bg_chat);
+        binding.rcvChat.setBackground(ContextCompat.getDrawable(this, backgroundColor));
     }
 
     private void getIdFromEmail(String email, final FragmentMessage.OnIdReceivedListener listener) {
@@ -239,6 +252,31 @@ public class MessageActivity extends AppCompatActivity {
         updateChatList(receiver, sender);
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_message,menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == R.id.nav_change_bg) {
+            if (binding.rcvChat.getBackground() == defaultBackground) {
+                binding.rcvChat.setBackground(ContextCompat.getDrawable(this, R.drawable.bg_chat1));
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putInt("backgroundColor", R.drawable.bg_chat1);
+                editor.apply();
+            } else {
+                binding.rcvChat.setBackground(defaultBackground);
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putInt("backgroundColor", R.drawable.bg_chat);
+                editor.apply();
+            }
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
 
     private void updateChatList(String userId, String chatUserId) {

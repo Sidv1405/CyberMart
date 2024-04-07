@@ -119,7 +119,7 @@ public class AccountAdapter extends RecyclerView.Adapter<AccountAdapter.ViewHold
 
         public void bind(UserModel userModel) {
             binding.txtNameUser.setText(userModel.getFullName());
-            if (!userModel.getAvatar().isEmpty() || userModel.getAvatar() != null){
+            if (userModel.getAvatar() != null && !userModel.getAvatar().isEmpty()) {
                 Picasso.get().load(userModel.getAvatar()).into(binding.imgStaff, new Callback() {
                     @Override
                     public void onSuccess() {
@@ -131,7 +131,7 @@ public class AccountAdapter extends RecyclerView.Adapter<AccountAdapter.ViewHold
                         binding.imgStaff.setImageResource(R.drawable.img_default_profile_image);
                     }
                 });
-            }else {
+            } else {
                 binding.imgStaff.setImageResource(R.drawable.img_default_profile_image);
             }
         }
