@@ -22,8 +22,6 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -35,9 +33,7 @@ import com.google.firebase.messaging.FirebaseMessaging;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.vdsl.cybermart.Account.Activity.LoginActivity;
-
 import com.vdsl.cybermart.Account.Fragment.FragmentManagementStaff;
-
 import com.vdsl.cybermart.Account.Fragment.FragmentSetting;
 import com.vdsl.cybermart.CategoryManagement.View.CategoryManagementActivity;
 import com.vdsl.cybermart.General;
@@ -79,7 +75,7 @@ public class FragmentProfile extends Fragment {
     SharedPreferences sharedPreferences;
     FirebaseUser currentUser;
 
-ProgressDialog progressDialog;
+    ProgressDialog progressDialog;
 
     private FirebaseAuth auth;
 
@@ -94,32 +90,28 @@ ProgressDialog progressDialog;
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
         auth = FirebaseAuth.getInstance();
         databaseReference = FirebaseDatabase.getInstance().getReference().child("Account");
-        sharedPreferences = getActivity().getSharedPreferences("Users", Context.MODE_PRIVATE);
+        sharedPreferences = requireActivity().getSharedPreferences("Users", Context.MODE_PRIVATE);
         currentUser = auth.getCurrentUser();
         progressDialog = new ProgressDialog(getActivity());
+        //role and menu
+        showItemMenu();
         //show infor
         showInitInfor();
-        //end
-
         //back
         binding.imgBack.setOnClickListener(v -> {
             if (getActivity() != null) {
                 getActivity().getSupportFragmentManager().popBackStack();
             }
-        });//end
-
+        });
         //sign out
         binding.imgLogout.setOnClickListener(v -> {
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
             builder.setTitle("Logout your accont");
             builder.setMessage("Are you sure to log out?");
 
-            builder.setNegativeButton("NO", (dialog, which) -> {
-                builder.create().cancel();
-            });
+            builder.setNegativeButton("NO", (dialog, which) -> builder.create().cancel());
 
             builder.setPositiveButton("YES", (dialog, which) -> {
 
@@ -129,18 +121,15 @@ ProgressDialog progressDialog;
                 Intent intent = new Intent(getActivity(), LoginActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
-                getActivity().finish();
+                requireActivity().finish();
 
-                FirebaseMessaging.getInstance().deleteToken().addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        if (task.isSuccessful()) {
-                            FirebaseAuth.getInstance().signOut();
-                            Intent intent = new Intent(getActivity(), LoginActivity.class);
-                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                            startActivity(intent);
-                            getActivity().finish();
-                        }
+                FirebaseMessaging.getInstance().deleteToken().addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        FirebaseAuth.getInstance().signOut();
+                        Intent intent1 = new Intent(getActivity(), LoginActivity.class);
+                        intent1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(intent1);
+                        requireActivity().finish();
                     }
                 });
 
@@ -151,64 +140,52 @@ ProgressDialog progressDialog;
         });
         //end
 
-        binding.imgAvatar.setOnClickListener(v -> {
-            openAvatarDialog();
-        });
-        binding.imgEditAvatar.setOnClickListener(v -> {
-            openAvatarDialog();
-        });
+        binding.imgAvatar.setOnClickListener(v -> openAvatarDialog());
+        binding.imgEditAvatar.setOnClickListener(v -> openAvatarDialog());
 
 
         binding.CvCreateStaff.setOnClickListener(v -> {
             FragmentManagementStaff fragmentManagementStaff = new FragmentManagementStaff();
-            FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+            FragmentTransaction transaction = requireActivity().getSupportFragmentManager().beginTransaction();
             transaction.replace(R.id.frag_container_main, fragmentManagementStaff);
             transaction.addToBackStack(null);
             transaction.commit();
         });
-        binding.btnMyOrder.setOnClickListener(v -> {
-            General.loadFragment(getParentFragmentManager(), new FragmentContainer(), null);
-        });
-        binding.cvCateManage.setOnClickListener(v -> {
-            startActivity(new Intent(getContext(), CategoryManagementActivity.class));
-        });
-        binding.cvProdManage.setOnClickListener(v -> {
-            startActivity(new Intent(getContext(), ProductManagementActivity.class));
-        });
+
+        binding.btnMyOrder.setOnClickListener(v ->
+                General.loadFragment(getParentFragmentManager(), new FragmentContainer(), null));
+        binding.cvCateManage.setOnClickListener(v ->
+                startActivity(new Intent(getContext(), CategoryManagementActivity.class)));
+        binding.cvProManage.setOnClickListener(v ->
+                startActivity(new Intent(getContext(), ProductManagementActivity.class)));
         binding.btnMyVoucher.setOnClickListener(v -> {
             Intent intent = new Intent(getContext(), VoucherActivity.class);
             startActivity(intent);
         });
-
-        //end
-
-        binding.btnMyOrder.setOnClickListener(v1 -> {
-            General.loadFragment(getParentFragmentManager(), new FragmentContainer(), null);
-        });
-        binding.cvCateManage.setOnClickListener(v2 -> {
-            startActivity(new Intent(getContext(), CategoryManagementActivity.class));
-        });
-        binding.cvProdManage.setOnClickListener(v3 -> {
-            startActivity(new Intent(getContext(), ProductManagementActivity.class));
-        });
-        binding.btnMyVoucher.setOnClickListener(v4 -> {
-            Intent intent = new Intent(getContext(), VoucherActivity.class);
-            startActivity(intent);
-        });
         binding.CvSettings.setOnClickListener(v5 -> {
-
             FragmentSetting fragmentSetting = new FragmentSetting();
-            FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+            FragmentTransaction transaction = requireActivity().getSupportFragmentManager().beginTransaction();
             transaction.replace(R.id.frag_container_main, fragmentSetting);
             transaction.addToBackStack(null);
             transaction.commit();
         });
+        binding.btnStatistic.setOnClickListener(v ->
+                General.loadFragment(getParentFragmentManager(), new StatisticFragment(), null));
+    }
 
-
-        binding.btnStatistic.setOnClickListener(v6 -> {
-
-            General.loadFragment(getParentFragmentManager(), new StatisticFragment(), null);
-        });
+    private void showItemMenu() {
+        String role = sharedPreferences.getString("role","");
+        Log.d("TAG", "showItemMenu: "+role);
+        if(role.equals("Admin")){
+            binding.cvCateManage.setVisibility(View.VISIBLE);
+            binding.cvProManage.setVisibility(View.VISIBLE);
+            binding.btnMyVoucher.setVisibility(View.VISIBLE);
+            binding.btnStatistic.setVisibility(View.VISIBLE);
+            binding.CvCreateStaff.setVisibility(View.VISIBLE);
+        }else if (role.equals("Staff")){
+            binding.cvCateManage.setVisibility(View.VISIBLE);
+            binding.cvProManage.setVisibility(View.VISIBLE);
+        }
     }
 
 
@@ -237,7 +214,6 @@ ProgressDialog progressDialog;
                                         public void onSuccess() {
                                             Log.d("Avatar", "Avatar: " + Avatar);
                                         }
-
                                         @Override
                                         public void onError(Exception e) {
                                             binding.imgAvatar.setImageResource(R.drawable.img_default_profile_image);
@@ -323,9 +299,7 @@ ProgressDialog progressDialog;
             Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
             startActivityForResult(intent, MY_REQUEST_CODE);
         });
-        btnDone.setOnClickListener(v -> {
-            dialog.dismiss();
-        });
+        btnDone.setOnClickListener(v -> dialog.dismiss());
     }
 
     @Override
@@ -342,20 +316,18 @@ ProgressDialog progressDialog;
         if (ID != null) {
             String imagePath = avatarUri.toString();
             databaseReference.child(ID).child("avatar").setValue(imagePath)
-                    .addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            if (task.isSuccessful()) {
-                                Toast.makeText(getActivity(), "Avatar updated successfully", Toast.LENGTH_SHORT).show();
-                            } else {
-                                Toast.makeText(getActivity(), "Failed to update avatar", Toast.LENGTH_SHORT).show();
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            Toast.makeText(getActivity(), "Avatar updated successfully", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(getActivity(), "Failed to update avatar", Toast.LENGTH_SHORT).show();
 
-                            }
                         }
                     });
         }
 
     }
+
 
     //new
 //    private void upDateAvatar() {

@@ -7,11 +7,19 @@ import java.util.List;
 import java.util.Map;
 
 public class Order implements Serializable {
-    private String seri, idStaff, address, status, paymentMethod,voucher;
+    private String seri, idStaff, address, status, paymentMethod,voucher, statusId;
 
     private CartModel cartModel;
 
     public Order() {
+    }
+
+    public String getStatusId() {
+        return statusId;
+    }
+
+    public void setStatusId(String statusId) {
+        this.statusId = statusId;
     }
 
     public String getSeri() {
@@ -70,12 +78,24 @@ public class Order implements Serializable {
         this.cartModel = cartModel;
     }
 
-    public Order(String seri, String address, String status, String paymentMethod, String voucher, CartModel cartModel) {
+    public Order(String seri, String address, String status, String paymentMethod, String voucher, CartModel cartModel,String statusId) {
         this.seri = seri;
         this.address = address;
         this.status = status;
         this.paymentMethod = paymentMethod;
         this.voucher = voucher;
+        this.cartModel = cartModel;
+        this.statusId = statusId;
+    }
+
+    public Order(String seri, String idStaff, String address, String status, String paymentMethod, String voucher, String statusId, CartModel cartModel) {
+        this.seri = seri;
+        this.idStaff = idStaff;
+        this.address = address;
+        this.status = status;
+        this.paymentMethod = paymentMethod;
+        this.voucher = voucher;
+        this.statusId = statusId;
         this.cartModel = cartModel;
     }
 }
