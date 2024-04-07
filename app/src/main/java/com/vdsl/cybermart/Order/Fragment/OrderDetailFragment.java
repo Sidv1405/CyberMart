@@ -30,13 +30,28 @@ import com.vdsl.cybermart.Order.Model.Order;
 import com.vdsl.cybermart.Product.Model.ProductModel;
 import com.vdsl.cybermart.databinding.FragmentOrderDetailBinding;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 public class OrderDetailFragment extends Fragment {
     FragmentOrderDetailBinding binding;
     Query query;
     ProductsListAdapterInOrder adapter;
+
+    String userFCM;
 
 
     @Override
@@ -70,6 +85,14 @@ public class OrderDetailFragment extends Fragment {
                 SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("Users", Context.MODE_PRIVATE);
                 String id = sharedPreferences.getString("ID", "");
                 String role = sharedPreferences.getString("Role", "");
+                String idAccount = order.getCartModel().getAccountId();
+                getTokenFromId(idAccount, new OnIdReceivedListener() {
+                    @Override
+                    public void onIdReceived(String id) {
+                        userFCM = id;
+                        Log.e("check48", "onIdReceived: " + id + userFCM );
+                    }
+                });
                 if (!role.equals("Customer")) {
                     if(!order.getStatus().equals("Delivered")){
                         binding.txtStatus.setOnClickListener(v -> {
@@ -85,12 +108,14 @@ public class OrderDetailFragment extends Fragment {
                                         setStatus(dialog, order, status[which]);
                                         // trừ số hàng đã nhận vào số hàng trong kho
                                         updateQuantity(order);
+                                        sendNotification(order,status[which]);
                                     });
                                     builder1.setNegativeButton("Cancel",(dialog1, which1) -> {});
                                     AlertDialog alertDialog = builder1.create();
                                     alertDialog.show();
                                 }else {
                                     setStatus(dialog, order, status[which]);
+                                    sendNotification(order,status[which]);
                                 }
                             });
                             AlertDialog alertDialog = builder.create();
@@ -174,6 +199,12 @@ public class OrderDetailFragment extends Fragment {
                     }
                 }
             }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
 
     private void sendNotification(Order order,String status) {
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Orders").child(order.getSeri());
@@ -266,15 +297,6 @@ public class OrderDetailFragment extends Fragment {
         void onIdReceived(String id);
     }
 
-
-
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-    }
     @Override
     public void onStart() {
         super.onStart();
