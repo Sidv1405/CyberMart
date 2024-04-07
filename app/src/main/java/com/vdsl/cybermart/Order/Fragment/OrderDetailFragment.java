@@ -32,6 +32,7 @@ import com.vdsl.cybermart.databinding.FragmentOrderDetailBinding;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class OrderDetailFragment extends Fragment {
     FragmentOrderDetailBinding binding;
@@ -84,6 +85,7 @@ public class OrderDetailFragment extends Fragment {
                                     builder1.setPositiveButton("OK",(dialog1, which1) -> {
                                         setStatus(dialog, order, status[which]);
                                         // trừ số hàng đã nhận vào số hàng trong kho
+                                        updateQuantity(order);
                                     });
                                     builder1.setNegativeButton("Cancel",(dialog1, which1) -> {});
                                     AlertDialog alertDialog = builder1.create();
@@ -138,7 +140,48 @@ public class OrderDetailFragment extends Fragment {
         adapter = new ProductsListAdapterInOrder(options);
         binding.rvProductList.setAdapter(adapter);
     }
+    private static void updateQuantity(Order order) {
+        Query proQuery = FirebaseDatabase.getInstance().getReference().child("Orders")
+                .child(order.getSeri()).child("cartModel").child("cartDetail");
+        proQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                        ProductModel cartPro = dataSnapshot.getValue(ProductModel.class);
+                        if (cartPro != null) {
+                            int quantitySell = cartPro.getQuantity();
+                            String productId = cartPro.getProdId();
+                            // Cập nhật số lượng sản phẩm trong kho
+                            DatabaseReference productRef = FirebaseDatabase.getInstance().getReference()
+                                    .child("products").child(productId).child("quantity");
+                            productRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                    if (snapshot.exists()) {
+                                        int currentQuantity = Objects.requireNonNull(snapshot.getValue(Integer.class));
+                                        int updatedQuantity = currentQuantity - quantitySell;
+                                        productRef.setValue(updatedQuantity);
 
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {
+
+                                }
+                            });
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
     @Override
     public void onStart() {
         super.onStart();
