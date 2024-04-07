@@ -30,13 +30,27 @@ import com.vdsl.cybermart.Order.Model.Order;
 import com.vdsl.cybermart.Product.Model.ProductModel;
 import com.vdsl.cybermart.databinding.FragmentOrderDetailBinding;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 public class OrderDetailFragment extends Fragment {
     FragmentOrderDetailBinding binding;
     Query query;
     ProductsListAdapterInOrder adapter;
+
+    String userFCM;
 
 
     @Override
@@ -70,6 +84,14 @@ public class OrderDetailFragment extends Fragment {
                 SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("Users", Context.MODE_PRIVATE);
                 String id = sharedPreferences.getString("ID", "");
                 String role = sharedPreferences.getString("Role", "");
+                String idAccount = order.getCartModel().getAccountId();
+                getTokenFromId(idAccount, new OnIdReceivedListener() {
+                    @Override
+                    public void onIdReceived(String id) {
+                        userFCM = id;
+                        Log.e("check48", "onIdReceived: " + id + userFCM );
+                    }
+                });
                 if (!role.equals("Customer")) {
                     if(!order.getStatus().equals("Delivered")){
                         binding.txtStatus.setOnClickListener(v -> {
@@ -83,6 +105,7 @@ public class OrderDetailFragment extends Fragment {
                                     builder1.setMessage("Khi chuyển qua trạng thái \"Delivered\" thì bạn không thể thay đổi!");
                                     builder1.setPositiveButton("OK",(dialog1, which1) -> {
                                         setStatus(dialog, order, status[which]);
+                                        sendNotification(order, status[which]);
                                         // trừ số hàng đã nhận vào số hàng trong kho
                                     });
                                     builder1.setNegativeButton("Cancel",(dialog1, which1) -> {});
@@ -90,6 +113,7 @@ public class OrderDetailFragment extends Fragment {
                                     alertDialog.show();
                                 }else {
                                     setStatus(dialog, order, status[which]);
+                                    sendNotification(order, status[which]);
                                 }
                             });
                             AlertDialog alertDialog = builder.create();
@@ -138,6 +162,100 @@ public class OrderDetailFragment extends Fragment {
         adapter = new ProductsListAdapterInOrder(options);
         binding.rvProductList.setAdapter(adapter);
     }
+
+    private void sendNotification(Order order,String status) {
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Orders").child(order.getSeri());
+        reference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()){
+                    Order order1 = snapshot.getValue(Order.class);
+                    try {
+                        JSONObject jsonObject = new JSONObject();
+                        JSONObject notificationObj = new JSONObject();
+                        notificationObj.put("title",order1.getSeri());
+                        notificationObj.put("body","status: " +  status);
+                        JSONObject dataObj = new JSONObject();
+                        dataObj.put("userId",order1.getCartModel().getAccountId());
+
+                        jsonObject.put("notification",notificationObj);
+                        jsonObject.put("data",dataObj);
+                        jsonObject.put("to",userFCM);
+                        Log.e("check39", "onDataChange: " + userFCM );
+                        callApi(jsonObject);
+
+                    } catch (JSONException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+    }
+
+    private void getTokenFromId(String id, final OnIdReceivedListener listener) {
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Account/" + id);
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                String fcmToken = null;
+                if (snapshot.exists()) {
+                    fcmToken = snapshot.child("fcmToken").getValue(String.class);
+                }
+                listener.onIdReceived(fcmToken);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                listener.onIdReceived(null);
+            }
+        });
+    }
+
+    void callApi(JSONObject jsonObject){
+        MediaType JSON = MediaType.get("application/json; charset=utf-8");
+
+        OkHttpClient client = new OkHttpClient();
+        String url = "https://fcm.googleapis.com/fcm/send";
+        RequestBody body = RequestBody.create(jsonObject.toString(),JSON);
+        Log.e("check44", "callApi OrderDetail: " + jsonObject.toString() );
+        Request request = new Request.Builder()
+                .url(url)
+                .post(body)
+                .header("Authorization","Bearer AAAA5pa11nw:APA91bH9w1IfcYjdTiuQsj-o3Ttrh689JQxiL0ydOQf6qyEeSxlkbznOz7IYG6yC3rVEo6mCAM7CenfstwWe6nXPsirmoI43hcNVqpcxuNZ5uSWhNHImi0fMI-VXbirIX2GX1zWdzf80")
+                .build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                // Xử lý khi gửi yêu cầu không thành công
+                Log.e("callApi", "Request failed: " + e.getMessage());
+            }
+
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                if (response.isSuccessful()) {
+                    // Phản hồi thành công, có thể làm gì đó ở đây
+                    Log.e("callApi", "Request successful: " + response.body().string());
+                } else {
+                    // Phản hồi không thành công, có thể làm gì đó ở đây
+                    Log.e("callApi", "Request failed with code: " + response.code());
+                }
+            }
+        });
+    }
+
+
+    public interface OnIdReceivedListener {
+        void onIdReceived(String id);
+    }
+
+
+
 
     @Override
     public void onStart() {

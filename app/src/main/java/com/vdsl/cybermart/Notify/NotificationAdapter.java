@@ -1,7 +1,9 @@
 package com.vdsl.cybermart.Notify;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
@@ -43,8 +45,12 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
         holder.bind(notifyModel);
         if (notifyModel.getType() == 2){
             holder.binding.txtTitle.setText(notifyModel.getTitle() + " đã gửi bạn một tin nhắn");
+            holder.binding.layout.setBackgroundColor(Color.parseColor("#EDC6C6"));
+            holder.binding.iconMSG.setVisibility(View.VISIBLE);
         }else{
             holder.binding.txtTitle.setText("trạng đơn hàng " + notifyModel.getTitle() + " đã thay đổi");
+            holder.binding.layout.setBackgroundColor(Color.parseColor("#EDECC6"));
+            holder.binding.iconOrder.setVisibility(View.VISIBLE);
         }
     }
 
