@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -100,40 +99,43 @@ public class FragmentSetting extends Fragment {
     }
 
     private void showInitInfor() {
-        if (auth.getCurrentUser() != null) {
-            Log.d("loginnow", "logged in");
-            databaseReference.orderByChild("email").equalTo(currentUser.getEmail()).addValueEventListener(new ValueEventListener() {
+//        if (auth.getCurrentUser() != null) {
+//            Log.d("loginnow", "logged in");
+            String email = preferencesGetInfor.getString("email",null);
+
+            databaseReference.orderByChild("email").equalTo(email).addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     if (snapshot.exists()) {
                         for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                            String userId = dataSnapshot.getKey();
+                            String userId = preferencesGetInfor.getString("ID",null);
                             if (userId != null) {
-                                String Password = preferencesGetPass.getString("password", "nothing to show");
-                                binding.txtPassword.setText(Password);
-                                String FullName = dataSnapshot.child("fullName").getValue(String.class);
-                                String Email = dataSnapshot.child("email").getValue(String.class);
-                                String PhoneNumber = dataSnapshot.child("phoneNumber").getValue(String.class);
-                                long AddressCount = dataSnapshot.child("address").getChildrenCount();
-                                String Address = addressPref.getString("address", "No address yet");
+                                String password = preferencesGetPass.getString("password", "nothing to show");
+                                String fullName = preferencesGetInfor.getString("fullName",null);
+                                String email = preferencesGetInfor.getString("email",null);
+                                String phoneNumber = preferencesGetInfor.getString("phoneNumber",
+                                        null);
+                                long addressCount = dataSnapshot.child("address").getChildrenCount();
+                                String address = addressPref.getString("address", "No address yet");
 
-                                binding.txtName.setText(FullName);
-                                binding.txtEmail.setText(Email);
-                                binding.txtAddress.setText(Address);
-                                binding.txtPhoneNumber.setText(PhoneNumber);
-                                if (FullName.equals(null)) {
+                                binding.txtPassword.setText(password);
+                                binding.txtName.setText(fullName);
+                                binding.txtEmail.setText(email);
+                                binding.txtPhoneNumber.setText(phoneNumber);
+                                if (fullName==null) {
                                     binding.txtName.setTextColor(Color.RED);
                                 } else {
                                     binding.txtName.setTextColor(Color.BLACK);
                                 }
-                                if (Address.equals("No address yet") || AddressCount == 0) {
+                                if (address.equals("No address yet") || addressCount == 0) {
                                     binding.txtAddress.setText("No address yet");
                                     binding.txtAddress.setTextColor(Color.RED);
                                 } else {
+                                    binding.txtAddress.setText(address);
                                     binding.txtAddress.setTextColor(Color.BLACK);
                                 }
-                                if (PhoneNumber != null && !PhoneNumber.isEmpty()) {
-                                    binding.txtPhoneNumber.setText(PhoneNumber);
+                                if (phoneNumber != null && !phoneNumber.isEmpty()) {
+                                    binding.txtPhoneNumber.setText(phoneNumber);
                                     binding.txtPhoneNumber.setTextColor(Color.BLACK);
                                 } else {
                                     binding.txtPhoneNumber.setText("No phone number");
@@ -150,11 +152,11 @@ public class FragmentSetting extends Fragment {
 
                 }
             });
-
-
-        } else {
-            Log.d("loginnow", "not logged in");
-        }
+//
+//
+//        } else {
+//            Log.d("loginnow", "not logged in");
+//        }
     }//endShowInit
 
     /**
@@ -279,17 +281,40 @@ public class FragmentSetting extends Fragment {
             }
 
             if (!error) {
-                user.updatePassword(newPass).addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        if (task.isSuccessful()) {
-                            Toast.makeText(getActivity(), "Change password successfully", Toast.LENGTH_SHORT).show();
-                        } else {
-                            Toast.makeText(getActivity(), "Failed to change password!", Toast.LENGTH_SHORT).show();
+                if (user!=null){
+                    user.updatePassword(newPass).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if (task.isSuccessful()) {
+                                Toast.makeText(getActivity(), "Change password successfully", Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(getActivity(), "Failed to change password!", Toast.LENGTH_SHORT).show();
+
+                            }
+                        }
+                    });
+                }else{
+                    String email=preferencesGetInfor.getString("email","null");
+                    String userId=preferencesGetInfor.getString("ID","null");
+                    databaseReference.orderByChild("email").equalTo(email).addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            if (snapshot.exists()) {
+                                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                                    DatabaseReference userRef = databaseReference.child(userId);
+                                    userRef.child("password").setValue(newPass);
+                                    Toast.makeText(requireActivity(), "Successfully", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
 
                         }
-                    }
-                });
+                    });
+                }
+
             }
         });
     }

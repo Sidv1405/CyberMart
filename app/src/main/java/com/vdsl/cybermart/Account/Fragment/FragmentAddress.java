@@ -1,5 +1,7 @@
 package com.vdsl.cybermart.Account.Fragment;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,6 +33,7 @@ public class FragmentAddress extends Fragment {
     AddressAdapter addressAdapter;
     FirebaseAuth mAuth;
     FirebaseUser currentUser;
+    SharedPreferences sharedPreferences;
 
     @Nullable
     @Override
@@ -48,8 +51,7 @@ public class FragmentAddress extends Fragment {
                 bottomMenu.setVisibility(View.GONE);
             }
         }
-
-
+        sharedPreferences = getActivity().getSharedPreferences("Users", Context.MODE_PRIVATE);
         binding.rcAddress.setLayoutManager(new LinearLayoutManager(getActivity()));
 
         mAuth = FirebaseAuth.getInstance();
@@ -63,43 +65,44 @@ public class FragmentAddress extends Fragment {
             }
         });
 
-        if (currentUser != null) {
-            usersRef.orderByChild("email").equalTo(currentUser.getEmail()).addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    if (dataSnapshot.exists()) {
-                        for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
-                            String userId = userSnapshot.getKey();
-                            if (userId != null) {
-                                databaseReference = FirebaseDatabase.getInstance().getReference().child("Account").child(userId).child("address");
-                                setupRecyclerView();
-                                databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
-                                    @Override
-                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                        long adCount= snapshot.getChildrenCount();
-                                        if (adCount==0){
-                                          binding.rcAddress.setVisibility(View.GONE);
-                                          binding.txtNoAddress.setVisibility(View.VISIBLE);
+//        if (currentUser != null) {
+        String email =sharedPreferences.getString("email",null);
+                usersRef.orderByChild("email").equalTo(email).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        if (dataSnapshot.exists()) {
+                            for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
+                                String userId = sharedPreferences.getString("ID",null);
+                                if (userId != null) {
+                                    databaseReference = FirebaseDatabase.getInstance().getReference().child("Account").child(userId).child("address");
+                                    setupRecyclerView();
+                                    databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                            long adCount = snapshot.getChildrenCount();
+                                            if (adCount == 0) {
+                                                binding.rcAddress.setVisibility(View.GONE);
+                                                binding.txtNoAddress.setVisibility(View.VISIBLE);
+                                            }
                                         }
-                                    }
 
-                                    @Override
-                                    public void onCancelled(@NonNull DatabaseError error) {
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError error) {
 
-                                    }
-                                });
-                            } else {
+                                        }
+                                    });
+                                } else {
+                                }
                             }
+                        } else {
                         }
-                    } else {
                     }
-                }
 
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
-                }
-            });
-        }
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                    }
+                });
+//        }
 
         binding.btnAddAddress.setOnClickListener(v -> {
             FragmentAddAddress fragmentAddAddress = new FragmentAddAddress();
@@ -135,6 +138,8 @@ public class FragmentAddress extends Fragment {
     @Override
     public void onStop() {
         super.onStop();
-        addressAdapter.stopListening();
+        if (addressAdapter != null) {
+            addressAdapter.stopListening();
+        }
     }
 }

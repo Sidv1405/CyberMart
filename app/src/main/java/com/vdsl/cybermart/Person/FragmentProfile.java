@@ -30,6 +30,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.messaging.FirebaseMessaging;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.vdsl.cybermart.Account.Activity.LoginActivity;
@@ -95,8 +97,10 @@ public class FragmentProfile extends Fragment {
         sharedPreferences = requireActivity().getSharedPreferences("Users", Context.MODE_PRIVATE);
         currentUser = auth.getCurrentUser();
         progressDialog = new ProgressDialog(getActivity());
+
         //role and menu
         showItemMenu();
+
         //show infor
         showInitInfor();
         //back
@@ -116,23 +120,44 @@ public class FragmentProfile extends Fragment {
             builder.setPositiveButton("YES", (dialog, which) -> {
 
                 progressDialog.setMessage("Loging out...");
-                progressDialog.show();
-                FirebaseAuth.getInstance().signOut();
-                Intent intent = new Intent(getActivity(), LoginActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(intent);
-                requireActivity().finish();
 
-                FirebaseMessaging.getInstance().deleteToken().addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        FirebaseAuth.getInstance().signOut();
-                        Intent intent1 = new Intent(getActivity(), LoginActivity.class);
-                        intent1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                        startActivity(intent1);
-                        requireActivity().finish();
-                    }
-                });
+//                progressDialog.show();
+//                FirebaseAuth.getInstance().signOut();
+//                Intent intent = new Intent(getActivity(), LoginActivity.class);
+//                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+//                startActivity(intent);
 
+                FirebaseMessaging.getInstance().deleteToken().addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+//                            progressDialog.dismiss();
+                            FirebaseAuth.getInstance().signOut();
+                            if (requireActivity() != null) {
+                                Intent intent = new Intent(requireActivity(), LoginActivity.class);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                startActivity(intent);
+                                requireActivity().finish();
+                            }
+                        }
+
+//                 progressDialog.show();
+//                 FirebaseAuth.getInstance().signOut();
+//                 Intent intent = new Intent(getActivity(), LoginActivity.class);
+//                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+//                 startActivity(intent);
+//                 requireActivity().finish();
+
+//                 FirebaseMessaging.getInstance().deleteToken().addOnCompleteListener(task -> {
+//                     if (task.isSuccessful()) {
+//                         FirebaseAuth.getInstance().signOut();
+//                         Intent intent1 = new Intent(getActivity(), LoginActivity.class);
+//                         intent1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+//                         startActivity(intent1);
+//                         requireActivity().finish();
+//
+//                     }
+//                 });
             });
 
             builder.create().show();
@@ -143,7 +168,6 @@ public class FragmentProfile extends Fragment {
         binding.imgAvatar.setOnClickListener(v -> openAvatarDialog());
         binding.imgEditAvatar.setOnClickListener(v -> openAvatarDialog());
 
-
         binding.CvCreateStaff.setOnClickListener(v -> {
             FragmentManagementStaff fragmentManagementStaff = new FragmentManagementStaff();
             FragmentTransaction transaction = requireActivity().getSupportFragmentManager().beginTransaction();
@@ -151,6 +175,7 @@ public class FragmentProfile extends Fragment {
             transaction.addToBackStack(null);
             transaction.commit();
         });
+
 
         binding.btnMyOrder.setOnClickListener(v ->
                 General.loadFragment(getParentFragmentManager(), new FragmentContainer(), null));
@@ -190,58 +215,152 @@ public class FragmentProfile extends Fragment {
 
 
     private void showInitInfor() {
-        if (auth.getCurrentUser() != null) {
-            Log.d("loginnow", "logged in");
-            databaseReference.orderByChild("email").equalTo(currentUser.getEmail()).addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    if (snapshot.exists()) {
-                        for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                            String userId = dataSnapshot.getKey();
-                            if (userId != null) {
-                                String FullName = dataSnapshot.child("fullName").getValue(String.class);
-                                String Email = dataSnapshot.child("email").getValue(String.class);
-                                String Avatar = dataSnapshot.child("avatar").getValue(String.class);
-                                String Role = dataSnapshot.child("role").getValue(String.class);
-                                binding.txtYourName.setText(FullName);
-                                binding.txtYourEmail.setText(Email);
-                                Log.d("loginnow", "fname: " + FullName);
-                                Log.d("loginnow", "email: " + Email);
-                                Log.d("loginnow", "avatar: " + Avatar);
-                                if (Avatar != null && !Avatar.isEmpty()) {
-                                    Picasso.get().load(Avatar).into(binding.imgAvatar, new Callback() {
-                                        @Override
-                                        public void onSuccess() {
-                                            Log.d("Avatar", "Avatar: " + Avatar);
-                                        }
-                                        @Override
-                                        public void onError(Exception e) {
-                                            binding.imgAvatar.setImageResource(R.drawable.img_default_profile_image);
-                                        }
-                                    });
-                                } else {
-                                    binding.imgAvatar.setImageResource(R.drawable.img_default_profile_image);
-                                }
-                                if (Role != null && Role.equals("Admin")) {
-                                    binding.CvCreateStaff.setVisibility(View.VISIBLE);
-                                    Log.d("loginnow", "Role: " + Role);
-                                } else {
-                                    binding.CvCreateStaff.setVisibility(View.GONE);
-                                    Log.d("loginnow", "Role: " + Role);
-                                }
+// master
+//        if (auth.getCurrentUser() != null) {
+        Log.d("loginnow", "logged in");
+        String email = sharedPreferences.getString("email", "nothing to show");
+        databaseReference.orderByChild("email").equalTo(email).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+//                    String userId = sharedPreferences.getString("ID", null);
+                    for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                        String userId = dataSnapshot.getKey();
+                        if (userId != null) {
+                            String fullName = sharedPreferences.getString("fullName", "nothing to show");
+                            String avatar = dataSnapshot.child("avatar").getValue(String.class);
+                            String role = sharedPreferences.getString("role", "nothing to show");
+                            binding.txtYourName.setText(fullName);
+                            binding.txtYourEmail.setText(email);
+                            Log.d("loginnow", "fname: " + fullName);
+                            Log.d("loginnow", "email: " + email);
+                            Log.d("loginnow", "avatar: " + avatar);
+                            if (avatar != null && !avatar.isEmpty()) {
+                                Picasso.get().load(avatar).into(binding.imgAvatar, new Callback() {
+                                    @Override
+                                    public void onSuccess() {
+                                        Log.d("Avatar", "Avatar: " + avatar);
+                                    }
+
+                                    @Override
+                                    public void onError(Exception e) {
+                                        binding.imgAvatar.setImageResource(R.drawable.img_default_profile_image);
+                                    }
+                                });
+                            } else {
+                                binding.imgAvatar.setImageResource(R.drawable.img_default_profile_image);
+                            }
+                            if (!role.isEmpty() && !role.equals("nothing to show") && role.equals("Admin")) {
+                                binding.CvCreateStaff.setVisibility(View.VISIBLE);
+                                Log.d("loginnow", "Role: " + role);
+                            } else {
+                                binding.CvCreateStaff.setVisibility(View.GONE);
+                                Log.d("loginnow", "Role: " + role);
+//=======
+//         if (auth.getCurrentUser() != null) {
+//             Log.d("loginnow", "logged in");
+//             databaseReference.orderByChild("email").equalTo(currentUser.getEmail()).addValueEventListener(new ValueEventListener() {
+//                 @Override
+//                 public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                     if (snapshot.exists()) {
+//                         for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+//                             String userId = dataSnapshot.getKey();
+//                             if (userId != null) {
+//                                 String FullName = dataSnapshot.child("fullName").getValue(String.class);
+//                                 String Email = dataSnapshot.child("email").getValue(String.class);
+//                                 String Avatar = dataSnapshot.child("avatar").getValue(String.class);
+//                                 String Role = dataSnapshot.child("role").getValue(String.class);
+//                                 binding.txtYourName.setText(FullName);
+//                                 binding.txtYourEmail.setText(Email);
+//                                 Log.d("loginnow", "fname: " + FullName);
+//                                 Log.d("loginnow", "email: " + Email);
+//                                 Log.d("loginnow", "avatar: " + Avatar);
+//                                 if (Avatar != null && !Avatar.isEmpty()) {
+//                                     Picasso.get().load(Avatar).into(binding.imgAvatar, new Callback() {
+//                                         @Override
+//                                         public void onSuccess() {
+//                                             Log.d("Avatar", "Avatar: " + Avatar);
+//                                         }
+//                                         @Override
+//                                         public void onError(Exception e) {
+//                                             binding.imgAvatar.setImageResource(R.drawable.img_default_profile_image);
+//                                         }
+//                                     });
+//                                 } else {
+//                                     binding.imgAvatar.setImageResource(R.drawable.img_default_profile_image);
+//                                 }
+//                                 if (Role != null && Role.equals("Admin")) {
+//                                     binding.CvCreateStaff.setVisibility(View.VISIBLE);
+//                                     Log.d("loginnow", "Role: " + Role);
+//                                 } else {
+//                                     binding.CvCreateStaff.setVisibility(View.GONE);
+//                                     Log.d("loginnow", "Role: " + Role);
+//                                 }
+//master
                             }
                         }
                     }
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
 
                 }
-            });
-        } else {
-            Log.d("loginnow", "not logged in");
-        }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+//            databaseReference.orderByChild("email").equalTo(currentUser.getEmail()).addValueEventListener(new ValueEventListener() {
+//                @Override
+//                public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                    if (snapshot.exists()) {
+//                        for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+//                            String userId = dataSnapshot.getKey();
+//                            if (userId != null) {
+//                                String FullName = dataSnapshot.child("fullName").getValue(String.class);
+//                                String email = dataSnapshot.child("email").getValue(String.class);
+//                                String Avatar = dataSnapshot.child("avatar").getValue(String.class);
+//                                String Role = dataSnapshot.child("role").getValue(String.class);
+//                                binding.txtYourName.setText(FullName);
+//                                binding.txtYourEmail.setText(email);
+//                                Log.d("loginnow", "fname: " + FullName);
+//                                Log.d("loginnow", "email: " + email);
+//                                Log.d("loginnow", "avatar: " + Avatar);
+//                                if (Avatar != null && !Avatar.isEmpty()) {
+//                                    Picasso.get().load(Avatar).into(binding.imgAvatar, new Callback() {
+//                                        @Override
+//                                        public void onSuccess() {
+//                                            Log.d("Avatar", "Avatar: " + Avatar);
+//                                        }
+//
+//                                        @Override
+//                                        public void onError(Exception e) {
+//                                            binding.imgAvatar.setImageResource(R.drawable.img_default_profile_image);
+//                                        }
+//                                    });
+//                                } else {
+//                                    binding.imgAvatar.setImageResource(R.drawable.img_default_profile_image);
+//                                }
+//                                if (Role != null && Role.equals("Admin")) {
+//                                    binding.CvCreateStaff.setVisibility(View.VISIBLE);
+//                                    Log.d("loginnow", "Role: " + Role);
+//                                } else {
+//                                    binding.CvCreateStaff.setVisibility(View.GONE);
+//                                    Log.d("loginnow", "Role: " + Role);
+//                                }
+//                            }
+//                        }
+//                    }
+//                }
+//
+//                @Override
+//                public void onCancelled(@NonNull DatabaseError error) {
+//
+//                }
+//            });
+//        } else {
+//            Log.d("loginnow", "not logged in");
+//        }
     }
 
     //new
@@ -255,10 +374,11 @@ public class FragmentProfile extends Fragment {
         ImageView dialogAvatar = view.findViewById(R.id.dialogAvatar);
         Button btnEdit = view.findViewById(R.id.btnEdit);
         Button btnDone = view.findViewById(R.id.btnDone);
-
-        if (auth.getCurrentUser() != null) {
+        String ID = sharedPreferences.getString("ID", null);
+        if (ID != null) {
             Log.d("loginnow", "logged in");
-            databaseReference.orderByChild("email").equalTo(currentUser.getEmail()).addValueEventListener(new ValueEventListener() {
+            String email = sharedPreferences.getString("email", null);
+            databaseReference.orderByChild("email").equalTo(email).addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     if (snapshot.exists()) {
@@ -315,15 +435,42 @@ public class FragmentProfile extends Fragment {
         String ID = sharedPreferences.getString("ID", null);
         if (ID != null) {
             String imagePath = avatarUri.toString();
-            databaseReference.child(ID).child("avatar").setValue(imagePath)
-                    .addOnCompleteListener(task -> {
-                        if (task.isSuccessful()) {
-                            Toast.makeText(getActivity(), "Avatar updated successfully", Toast.LENGTH_SHORT).show();
-                        } else {
-                            Toast.makeText(getActivity(), "Failed to update avatar", Toast.LENGTH_SHORT).show();
+//<<<<<<< master
+            StorageReference storageRef = FirebaseStorage.getInstance().getReference();
+            StorageReference imageRef = storageRef.child("avatars/" + ID + ".jpg");
 
-                        }
-                    });
+            imageRef.putFile(avatarUri)
+                    .addOnSuccessListener(taskSnapshot -> {
+                        // Lưu ảnh thành công, lấy URL của ảnh
+                        imageRef.getDownloadUrl().addOnSuccessListener(uri -> {
+                            String imageUrl = uri.toString();
+                            // Lưu URL của ảnh cùng với ID vào Firebase Realtime Database hoặc Firestore
+                            DatabaseReference userRef =
+                                    FirebaseDatabase.getInstance().getReference().child("Account").child(ID);
+                            userRef.child("avatar").setValue(imageUrl)
+                                    .addOnCompleteListener(task -> {
+                                        if (task.isSuccessful()) {
+                                            Toast.makeText(getActivity(), "Avatar updated successfully", Toast.LENGTH_SHORT).show();
+                                        } else {
+                                            Toast.makeText(getActivity(), "Failed to update avatar", Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
+                        });
+                    })
+                    .addOnFailureListener(e -> {
+                        // Xử lý lỗi nếu lưu ảnh thất bại
+                        Toast.makeText(getActivity(), "Failed to upload avatar", Toast.LENGTH_SHORT).show();
+//=======
+//             databaseReference.child(ID).child("avatar").setValue(imagePath)
+//                     .addOnCompleteListener(task -> {
+//                         if (task.isSuccessful()) {
+//                             Toast.makeText(getActivity(), "Avatar updated successfully", Toast.LENGTH_SHORT).show();
+//                         } else {
+//                             Toast.makeText(getActivity(), "Failed to update avatar", Toast.LENGTH_SHORT).show();
+
+//                         }
+// >>>>>>> master
+//                  });
         }
 
     }

@@ -1,8 +1,9 @@
 package com.vdsl.cybermart.Account.Fragment;
 
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -25,7 +26,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.vdsl.cybermart.Account.Model.AddressModel;
-import com.vdsl.cybermart.R;
 import com.vdsl.cybermart.databinding.FragmentAddAddressBinding;
 
 import java.util.HashMap;
@@ -35,6 +35,7 @@ public class FragmentUpdateAddress extends Fragment {
     FragmentAddAddressBinding binding;
     DatabaseReference databaseReference, addressRef;
     FirebaseUser currentUser;
+    SharedPreferences sharedPreferences;
 
     @Nullable
     @Override
@@ -50,7 +51,7 @@ public class FragmentUpdateAddress extends Fragment {
         showInitData();
         databaseReference = FirebaseDatabase.getInstance().getReference().child("Account");
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
-
+        sharedPreferences = getActivity().getSharedPreferences("Users", Context.MODE_PRIVATE);
         binding.btnDeleteAddress.setOnClickListener(v -> {
             deleteAddress();
         });
@@ -109,8 +110,10 @@ public class FragmentUpdateAddress extends Fragment {
         }
 
         if ((!error)) {
-            if (currentUser != null) {
-                databaseReference.orderByChild("email").equalTo(currentUser.getEmail()).addListenerForSingleValueEvent(new ValueEventListener() {
+            String ID = sharedPreferences.getString("ID", null);
+            if (ID != null) {
+                String email = sharedPreferences.getString("email", null);
+                databaseReference.orderByChild("email").equalTo(email).addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         if (snapshot.exists()) {
@@ -204,7 +207,7 @@ public class FragmentUpdateAddress extends Fragment {
         builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-               builder.create().dismiss();
+                builder.create().dismiss();
             }
         });
         builder.create().show();

@@ -1,6 +1,8 @@
 package com.vdsl.cybermart.Account.Fragment;
 
 import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -12,9 +14,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -31,6 +30,7 @@ public class FragmentAddStaff extends Fragment {
     FirebaseUser currentUser;
     int latestUserID = 0;
     ProgressDialog progressDialog;
+    SharedPreferences sharedPreferences;
 
     @Nullable
     @Override
@@ -42,11 +42,12 @@ public class FragmentAddStaff extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
+        sharedPreferences = getActivity().getSharedPreferences("Users", Context.MODE_PRIVATE);
         userAuth = FirebaseAuth.getInstance();
         userDatabase = FirebaseDatabase.getInstance().getReference().child("Account");
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
         progressDialog = new ProgressDialog(getActivity());
+
         binding.btnSignUp.setOnClickListener(v -> {
             String userName = binding.edtUserNameSignUp.getText().toString().trim();
             String email = binding.edtEmailSignUp.getText().toString().trim();
@@ -65,21 +66,6 @@ public class FragmentAddStaff extends Fragment {
                 error = true;
             } else if (!email.matches(emailPattern)) {
                 binding.edtEmailSignUp.setError("Wrong email format!");
-                error = true;
-            } else {
-                userDatabase.orderByChild("email").equalTo(email).addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        if (snapshot.exists()) {
-                            binding.edtEmailSignUp.setError("Email already exists. Please use another email!");
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-
-                    }
-                });
                 error = true;
             }
             if (TextUtils.isEmpty(password)) {
@@ -102,43 +88,37 @@ public class FragmentAddStaff extends Fragment {
             if (!error) {
                 progressDialog.setMessage("loading...");
                 progressDialog.show();
-                userAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                userDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            userDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                    for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                                        String userID = dataSnapshot.getKey();
-                                        if (userID != null && userID.startsWith("Id")) {
-                                            int id = Integer.parseInt(userID.substring(2));
-                                            if (id > latestUserID) {
-                                                latestUserID = id;
-                                            }
-                                        }
-                                    }
-
-                                    latestUserID++;
-                                    String ID = "Id" + latestUserID;
-                                    DatabaseReference currentUserDB = userDatabase.child(ID);
-                                    currentUserDB.child("fullName").setValue(userName);
-                                    currentUserDB.child("email").setValue(email);
-                                    currentUserDB.child("role").setValue("Staff");
-                                    progressDialog.dismiss();
-                                    Toast.makeText(getActivity(), "Add Staff Successfully.", Toast.LENGTH_SHORT).show();
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                            String userID = dataSnapshot.getKey();
+                            if (userID != null && userID.startsWith("Id")) {
+                                int id = Integer.parseInt(userID.substring(2));
+                                if (id > latestUserID) {
+                                    latestUserID = id;
                                 }
-
-                                @Override
-                                public void onCancelled(@NonNull DatabaseError error) {
-                                    progressDialog.dismiss();
-                                }
-                            });
-                        } else {
-                            progressDialog.dismiss();
+                            }
                         }
+
+                        latestUserID++;
+                        String ID = "Id" + latestUserID;
+                        DatabaseReference currentUserDB = userDatabase.child(ID);
+                        currentUserDB.child("fullName").setValue(userName);
+                        currentUserDB.child("email").setValue(email);
+                        currentUserDB.child("role").setValue("Staff");
+                        currentUserDB.child("password").setValue(password);
+                        progressDialog.dismiss();
+                        Toast.makeText(getActivity(), "Add Staff Successfully.", Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        progressDialog.dismiss();
                     }
                 });
+            } else {
+                progressDialog.dismiss();
             }
         });
     }
