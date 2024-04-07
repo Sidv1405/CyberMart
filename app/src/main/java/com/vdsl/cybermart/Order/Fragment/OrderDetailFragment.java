@@ -84,7 +84,8 @@ public class OrderDetailFragment extends Fragment {
                 getProductInOrder(order);
                 SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("Users", Context.MODE_PRIVATE);
                 String id = sharedPreferences.getString("ID", "");
-                String role = sharedPreferences.getString("Role", "");
+                String role = sharedPreferences.getString("role", "");
+
                 String idAccount = order.getCartModel().getAccountId();
                 getTokenFromId(idAccount, new OnIdReceivedListener() {
                     @Override
@@ -93,6 +94,7 @@ public class OrderDetailFragment extends Fragment {
                         Log.e("check48", "onIdReceived: " + id + userFCM );
                     }
                 });
+              
                 if (!role.equals("Customer")) {
                     if(!order.getStatus().equals("Delivered")){
                         binding.txtStatus.setOnClickListener(v -> {
@@ -105,7 +107,7 @@ public class OrderDetailFragment extends Fragment {
                                     builder1.setTitle("Cảnh báo");
                                     builder1.setMessage("Khi chuyển qua trạng thái \"Delivered\" thì bạn không thể thay đổi!");
                                     builder1.setPositiveButton("OK",(dialog1, which1) -> {
-                                        setStatus(dialog, order, status[which]);
+                                        setStatus(dialog, order, status[which],id);
                                         // trừ số hàng đã nhận vào số hàng trong kho
                                         updateQuantity(order);
                                         sendNotification(order,status[which]);
@@ -114,8 +116,10 @@ public class OrderDetailFragment extends Fragment {
                                     AlertDialog alertDialog = builder1.create();
                                     alertDialog.show();
                                 }else {
-                                    setStatus(dialog, order, status[which]);
+
+                                    setStatus(dialog, order, status[which],id);
                                     sendNotification(order,status[which]);
+
                                 }
                             });
                             AlertDialog alertDialog = builder.create();
@@ -127,8 +131,10 @@ public class OrderDetailFragment extends Fragment {
         }
     }
 
-    private void setStatus(DialogInterface dialog, Order order, String status) {
+    private void setStatus(DialogInterface dialog, Order order, String status,String id) {
         order.setStatus(status);
+        order.setIdStaff(id);
+        order.setStatusId(status+order.getCartModel().getAccountId());
         DatabaseReference referenceOrder = FirebaseDatabase.getInstance().
                 getReference("Orders").child(order.getSeri());
         referenceOrder.setValue(order);

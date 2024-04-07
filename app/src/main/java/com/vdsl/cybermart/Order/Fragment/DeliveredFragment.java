@@ -37,11 +37,10 @@ public class DeliveredFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         sharedPreferences = requireActivity().getSharedPreferences("Users", Context.MODE_PRIVATE);
         String id = sharedPreferences.getString("ID", "");
-        String role = sharedPreferences.getString("Role", "");
-        if (role.equals("Customers")) {
+        String role = sharedPreferences.getString("role", "");
+        if (role.equals("Customer")) {
             query = FirebaseDatabase.getInstance().getReference("Orders")
-                    .orderByChild("status").equalTo("Delivered");
-            query.orderByChild("idUser").equalTo(id);
+                    .orderByChild("statusId").equalTo("Delivered"+id);
         } else {
             query = FirebaseDatabase.getInstance().getReference("Orders")
                     .orderByChild("status").equalTo("Delivered");

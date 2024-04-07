@@ -3,6 +3,7 @@ package com.vdsl.cybermart.Order.Fragment;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,11 +38,11 @@ public class ProcessingOrderFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         sharedPreferences = requireActivity().getSharedPreferences("Users", Context.MODE_PRIVATE);
         String id = sharedPreferences.getString("ID", "");
-        String role = sharedPreferences.getString("Role", "");
-        if (role.equals("Customers")) {
+        String role = sharedPreferences.getString("role", "");
+        Log.d("TAG", "onViewCreated: "+id+role);
+        if (role.equals("Customer")) {
             query = FirebaseDatabase.getInstance().getReference("Orders")
-                    .orderByChild("status").equalTo("Processing");
-            query.orderByChild("idUser").equalTo(id);
+                    .orderByChild("statusId").equalTo("Processing"+id);
         } else {
             query = FirebaseDatabase.getInstance().getReference("Orders")
                     .orderByChild("status").equalTo("Processing");
