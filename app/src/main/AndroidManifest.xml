@@ -8,7 +8,7 @@
 
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
 
-
+<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
 
     <meta-data
         android:name="com.google.firebase.auth.API_KEY"

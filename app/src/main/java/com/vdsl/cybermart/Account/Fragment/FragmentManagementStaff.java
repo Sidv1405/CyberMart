@@ -75,16 +75,6 @@ public class FragmentManagementStaff extends Fragment {
 
             @Override
             public boolean onQueryTextChange(String newText) {
-//                Query query =
-//                        staffRef.orderByChild("role").equalTo("Staff").orderByChild("fullName").startAt(newText).endAt(newText +
-//                        "\uf8ff");
-//                FirebaseRecyclerOptions<UserModel> options =
-//                        new FirebaseRecyclerOptions.Builder<UserModel>().setQuery(query,
-//                                UserModel.class).build();
-//                StaffMangeAdapter staffMangeAdapter = new StaffMangeAdapter(options,
-//                        requireActivity());
-//                binding.rcvStaff.setAdapter(staffMangeAdapter);
-//                staffMangeAdapter.startListening();
                 String searchText = newText.toLowerCase();
 
                 Query query = staffRef.orderByChild("role").equalTo("Staff");

@@ -30,7 +30,8 @@ public class FragmentAddStaff extends Fragment {
     FirebaseUser currentUser;
     int latestUserID = 0;
     ProgressDialog progressDialog;
-SharedPreferences sharedPreferences;
+    SharedPreferences sharedPreferences;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -41,7 +42,7 @@ SharedPreferences sharedPreferences;
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        sharedPreferences= getActivity().getSharedPreferences("Users", Context.MODE_PRIVATE);
+        sharedPreferences = getActivity().getSharedPreferences("Users", Context.MODE_PRIVATE);
         userAuth = FirebaseAuth.getInstance();
         userDatabase = FirebaseDatabase.getInstance().getReference().child("Account");
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
@@ -87,44 +88,37 @@ SharedPreferences sharedPreferences;
             if (!error) {
                 progressDialog.setMessage("loading...");
                 progressDialog.show();
-//                userAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-//                    @Override
-//                    public void onComplete(@NonNull Task<AuthResult> task) {
-//                        if (task.isSuccessful()) {
-                            userDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                    for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                                        String userID = dataSnapshot.getKey();
-                                        if (userID != null && userID.startsWith("Id")) {
-                                            int id = Integer.parseInt(userID.substring(2));
-                                            if (id > latestUserID) {
-                                                latestUserID = id;
-                                            }
-                                        }
-                                    }
-
-                                    latestUserID++;
-                                    String ID = "Id" + latestUserID;
-                                    DatabaseReference currentUserDB = userDatabase.child(ID);
-                                    currentUserDB.child("fullName").setValue(userName);
-                                    currentUserDB.child("email").setValue(email);
-                                    currentUserDB.child("role").setValue("Staff");
-                                    currentUserDB.child("password").setValue(password);
-                                    progressDialog.dismiss();
-                                    Toast.makeText(getActivity(), "Add Staff Successfully.", Toast.LENGTH_SHORT).show();
+                userDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                            String userID = dataSnapshot.getKey();
+                            if (userID != null && userID.startsWith("Id")) {
+                                int id = Integer.parseInt(userID.substring(2));
+                                if (id > latestUserID) {
+                                    latestUserID = id;
                                 }
+                            }
+                        }
 
-                                @Override
-                                public void onCancelled(@NonNull DatabaseError error) {
-                                    progressDialog.dismiss();
-                                }
-                            });
-                        } else {
-                            progressDialog.dismiss();
-//                        }
-//                    }
-//                });
+                        latestUserID++;
+                        String ID = "Id" + latestUserID;
+                        DatabaseReference currentUserDB = userDatabase.child(ID);
+                        currentUserDB.child("fullName").setValue(userName);
+                        currentUserDB.child("email").setValue(email);
+                        currentUserDB.child("role").setValue("Staff");
+                        currentUserDB.child("password").setValue(password);
+                        progressDialog.dismiss();
+                        Toast.makeText(getActivity(), "Add Staff Successfully.", Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        progressDialog.dismiss();
+                    }
+                });
+            } else {
+                progressDialog.dismiss();
             }
         });
     }

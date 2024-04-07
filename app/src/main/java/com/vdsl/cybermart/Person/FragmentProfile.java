@@ -32,12 +32,12 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.messaging.FirebaseMessaging;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.vdsl.cybermart.Account.Activity.LoginActivity;
-
 import com.vdsl.cybermart.Account.Fragment.FragmentManagementStaff;
-
 import com.vdsl.cybermart.Account.Fragment.FragmentSetting;
 import com.vdsl.cybermart.CategoryManagement.View.CategoryManagementActivity;
 import com.vdsl.cybermart.General;
@@ -217,37 +217,57 @@ public class FragmentProfile extends Fragment {
     private void showInitInfor() {
 //        if (auth.getCurrentUser() != null) {
         Log.d("loginnow", "logged in");
-        String fullName = sharedPreferences.getString("fullName", "nothing to show");
         String email = sharedPreferences.getString("email", "nothing to show");
-        String avatar = sharedPreferences.getString("avatar", "nothing to show");
-        String role = sharedPreferences.getString("role", "nothing to show");
-        binding.txtYourName.setText(fullName);
-        binding.txtYourEmail.setText(email);
-        Log.d("loginnow", "fname: " + fullName);
-        Log.d("loginnow", "email: " + email);
-        Log.d("loginnow", "avatar: " + avatar);
-        if (!avatar.equals("nothing to show") && !avatar.isEmpty()) {
-            Picasso.get().load(avatar).into(binding.imgAvatar, new Callback() {
-                @Override
-                public void onSuccess() {
-                    Log.d("Avatar", "Avatar: " + avatar);
-                }
+        databaseReference.orderByChild("email").equalTo(email).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+//                    String userId = sharedPreferences.getString("ID", null);
+                    for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                        String userId = dataSnapshot.getKey();
+                        if (userId != null) {
+                            String fullName = sharedPreferences.getString("fullName", "nothing to show");
+                            String avatar = dataSnapshot.child("avatar").getValue(String.class);
+                            String role = sharedPreferences.getString("role", "nothing to show");
+                            binding.txtYourName.setText(fullName);
+                            binding.txtYourEmail.setText(email);
+                            Log.d("loginnow", "fname: " + fullName);
+                            Log.d("loginnow", "email: " + email);
+                            Log.d("loginnow", "avatar: " + avatar);
+                            if (avatar != null && !avatar.isEmpty()) {
+                                Picasso.get().load(avatar).into(binding.imgAvatar, new Callback() {
+                                    @Override
+                                    public void onSuccess() {
+                                        Log.d("Avatar", "Avatar: " + avatar);
+                                    }
 
-                @Override
-                public void onError(Exception e) {
-                    binding.imgAvatar.setImageResource(R.drawable.img_default_profile_image);
+                                    @Override
+                                    public void onError(Exception e) {
+                                        binding.imgAvatar.setImageResource(R.drawable.img_default_profile_image);
+                                    }
+                                });
+                            } else {
+                                binding.imgAvatar.setImageResource(R.drawable.img_default_profile_image);
+                            }
+                            if (!role.isEmpty() && !role.equals("nothing to show") && role.equals("Admin")) {
+                                binding.CvCreateStaff.setVisibility(View.VISIBLE);
+                                Log.d("loginnow", "Role: " + role);
+                            } else {
+                                binding.CvCreateStaff.setVisibility(View.GONE);
+                                Log.d("loginnow", "Role: " + role);
+                            }
+                        }
+                    }
+
                 }
-            });
-        } else {
-            binding.imgAvatar.setImageResource(R.drawable.img_default_profile_image);
-        }
-        if (!role.isEmpty() && !role.equals("nothing to show") && role.equals("Admin")) {
-            binding.CvCreateStaff.setVisibility(View.VISIBLE);
-            Log.d("loginnow", "Role: " + role);
-        } else {
-            binding.CvCreateStaff.setVisibility(View.GONE);
-            Log.d("loginnow", "Role: " + role);
-        }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
 //            databaseReference.orderByChild("email").equalTo(currentUser.getEmail()).addValueEventListener(new ValueEventListener() {
 //                @Override
 //                public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -312,10 +332,11 @@ public class FragmentProfile extends Fragment {
         ImageView dialogAvatar = view.findViewById(R.id.dialogAvatar);
         Button btnEdit = view.findViewById(R.id.btnEdit);
         Button btnDone = view.findViewById(R.id.btnDone);
-
-        if (auth.getCurrentUser() != null) {
+        String ID = sharedPreferences.getString("ID", null);
+        if (ID != null) {
             Log.d("loginnow", "logged in");
-            databaseReference.orderByChild("email").equalTo(currentUser.getEmail()).addValueEventListener(new ValueEventListener() {
+            String email = sharedPreferences.getString("email", null);
+            databaseReference.orderByChild("email").equalTo(email).addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     if (snapshot.exists()) {
@@ -374,17 +395,30 @@ public class FragmentProfile extends Fragment {
         String ID = sharedPreferences.getString("ID", null);
         if (ID != null) {
             String imagePath = avatarUri.toString();
-            databaseReference.child(ID).child("avatar").setValue(imagePath)
-                    .addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            if (task.isSuccessful()) {
-                                Toast.makeText(getActivity(), "Avatar updated successfully", Toast.LENGTH_SHORT).show();
-                            } else {
-                                Toast.makeText(getActivity(), "Failed to update avatar", Toast.LENGTH_SHORT).show();
+            StorageReference storageRef = FirebaseStorage.getInstance().getReference();
+            StorageReference imageRef = storageRef.child("avatars/" + ID + ".jpg");
 
-                            }
-                        }
+            imageRef.putFile(avatarUri)
+                    .addOnSuccessListener(taskSnapshot -> {
+                        // Lưu ảnh thành công, lấy URL của ảnh
+                        imageRef.getDownloadUrl().addOnSuccessListener(uri -> {
+                            String imageUrl = uri.toString();
+                            // Lưu URL của ảnh cùng với ID vào Firebase Realtime Database hoặc Firestore
+                            DatabaseReference userRef =
+                                    FirebaseDatabase.getInstance().getReference().child("Account").child(ID);
+                            userRef.child("avatar").setValue(imageUrl)
+                                    .addOnCompleteListener(task -> {
+                                        if (task.isSuccessful()) {
+                                            Toast.makeText(getActivity(), "Avatar updated successfully", Toast.LENGTH_SHORT).show();
+                                        } else {
+                                            Toast.makeText(getActivity(), "Failed to update avatar", Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
+                        });
+                    })
+                    .addOnFailureListener(e -> {
+                        // Xử lý lỗi nếu lưu ảnh thất bại
+                        Toast.makeText(getActivity(), "Failed to upload avatar", Toast.LENGTH_SHORT).show();
                     });
         }
 
