@@ -30,27 +30,13 @@ import com.vdsl.cybermart.Order.Model.Order;
 import com.vdsl.cybermart.Product.Model.ProductModel;
 import com.vdsl.cybermart.databinding.FragmentOrderDetailBinding;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.MediaType;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.RequestBody;
-import okhttp3.Response;
 
 public class OrderDetailFragment extends Fragment {
     FragmentOrderDetailBinding binding;
     Query query;
     ProductsListAdapterInOrder adapter;
-
-    String userFCM;
 
 
     @Override
@@ -84,14 +70,6 @@ public class OrderDetailFragment extends Fragment {
                 SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("Users", Context.MODE_PRIVATE);
                 String id = sharedPreferences.getString("ID", "");
                 String role = sharedPreferences.getString("Role", "");
-                String idAccount = order.getCartModel().getAccountId();
-                getTokenFromId(idAccount, new OnIdReceivedListener() {
-                    @Override
-                    public void onIdReceived(String id) {
-                        userFCM = id;
-                        Log.e("check48", "onIdReceived: " + id + userFCM );
-                    }
-                });
                 if (!role.equals("Customer")) {
                     if(!order.getStatus().equals("Delivered")){
                         binding.txtStatus.setOnClickListener(v -> {
@@ -105,15 +83,14 @@ public class OrderDetailFragment extends Fragment {
                                     builder1.setMessage("Khi chuyển qua trạng thái \"Delivered\" thì bạn không thể thay đổi!");
                                     builder1.setPositiveButton("OK",(dialog1, which1) -> {
                                         setStatus(dialog, order, status[which]);
-                                        sendNotification(order, status[which]);
                                         // trừ số hàng đã nhận vào số hàng trong kho
+                                        updateQuantity(order);
                                     });
                                     builder1.setNegativeButton("Cancel",(dialog1, which1) -> {});
                                     AlertDialog alertDialog = builder1.create();
                                     alertDialog.show();
                                 }else {
                                     setStatus(dialog, order, status[which]);
-                                    sendNotification(order, status[which]);
                                 }
                             });
                             AlertDialog alertDialog = builder.create();
@@ -162,6 +139,41 @@ public class OrderDetailFragment extends Fragment {
         adapter = new ProductsListAdapterInOrder(options);
         binding.rvProductList.setAdapter(adapter);
     }
+    private static void updateQuantity(Order order) {
+        Query proQuery = FirebaseDatabase.getInstance().getReference().child("Orders")
+                .child(order.getSeri()).child("cartModel").child("cartDetail");
+        proQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                        ProductModel cartPro = dataSnapshot.getValue(ProductModel.class);
+                        if (cartPro != null) {
+                            int quantitySell = cartPro.getQuantity();
+                            String productId = cartPro.getProdId();
+                            // Cập nhật số lượng sản phẩm trong kho
+                            DatabaseReference productRef = FirebaseDatabase.getInstance().getReference()
+                                    .child("products").child(productId).child("quantity");
+                            productRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                    if (snapshot.exists()) {
+                                        int currentQuantity = Objects.requireNonNull(snapshot.getValue(Integer.class));
+                                        int updatedQuantity = currentQuantity - quantitySell;
+                                        productRef.setValue(updatedQuantity);
+
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {
+
+                                }
+                            });
+                        }
+                    }
+                }
+            }
 
     private void sendNotification(Order order,String status) {
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Orders").child(order.getSeri());
@@ -257,6 +269,12 @@ public class OrderDetailFragment extends Fragment {
 
 
 
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
     @Override
     public void onStart() {
         super.onStart();
