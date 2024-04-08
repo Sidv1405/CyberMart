@@ -39,6 +39,9 @@ android {
     viewBinding {
         enable = true
     }
+    packagingOptions {
+        exclude ("META-INF/DEPENDENCIES")
+    }
 }
 
 dependencies {
@@ -73,4 +76,8 @@ dependencies {
     implementation ("com.nex3z:notification-badge:1.0.4")
 
     implementation("com.google.firebase:firebase-storage")
+    implementation("com.sendgrid:sendgrid-java:4.10.2")
+    implementation ("org.apache.httpcomponents:httpclient:4.5.14")
+    implementation ("org.apache.httpcomponents:httpcore:4.4.16")
+
 }

@@ -1,5 +1,6 @@
 package com.vdsl.cybermart.Account.Fragment;
 
+import android.app.Dialog;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,6 +18,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.saadahmedsoft.popupdialog.listener.OnDialogButtonClickListener;
+import com.vdsl.cybermart.General;
 import com.vdsl.cybermart.databinding.DialogPasswordBinding;
 import com.vdsl.cybermart.databinding.FragmentUpdateStaffsBinding;
 
@@ -93,9 +96,24 @@ public class FragmentUpdateStaff extends Fragment {
             updateStaff.put("phoneNumber", phoneNumber);
             staffRef.updateChildren(updateStaff).addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
-                    Toast.makeText(getActivity(), "Staff information updated successfully", Toast.LENGTH_SHORT).show();
+                    General.showSuccessPopup(requireContext(), "Successfully", "You're updated " +
+                                    "staff with Id: '"+staffId+"'",
+                            new OnDialogButtonClickListener() {
+                        @Override
+                        public void onDismissClicked(Dialog dialog) {
+                            super.onDismissClicked(dialog);
+                            requireActivity().getSupportFragmentManager().popBackStack();
+                        }
+                    });
+//                    Toast.makeText(getActivity(), "Staff information updated successfully", Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(getActivity(), "Failed to update staff information", Toast.LENGTH_SHORT).show();
+                    General.showFailurePopup(requireContext(), "Failed", "Failed to update staff information", new OnDialogButtonClickListener() {
+                        @Override
+                        public void onDismissClicked(Dialog dialog) {
+                            super.onDismissClicked(dialog);
+                        }
+                    });
+//                    Toast.makeText(getActivity(), "Failed to update staff information", Toast.LENGTH_SHORT).show();
                 }
             });
         }
