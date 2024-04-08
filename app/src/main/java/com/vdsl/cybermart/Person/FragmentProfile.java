@@ -6,10 +6,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
@@ -20,10 +17,6 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -55,33 +48,11 @@ import com.vdsl.cybermart.Statistic.Fragment.StatisticFragment;
 import com.vdsl.cybermart.Voucher.View.VoucherActivity;
 import com.vdsl.cybermart.databinding.FragmentProfileBinding;
 
-import java.io.IOException;
-
 public class FragmentProfile extends Fragment {
 
 
     //new
     private static final int MY_REQUEST_CODE = 99;
-//    private ActivityResultLauncher activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
-//        @Override
-//        public void onActivityResult(ActivityResult o) {
-//            if (o.getResultCode() == getActivity().RESULT_OK) {
-//                Intent intent = o.getData();
-//                if (intent == null) {
-//                    return;
-//                }
-//
-//                Uri uri = intent.getData();
-//                try {
-//                    //noinspection deprecation
-//                    Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), uri);
-//                    saveImageToFirebase(uri);
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        }
-//    });
 
     FragmentProfileBinding binding;
     DatabaseReference databaseReference;
@@ -350,45 +321,4 @@ public class FragmentProfile extends Fragment {
 
     }
 
-
-    //new
-//    private void upDateAvatar() {
-//        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-//            openGallery();
-//            return;
-//        }
-//        if (getActivity().checkSelfPermission(android.Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-//            openGallery();
-//        } else {
-//            String[] permission = {android.Manifest.permission.READ_EXTERNAL_STORAGE};
-//            getActivity().requestPermissions(permission, MY_REQUEST_CODE);
-//        }
-//    }
-//
-////    new
-//    @Override
-//    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-//        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-//        if (requestCode == MY_REQUEST_CODE) {
-//            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-//                openGallery();
-//            }
-//        }
-//    }
-//
-////    new
-//    private void openGallery() {
-//        Intent intent = new Intent();
-//        intent.setType("image/");
-//        intent.setAction(Intent.ACTION_GET_CONTENT);
-//        activityResultLauncher.launch(Intent.createChooser(intent, "Select picture!"));
-//    }
-//
-//    private void saveImageToFirebase(Uri imageUri) {
-//        if (imageUri != null) {
-//            String uid = sharedPreferences.getString("ID", null);
-//            DatabaseReference userRef = FirebaseDatabase.getInstance().getReference().child("Account").child(uid);
-//            userRef.child("avatar").setValue(imageUri.toString());
-//        }
-//    }
 }

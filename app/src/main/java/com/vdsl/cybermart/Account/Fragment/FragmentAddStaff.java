@@ -1,5 +1,6 @@
 package com.vdsl.cybermart.Account.Fragment;
 
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -21,6 +22,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.saadahmedsoft.popupdialog.listener.OnDialogButtonClickListener;
+import com.vdsl.cybermart.General;
 import com.vdsl.cybermart.databinding.FragmentAddStaffsBinding;
 
 public class FragmentAddStaff extends Fragment {
@@ -88,35 +91,62 @@ public class FragmentAddStaff extends Fragment {
             if (!error) {
                 progressDialog.setMessage("loading...");
                 progressDialog.show();
-                userDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
+                userDatabase.orderByChild("email").equalTo(email).addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                            String userID = dataSnapshot.getKey();
-                            if (userID != null && userID.startsWith("Id")) {
-                                int id = Integer.parseInt(userID.substring(2));
-                                if (id > latestUserID) {
-                                    latestUserID = id;
-                                }
-                            }
-                        }
+                        if (snapshot.exists()) {
+                            progressDialog.dismiss();
+                            Toast.makeText(requireContext(), "Email already exists!",
+                                    Toast.LENGTH_SHORT).show();
+                        } else {
+                            userDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                    for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                                        String userID = dataSnapshot.getKey();
+                                        if (userID != null && userID.startsWith("Id")) {
+                                            int id = Integer.parseInt(userID.substring(2));
+                                            if (id > latestUserID) {
+                                                latestUserID = id;
+                                            }
+                                        }
+                                    }
 
-                        latestUserID++;
-                        String ID = "Id" + latestUserID;
-                        DatabaseReference currentUserDB = userDatabase.child(ID);
-                        currentUserDB.child("fullName").setValue(userName);
-                        currentUserDB.child("email").setValue(email);
-                        currentUserDB.child("role").setValue("Staff");
-                        currentUserDB.child("password").setValue(password);
-                        progressDialog.dismiss();
-                        Toast.makeText(getActivity(), "Add Staff Successfully.", Toast.LENGTH_SHORT).show();
+                                    latestUserID++;
+                                    String ID = "Id" + latestUserID;
+                                    DatabaseReference currentUserDB = userDatabase.child(ID);
+                                    currentUserDB.child("fullName").setValue(userName);
+                                    currentUserDB.child("email").setValue(email);
+                                    currentUserDB.child("role").setValue("Staff");
+                                    currentUserDB.child("password").setValue(password);
+                                    progressDialog.dismiss();
+//                        Toast.makeText(getActivity(), "Add Staff Successfully.", Toast.LENGTH_SHORT).show();
+                                    General.showSuccessPopup(requireContext(), "Successfully", "An staff account added to your list", new OnDialogButtonClickListener() {
+                                        @Override
+                                        public void onDismissClicked(Dialog dialog) {
+                                            super.onDismissClicked(dialog);
+                                            binding.edtUserNameSignUp.setText(null);
+                                            binding.edtEmailSignUp.setText(null);
+                                            binding.edtPassSignUp.setText(null);
+                                            binding.edtConfirmPassSignUp.setText(null);
+                                        }
+                                    });
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {
+                                    progressDialog.dismiss();
+                                }
+                            });
+                        }
                     }
 
                     @Override
                     public void onCancelled(@NonNull DatabaseError error) {
-                        progressDialog.dismiss();
+
                     }
                 });
+
             } else {
                 progressDialog.dismiss();
             }
