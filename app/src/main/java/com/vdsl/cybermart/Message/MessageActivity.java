@@ -142,7 +142,7 @@ public class MessageActivity extends AppCompatActivity {
                                 editor.putString("avatar", user.getAvatar());
                                 editor.commit();
 
-                            }if (!user.getAvatar().isEmpty() || user.getAvatar() != null){
+                            }if (user.getAvatar() != null && !user.getAvatar().isEmpty() ){
                                 Picasso.get().load(user.getAvatar()).into(binding.imgProfile, new com.squareup.picasso.Callback() {
                                     @Override
                                     public void onSuccess() {

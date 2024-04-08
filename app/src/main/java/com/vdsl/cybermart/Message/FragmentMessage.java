@@ -53,7 +53,7 @@ public class FragmentMessage extends Fragment {
 
                             if (user != null) {
                                 binding.txtUsername.setText(user.getFullName());
-                                if (!user.getAvatar().isEmpty() || user.getAvatar() != null){
+                                if (user.getAvatar() != null && !user.getAvatar().isEmpty() ){
                                     Picasso.get().load(user.getAvatar()).into(binding.imgProfile, new Callback() {
                                         @Override
                                         public void onSuccess() {

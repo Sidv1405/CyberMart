@@ -88,25 +88,17 @@
             android:textSize="19sp"
             tools:ignore="RtlHardcoded" />
 
-        <androidx.cardview.widget.CardView
-            android:layout_gravity="center_vertical"
-            android:id="@+id/container_group2"
-            android:layout_width="44dp"
-            android:layout_height="44dp"
-            android:layout_marginStart="310dp"
-            android:backgroundTint="@color/black"
-            android:scaleType="centerInside"
-            android:src="@drawable/ic_voucher"
-            app:cardCornerRadius="8dp"
-            >
 
-            <ImageView
-                android:id="@+id/btnVoucher"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:src="@drawable/ic_voucher" />
-        </androidx.cardview.widget.CardView>
+        <ImageView
+
+            android:id="@+id/btnVoucher"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end|center_vertical"
+            android:padding="2dp"
+            android:layout_marginEnd="5dp"
+            android:background="@drawable/border2"
+            android:src="@drawable/ic_voucher" />
     </FrameLayout>
 
     <LinearLayout
