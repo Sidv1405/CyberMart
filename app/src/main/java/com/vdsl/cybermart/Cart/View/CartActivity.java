@@ -83,9 +83,25 @@ public class CartActivity extends AppCompatActivity implements CartAdapter.Total
                             String address = sharedPreferences.getString("address", "");
                             String payment = rdoCash.isChecked() ? "Cash" : "Credit Card";
                             String voucher = txtVoucher.getText().toString().isEmpty() ? "0" : txtVoucher.getText().toString();
-                            Order order = new Order(id, address, "Prepare", payment, voucher, cart,"Prepare"+cart.getAccountId());
-                            newOrderRef.setValue(order);
-                            finish();
+                            //Lấy cart từ firebase
+                            DatabaseReference cartRef= FirebaseDatabase.getInstance().getReference("carts").child(cart.getCartId());
+                            cartRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
+                                    CartModel cartModelNew = snapshot.getValue(CartModel.class);
+                                    Order order = new Order(id, address, "Prepare", payment, voucher, cartModelNew,"Prepare"+cart.getAccountId());
+                                    newOrderRef.setValue(order);
+                                    finish();
+
+                                }
+
+                                @Override
+                                public void onCancelled(@androidx.annotation.NonNull DatabaseError error) {
+
+                                }
+                            });
+
+
                         }
 
                         @Override
