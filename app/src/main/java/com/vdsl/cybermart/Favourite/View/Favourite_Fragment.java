@@ -47,7 +47,7 @@ public class Favourite_Fragment extends Fragment {
         String accountId = sharedPreferences.getString("ID", "");
         String favoritesDetailName = "favoritesDetail_" + accountId;
         SharedPreferences favSharedPreferences = getContext().getSharedPreferences(favoritesDetailName, Context.MODE_PRIVATE);
-        String favId = favSharedPreferences.getString("id", "");
+        String favId = favSharedPreferences.getString("favoritesId", "");
 
         DatabaseReference favReference = FirebaseDatabase.getInstance().getReference().child("favorites");
 

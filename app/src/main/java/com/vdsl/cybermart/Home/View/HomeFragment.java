@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -112,10 +113,16 @@ public class HomeFragment extends Fragment {
 //filter product
         categoryAdapter.setCategoryClickListener(categoryModel -> {
             String categoryId = categoryModel.getTitle();
-            Query query = prodReference.orderByChild("categoryId").equalTo(categoryId);
-            FirebaseRecyclerOptions<ProductModel> options3 = new FirebaseRecyclerOptions.Builder<ProductModel>().setQuery(query, ProductModel.class).build();
+            if (categoryId.equals("Poppular")) {
+                FirebaseRecyclerOptions<ProductModel> options3 = new FirebaseRecyclerOptions.Builder<ProductModel>().setQuery(prodReference, ProductModel.class).build();
+                productAdapter.updateOptions(options3);
+            } else {
+                Query query = prodReference.orderByChild("categoryId").equalTo(categoryId);
+                FirebaseRecyclerOptions<ProductModel> options3 = new FirebaseRecyclerOptions.Builder<ProductModel>().setQuery(query, ProductModel.class).build();
+                productAdapter.updateOptions(options3);
+            }
+            Log.d("categoryid", "onViewCreated: "+categoryId);
 
-            productAdapter.updateOptions(options3);
         });
 //Click cart
         binding.btnCart.setOnClickListener(v -> startActivity(new Intent(v.getContext(), CartActivity.class)));
