@@ -111,10 +111,11 @@ public class FragmentUpdateStaff extends Fragment {
         String password = bundle.getString("password");
         String active = bundle.getString("active");
         binding.edtStaffName.setText(fullName);
-        if (phoneNumber == null) {
+        if (phoneNumber == null || phoneNumber.isEmpty()) {
             binding.edtStaffPhone.setText("No number yet");
             binding.edtStaffPhone.setTextColor(Color.RED);
             binding.edtStaffPhone.setOnClickListener(v -> {
+                binding.edtStaffPhone.setTextColor(Color.BLACK);
                 binding.edtStaffPhone.setText(null);
             });
         } else {
@@ -163,7 +164,7 @@ public class FragmentUpdateStaff extends Fragment {
             staffRef.updateChildren(updateStaff).addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
                     General.showSuccessPopup(requireContext(), "Successfully", "You're updated " +
-                                    "staff with Id: '" + staffId + "'",
+                                    "staff have Id: '" + staffId + "'",
                             new OnDialogButtonClickListener() {
                                 @Override
                                 public void onDismissClicked(Dialog dialog) {
@@ -171,7 +172,6 @@ public class FragmentUpdateStaff extends Fragment {
                                     requireActivity().getSupportFragmentManager().popBackStack();
                                 }
                             });
-//                    Toast.makeText(getActivity(), "Staff information updated successfully", Toast.LENGTH_SHORT).show();
                 } else {
                     General.showFailurePopup(requireContext(), "Failed", "Failed to update staff information", new OnDialogButtonClickListener() {
                         @Override
@@ -179,7 +179,6 @@ public class FragmentUpdateStaff extends Fragment {
                             super.onDismissClicked(dialog);
                         }
                     });
-//                    Toast.makeText(getActivity(), "Failed to update staff information", Toast.LENGTH_SHORT).show();
                 }
             });
         }

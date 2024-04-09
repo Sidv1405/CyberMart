@@ -307,10 +307,8 @@ public class FragmentProfile extends Fragment {
             StorageReference imageRef = storageRef.child("avatars/" + ID + ".jpg");
 
             imageRef.putFile(avatarUri).addOnSuccessListener(taskSnapshot -> {
-                // Lưu ảnh thành công, lấy URL của ảnh
                 imageRef.getDownloadUrl().addOnSuccessListener(uri -> {
                     String imageUrl = uri.toString();
-                    // Lưu URL của ảnh cùng với ID vào Firebase Realtime Database hoặc Firestore
                     DatabaseReference userRef = FirebaseDatabase.getInstance().getReference().child("Account").child(ID);
                     userRef.child("avatar").setValue(imageUrl).addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {

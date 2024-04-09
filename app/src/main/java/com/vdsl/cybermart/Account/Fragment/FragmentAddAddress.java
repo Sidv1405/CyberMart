@@ -1,12 +1,12 @@
 package com.vdsl.cybermart.Account.Fragment;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -21,6 +21,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.saadahmedsoft.popupdialog.listener.OnDialogButtonClickListener;
+import com.vdsl.cybermart.General;
 import com.vdsl.cybermart.databinding.FragmentAddAddressBinding;
 
 import java.util.HashMap;
@@ -30,6 +32,7 @@ public class FragmentAddAddress extends Fragment {
     FragmentAddAddressBinding binding;
     DatabaseReference databaseReference, addressRef;
     SharedPreferences sharedPreferences;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -78,41 +81,55 @@ public class FragmentAddAddress extends Fragment {
 
                 if ((!error)) {
 //                    if (currentUser != null) {
-                    String email = sharedPreferences.getString("email",null);
-                        databaseReference.orderByChild("email").equalTo(email).addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                if (snapshot.exists()) {
-                                    for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                                        String userId = sharedPreferences.getString("ID",null);
-                                        if (userId != null) {
-                                            String addressId = databaseReference.push().getKey();
-                                            addressRef = FirebaseDatabase.getInstance().getReference().child("Account").child(userId).child("address");
-//                                            AddressModel addressModel = new AddressModel(fullName, country + " - " + city + " - " + district + " - " + descriptiom);
-                                            Map<String, Object> updateAddress = new HashMap<>();
-                                            updateAddress.put("fullName", fullName);
-                                            updateAddress.put("address", country + " - " + city + " - " + district + " - " + descriptiom);
-                                            addressRef.child(addressId).setValue(updateAddress).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                @Override
-                                                public void onSuccess(Void unused) {
-                                                    Toast.makeText(getActivity(), "Đã thêm địa chỉ mới thành công", Toast.LENGTH_SHORT).show();
-                                                }
-                                            }).addOnFailureListener(new OnFailureListener() {
-                                                @Override
-                                                public void onFailure(@NonNull Exception e) {
-                                                    Toast.makeText(getActivity(), "Không thể thêm địa chỉ mới: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                                                }
-                                            });
-                                        }
+                    String email = sharedPreferences.getString("email", null);
+                    databaseReference.orderByChild("email").equalTo(email).addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            if (snapshot.exists()) {
+                                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                                    String userId = sharedPreferences.getString("ID", null);
+                                    if (userId != null) {
+                                        String addressId = databaseReference.push().getKey();
+                                        addressRef = FirebaseDatabase.getInstance().getReference().child("Account").child(userId).child("address");
+                                        Map<String, Object> updateAddress = new HashMap<>();
+                                        updateAddress.put("fullName", fullName);
+                                        updateAddress.put("address", country + " - " + city + " - " + district + " - " + descriptiom);
+                                        addressRef.child(addressId).setValue(updateAddress).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            @Override
+                                            public void onSuccess(Void unused) {
+                                                General.showSuccessPopup(requireActivity(), "Add new address",
+                                                        "You have successfully added an address", new OnDialogButtonClickListener() {
+                                                            @Override
+                                                            public void onDismissClicked(Dialog dialog) {
+                                                                super.onDismissClicked(dialog);
+                                                                dialog.dismiss();
+                                                            }
+                                                        });
+                                            }
+                                        }).addOnFailureListener(new OnFailureListener() {
+                                            @Override
+                                            public void onFailure(@NonNull Exception e) {
+                                                General.showFailurePopup(requireActivity(), "Add new address",
+                                                        "Failed added an address",
+                                                        new OnDialogButtonClickListener() {
+                                                            @Override
+                                                            public void onDismissClicked(Dialog dialog) {
+                                                                super.onDismissClicked(dialog);
+                                                                dialog.dismiss();
+                                                            }
+                                                        });
+                                            }
+                                        });
                                     }
                                 }
                             }
+                        }
 
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError error) {
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
 
-                            }
-                        });
+                        }
+                    });
 
 //                    }
                 }

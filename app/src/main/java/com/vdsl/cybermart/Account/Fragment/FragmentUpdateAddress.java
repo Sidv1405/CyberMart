@@ -1,9 +1,9 @@
 package com.vdsl.cybermart.Account.Fragment;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -25,7 +25,9 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.saadahmedsoft.popupdialog.listener.OnDialogButtonClickListener;
 import com.vdsl.cybermart.Account.Model.AddressModel;
+import com.vdsl.cybermart.General;
 import com.vdsl.cybermart.databinding.FragmentAddAddressBinding;
 
 import java.util.HashMap;
@@ -133,14 +135,27 @@ public class FragmentUpdateAddress extends Fragment {
                                         @Override
                                         public void onComplete(@NonNull Task<Void> task) {
                                             if (task.isSuccessful()) {
-                                                binding.btnSaveAddress.setText("BACK");
-                                                binding.btnSaveAddress.setBackgroundColor(Color.GRAY);
-                                                binding.btnSaveAddress.setOnClickListener(v -> {
-                                                    getActivity().getSupportFragmentManager().popBackStack();
-                                                });
-                                                Toast.makeText(getActivity(), "Address Updated Successfully", Toast.LENGTH_SHORT).show();
+                                                General.showSuccessPopup(requireActivity(),
+                                                        "Update address",
+                                                        "You have successfully update this address",
+                                                        new OnDialogButtonClickListener() {
+                                                            @Override
+                                                            public void onDismissClicked(Dialog dialog) {
+                                                                super.onDismissClicked(dialog);
+                                                                dialog.dismiss();
+                                                            }
+                                                        });
                                             } else {
-                                                Toast.makeText(getActivity(), "Address Updated Failed!", Toast.LENGTH_SHORT).show();
+                                                General.showFailurePopup(requireActivity(),
+                                                        "Update address",
+                                                        "Failed to update this address!",
+                                                        new OnDialogButtonClickListener() {
+                                                            @Override
+                                                            public void onDismissClicked(Dialog dialog) {
+                                                                super.onDismissClicked(dialog);
+                                                                dialog.dismiss();
+                                                            }
+                                                        });
                                             }
                                         }
                                     });
@@ -182,11 +197,29 @@ public class FragmentUpdateAddress extends Fragment {
                                             @Override
                                             public void onComplete(@NonNull Task<Void> task) {
                                                 if (task.isSuccessful()) {
-                                                    Toast.makeText(getActivity(), "Address Deleted Successfully", Toast.LENGTH_SHORT).show();
-                                                    getActivity().getSupportFragmentManager().popBackStack();
+                                                    General.showSuccessPopup(requireActivity(),
+                                                            "Delete address",
+                                                            "You have successfully deleted this address",
+                                                            new OnDialogButtonClickListener() {
+                                                                @Override
+                                                                public void onDismissClicked(Dialog dialog) {
+                                                                    super.onDismissClicked(dialog);
+                                                                    getActivity().getSupportFragmentManager().popBackStack();
+                                                                    dialog.dismiss();
+                                                                }
+                                                            });
 
                                                 } else {
-                                                    Toast.makeText(getActivity(), "Address Deleted Failed!", Toast.LENGTH_SHORT).show();
+                                                    General.showFailurePopup(requireActivity(),
+                                                            "Delete address",
+                                                            "Failed to delete this address!",
+                                                            new OnDialogButtonClickListener() {
+                                                                @Override
+                                                                public void onDismissClicked(Dialog dialog) {
+                                                                    super.onDismissClicked(dialog);
+                                                                    dialog.dismiss();
+                                                                }
+                                                            });
                                                 }
                                             }
                                         });

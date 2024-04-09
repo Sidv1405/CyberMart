@@ -98,14 +98,14 @@ public class FragmentLogIn extends Fragment {
             if (!error) {
                 progressDialog.setMessage("Loging now...");
                 progressDialog.show();
-                userAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                userDatabase.orderByChild("email").equalTo(email).addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            userDatabase.orderByChild("email").equalTo(email).addListenerForSingleValueEvent(new ValueEventListener() {
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if (snapshot.exists()) {
+                            userAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                                 @Override
-                                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                    if (snapshot.exists()) {
+                                public void onComplete(@NonNull Task<AuthResult> task) {
+                                    if (task.isSuccessful()) {
                                         for (DataSnapshot userSnapshot : snapshot.getChildren()) {
                                             sharedPreferences = getActivity().getSharedPreferences("Users", Context.MODE_PRIVATE);
                                             SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -145,24 +145,20 @@ public class FragmentLogIn extends Fragment {
                                         }
                                     } else {
                                         progressDialog.dismiss();
-                                        Toast.makeText(getActivity(), "Email not found!", Toast.LENGTH_SHORT).show();
-                                        return;
+                                        Toast.makeText(getActivity(), "Incorrect Password", Toast.LENGTH_SHORT).show();
                                     }
-                                }
-
-                                @Override
-                                public void onCancelled(@NonNull DatabaseError error1) {
-                                    progressDialog.dismiss();
                                 }
                             });
                         } else {
-//                            Intent intent = new Intent(getActivity(), MainActivity.class);
-//                            startActivity(intent);
-//                            getActivity().finish();
-//                            loginWithRealtimeDatabase(email, password);
                             progressDialog.dismiss();
-                            Toast.makeText(getActivity(), "Failed, Please check your Email or Password", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getActivity(), "Email not found!", Toast.LENGTH_SHORT).show();
+                            return;
                         }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error1) {
+                        progressDialog.dismiss();
                     }
                 });
             }
