@@ -2,103 +2,104 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/container_cart"
+    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="left|top"
     android:orientation="vertical"
-    tools:context=".Cart.View.CartActivity"
-    tools:ignore="RtlHardcoded"
-    >
+    android:paddingHorizontal="5dp"
+    tools:context=".Order.OrderActivity">
 
-    <LinearLayout
-        android:id="@+id/container_frame"
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="ORDER"
+        android:textColor="#2E7D32"
+        android:textSize="30sp"
+        android:textStyle="bold" />
+
+    <EditText
+        android:id="@+id/edtFullName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:clipToPadding="false"
-        android:gravity="center"
-        android:orientation="horizontal"
-        android:paddingLeft="16dp"
-        android:paddingTop="11.5dp"
-        android:paddingRight="16dp"
-        android:paddingBottom="11.5dp">
+        android:hint="Full Name"
+        android:importantForAutofill="no"
+        android:inputType="text"
+        android:paddingHorizontal="5dp"
+        android:textColor="#000"
+        android:textSize="19sp"
+        tools:ignore="HardcodedText" />
 
-        <ImageView
-            android:id="@+id/c_ic_back"
-            android:layout_width="33dp"
-            android:layout_height="33dp"
-            android:scaleType="centerInside"
-            android:src="@drawable/ic_back" />
-
-        <TextView
-            android:id="@+id/text_my_cart"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:text="My cart"
-            android:textColor="@color/black"
-            android:textSize="22sp" />
-    </LinearLayout>
-
+    <EditText
+        android:id="@+id/edtAddress"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Address"
+        android:importantForAutofill="no"
+        android:inputType="text"
+        android:paddingHorizontal="5dp"
+        android:textColor="#000"
+        android:textSize="19sp"
+        tools:ignore="HardcodedText" />
+    <EditText
+        android:id="@+id/edtPhone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Phone Number"
+        android:importantForAutofill="no"
+        android:inputType="phone"
+        android:paddingHorizontal="5dp"
+        android:textColor="#000"
+        android:textSize="19sp"
+        tools:ignore="HardcodedText,TextFields" />
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rcv_cart"
+        android:id="@+id/rvProduct"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:layout_below="@id/search"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="5dp"
-        android:layout_marginEnd="20dp"
-        android:paddingHorizontal="7dp"
-        tools:listitem="@layout/item_cart_detail" />
-
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
     <FrameLayout
         android:id="@+id/container_group1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="30dp"
-        android:layout_marginEnd="20dp"
+        android:layout_marginTop="10dp"
         android:background="@drawable/border1">
 
         <ImageButton
+            android:id="@+id/btnListVoucher"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_list"
             android:layout_gravity="center_vertical"
-            android:id="@+id/btnListVoucher"
-            />
+            android:src="@drawable/ic_list" />
 
         <EditText
-            android:backgroundTint="@android:color/transparent"
             android:id="@+id/text_promo_code"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="60dp"
             android:layout_marginTop="11dp"
             android:layout_marginBottom="11dp"
+            android:backgroundTint="@android:color/transparent"
             android:gravity="left|center_vertical"
+            android:hint="Enter your promo code"
             android:includeFontPadding="false"
             android:maxLines="1"
             android:singleLine="true"
-            android:hint="Enter your promo code"
             android:textColorHint="#FF999999"
             android:textSize="19sp"
             tools:ignore="RtlHardcoded" />
 
         <androidx.cardview.widget.CardView
-            android:layout_gravity="center_vertical"
             android:id="@+id/container_group2"
             android:layout_width="44dp"
             android:layout_height="44dp"
-            android:layout_marginStart="310dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="350dp"
             android:backgroundTint="@color/black"
             android:scaleType="centerInside"
             android:src="@drawable/ic_voucher"
-            app:cardCornerRadius="8dp"
-            >
+            app:cardCornerRadius="8dp">
 
             <ImageView
                 android:id="@+id/btnVoucher"
@@ -108,50 +109,52 @@
                 android:src="@drawable/ic_voucher" />
         </androidx.cardview.widget.CardView>
     </FrameLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="27dp"
-        android:orientation="horizontal"
-        android:layout_marginStart="40dp"
         android:layout_marginTop="10dp"
-        android:layout_marginEnd="40dp">
+        android:orientation="horizontal">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="27dp"
             android:layout_gravity="left"
             android:singleLine="true"
-            android:text="Payment:"
+            android:text="Payment Method:"
             android:textColor="#FF808080"
             android:textSize="19sp"
             tools:ignore="RtlHardcoded" />
+
         <RadioGroup
             android:id="@+id/rdoPayment"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
             android:orientation="horizontal">
+
             <RadioButton
                 android:id="@+id/rdoCredit"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="19sp"
-                android:text="Credit Card"/>
+                android:text="Credit Card"
+                android:textSize="19sp" />
+
             <RadioButton
                 android:id="@+id/rdoCash"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="19sp"
-                android:text="Cash"/>
+                android:layout_marginStart="10dp"
+                android:text="Cash"
+                android:textSize="19sp" />
         </RadioGroup>
     </LinearLayout>
+
     <FrameLayout
         android:id="@+id/container_group"
         android:layout_width="match_parent"
         android:layout_height="27dp"
-        android:layout_gravity="left"
-        android:layout_marginStart="40dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="40dp">
+        android:layout_marginTop="10dp">
 
         <TextView
             android:id="@+id/text_total"
@@ -162,7 +165,7 @@
             android:text="Total:"
             android:textColor="#FF808080"
             android:textSize="19sp"
-            tools:ignore="RtlHardcoded" />
+            tools:ignore="HardcodedText,RtlHardcoded" />
 
         <TextView
             android:id="@+id/text_total_price"
@@ -178,27 +181,41 @@
             android:textStyle="bold"
             tools:ignore="RtlHardcoded" />
     </FrameLayout>
-    <androidx.cardview.widget.CardView
-        android:layout_width="325dp"
-        android:layout_height="60dp"
-        android:layout_marginStart="45dp"
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
-        app:cardBackgroundColor="@color/black"
-        android:layout_marginBottom="10dp"
-        app:cardCornerRadius="8dp">
+        android:orientation="horizontal"
+        android:gravity="center_horizontal"
+        android:layout_marginBottom="10dp">
 
         <Button
             android:id="@+id/btn_check_out_cart"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:backgroundTint="@color/black"
-            android:gravity="center_horizontal|center_vertical"
+            android:paddingHorizontal="20dp"
+            android:background="@drawable/button_black"
+            android:backgroundTint="#2E7D32"
             android:includeFontPadding="false"
             android:singleLine="true"
             android:text="Check out"
             android:textColor="@color/white"
             android:textSize="20sp"
             android:textStyle="bold" />
-    </androidx.cardview.widget.CardView>
+        <Button
+            android:id="@+id/btnCancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="35dp"
+            android:background="@drawable/button_black"
+            android:includeFontPadding="false"
+            android:singleLine="true"
+            android:layout_marginStart="40dp"
+            android:backgroundTint="#C62828"
+            android:text="CANCEL"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+    </LinearLayout>
 </LinearLayout>
