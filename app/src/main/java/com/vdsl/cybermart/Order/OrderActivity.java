@@ -20,6 +20,7 @@ import com.vdsl.cybermart.Cart.Model.CartModel;
 import com.vdsl.cybermart.Order.Adapter.ProductsListAdapterInOrder;
 import com.vdsl.cybermart.Order.Model.Order;
 import com.vdsl.cybermart.Product.Model.ProductModel;
+import com.vdsl.cybermart.R;
 import com.vdsl.cybermart.databinding.ActivityOrderBinding;
 
 public class OrderActivity extends AppCompatActivity {
@@ -33,9 +34,11 @@ public class OrderActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityOrderBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        binding.rdoPayment.check(R.id.rdoCredit);
         Intent intent = getIntent();
         if (intent != null) {
             Bundle bundle = intent.getExtras();
+            String voucher = intent.getStringExtra("voucher");
             if (bundle != null) {
                 CartModel cartModel = (CartModel) bundle.getSerializable("cart");
                 if (cartModel != null) {
@@ -47,8 +50,8 @@ public class OrderActivity extends AppCompatActivity {
                     binding.edtAddress.setText(address);
                     binding.edtFullName.setText(fullName);
                     binding.edtPhone.setText(phoneNumber);
-                    binding.textTotalPrice.setText(cartModel.getTotalPrice() + "");
-                    binding.btnCheckOutCart.setOnClickListener(v -> orderOnclick(cartModel));
+                    updateTotalPrice(cartModel);
+                    binding.btnCheckOutCart.setOnClickListener(v -> orderOnclick(cartModel,voucher));
                     binding.btnCancel.setOnClickListener(v -> finish());
                 }
             }
@@ -56,7 +59,26 @@ public class OrderActivity extends AppCompatActivity {
 
     }
 
-    private void orderOnclick(CartModel cartModel) {
+    private void updateTotalPrice(CartModel cartModel) {
+        DatabaseReference cartRef = FirebaseDatabase.getInstance().getReference("carts").child(cartModel.getCartId());
+        cartRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @SuppressLint("SetTextI18n")
+            @Override
+            public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
+                CartModel cartModelNew = snapshot.getValue(CartModel.class);
+                if (cartModelNew != null) {
+                    binding.textTotalPrice.setText(cartModelNew.getTotalPrice() + "");
+                }
+            }
+
+            @Override
+            public void onCancelled(@androidx.annotation.NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
+    private void orderOnclick(CartModel cartModel, String voucher) {
         String address = binding.edtAddress.getText().toString();
         String fullName = binding.edtFullName.getText().toString();
         String phoneNumber = binding.edtPhone.getText().toString();
@@ -91,16 +113,26 @@ public class OrderActivity extends AppCompatActivity {
                             DatabaseReference newOrderRef = orderRef.push();
                             String id = newOrderRef.getKey();
                             String payment = binding.rdoCash.isChecked() ? "Cash" : "Credit Card";
-                            String voucher = binding.textPromoCode.getText().toString().isEmpty() ? "0" : binding.textPromoCode.getText().toString();
                             //Lấy cart từ firebase
                             DatabaseReference cartRef = FirebaseDatabase.getInstance().getReference("carts").child(cartModel.getCartId());
                             cartRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                                @SuppressLint("SetTextI18n")
                                 @Override
                                 public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
                                     CartModel cartModelNew = snapshot.getValue(CartModel.class);
-                                    Order order = new Order(id, address,phoneNumber, "Prepare", payment, voucher, cartModelNew, "Prepare" + cartModel.getAccountId());
-                                    newOrderRef.setValue(order);
-                                    finish();
+                                    if (cartModelNew != null) {
+                                        binding.textTotalPrice.setText(cartModelNew.getTotalPrice() + "");
+                                        Order order = new Order(id, address,phoneNumber, "Prepare", payment, voucher, cartModelNew, "Prepare" + cartModel.getAccountId());
+                                        newOrderRef.setValue(order);
+
+                                        AlertDialog.Builder builder = new AlertDialog.Builder(OrderActivity.this);
+                                        builder.setTitle("Thông báo");
+                                        builder.setMessage("Thao tác thành công");
+                                        builder.setNegativeButton("OK", ((dialog, which) -> finish()));
+                                        AlertDialog dialog = builder.create();
+                                        dialog.show();
+                                    }
+
                                 }
 
                                 @Override

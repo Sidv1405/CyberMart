@@ -64,61 +64,19 @@ public class CartActivity extends AppCompatActivity implements CartAdapter.Total
         setContentView(binding.getRoot());
         findViews();
         readData();
-        radioGroup.check(R.id.rdoCredit);
+
         btnBack.setOnClickListener(v -> finish());
-        //thanh toán tạo hóa đơn
+        //chuyển sang activity đặt hàng
         btnCheckOut.setOnClickListener(v -> {
             if (cart.getCartDetail() != null) {
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("cart",cart);
+                String voucher = binding.textPromoCode.getText().toString().isEmpty() ? "0" : binding.textPromoCode.getText().toString();
                 Intent intent= new Intent(this, OrderActivity.class);
                 intent.putExtras(bundle);
+                intent.putExtra("voucher",voucher);
                 startActivity(intent);
-//                AlertDialog.Builder builder = new AlertDialog.Builder(this);
-//                builder.setTitle("Thông báo");
-//                builder.setMessage("Xác nhận thanh toán?");
-//                builder.setNegativeButton("Không", ((dialog, which) -> {
-//                }));
-//                builder.setPositiveButton("Có", (dialog, which) -> {
-//                    DatabaseReference orderRef = FirebaseDatabase.getInstance().getReference().child("Orders");
-//                    orderRef.addListenerForSingleValueEvent(new ValueEventListener() {
-//                        @Override
-//                        public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
-//                            DatabaseReference newOrderRef = orderRef.push();
-//                            String id = newOrderRef.getKey();
-//                            SharedPreferences sharedPreferences = getSharedPreferences("Users", Context.MODE_PRIVATE);
-//                            String address = sharedPreferences.getString("address", "");
-//                            String payment = rdoCash.isChecked() ? "Cash" : "Credit Card";
-//                            String voucher = txtVoucher.getText().toString().isEmpty() ? "0" : txtVoucher.getText().toString();
-//                            //Lấy cart từ firebase
-//                            DatabaseReference cartRef= FirebaseDatabase.getInstance().getReference("carts").child(cart.getCartId());
-//                            cartRef.addListenerForSingleValueEvent(new ValueEventListener() {
-//                                @Override
-//                                public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
-//                                    CartModel cartModelNew = snapshot.getValue(CartModel.class);
-//                                    Order order = new Order(id, address, "Prepare", payment, voucher, cartModelNew,"Prepare"+cart.getAccountId());
-//                                    newOrderRef.setValue(order);
-//                                    finish();
-//                                }
-//
-//                                @Override
-//                                public void onCancelled(@androidx.annotation.NonNull DatabaseError error) {
-//
-//                                }
-//                            });
-//
-//
-//                        }
-//
-//                        @Override
-//                        public void onCancelled(@androidx.annotation.NonNull DatabaseError error) {
-//
-//                        }
-//                    });
-//                    dialog.cancel();
-//                });
-//                AlertDialog dialog = builder.create();
-//                dialog.show();
+
             } else {
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
                 builder.setTitle("Thông báo");
@@ -298,9 +256,6 @@ public class CartActivity extends AppCompatActivity implements CartAdapter.Total
         });
     }
 
-    private void showVoucherList() {
-
-    }
 
 
 
@@ -326,9 +281,6 @@ public class CartActivity extends AppCompatActivity implements CartAdapter.Total
     private void findViews() {
         btnBack = findViewById(R.id.c_ic_back);
         btnCheckOut = findViewById(R.id.btn_check_out_cart);
-        radioGroup = findViewById(R.id.rdoPayment);
-        rdoCash = findViewById(R.id.rdoCash);
-        rdoCredit = findViewById(R.id.rdoCredit);
         txtVoucher = findViewById(R.id.text_promo_code);
     }
 }
