@@ -9,6 +9,7 @@ public class UserModel {
     private String avatar;
 
     private String fcmToken;
+    private String active;
 
     public UserModel() {
     }
@@ -140,5 +141,13 @@ public class UserModel {
 
     public void setAvatar(String avatar) {
         this.avatar = avatar;
+    }
+
+    public String getActive() {
+        return active;
+    }
+
+    public void setActive(String active) {
+        this.active = active;
     }
 }

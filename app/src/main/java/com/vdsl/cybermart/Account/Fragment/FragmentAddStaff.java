@@ -16,6 +16,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -88,66 +91,77 @@ public class FragmentAddStaff extends Fragment {
                 binding.edtConfirmPassSignUp.setError("Password is not match!");
                 error = true;
             }
-
             if (!error) {
                 Log.e("check41", "onViewCreated: " + "done" );
                 progressDialog.setMessage("loading...");
                 progressDialog.show();
-                userDatabase.orderByChild("email").equalTo(email).addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        if (snapshot.exists()) {
-                            progressDialog.dismiss();
-                            Toast.makeText(requireContext(), "Email already exists!",
-                                    Toast.LENGTH_SHORT).show();
-                        } else {
-                            userDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                    for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                                        String userID = dataSnapshot.getKey();
-                                        if (userID != null && userID.startsWith("Id")) {
-                                            int id = Integer.parseInt(userID.substring(2));
-                                            if (id > latestUserID) {
-                                                latestUserID = id;
-                                            }
+                if (userAuth.getCurrentUser() != null) {
+                    userAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+                            if (task.isSuccessful()) {
+                                userDatabase.orderByChild("email").equalTo(email).addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                        if (snapshot.exists()) {
+                                            progressDialog.dismiss();
+                                            Toast.makeText(requireContext(), "Email already exists!", Toast.LENGTH_SHORT).show();
+                                        } else {
+                                            userDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
+                                                @Override
+                                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                    for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                                                        String userID = dataSnapshot.getKey();
+                                                        if (userID != null && userID.startsWith("Id")) {
+                                                            int id = Integer.parseInt(userID.substring(2));
+                                                            if (id > latestUserID) {
+                                                                latestUserID = id;
+                                                            }
+                                                        }
+                                                    }
+
+                                                    latestUserID++;
+                                                    String ID = "Id" + latestUserID;
+                                                    DatabaseReference currentUserDB = userDatabase.child(ID);
+                                                    currentUserDB.child("fullName").setValue(userName);
+                                                    currentUserDB.child("email").setValue(email);
+                                                    currentUserDB.child("role").setValue("Staff");
+                                                    progressDialog.dismiss();
+                                                    General.showSuccessPopup(requireContext(),
+                                                            "Successfully", "An staff account " +
+                                                                    "added successfully",
+                                                            new OnDialogButtonClickListener() {
+                                                                @Override
+                                                                public void onDismissClicked(Dialog dialog) {
+                                                                    super.onDismissClicked(dialog);
+                                                                    binding.edtUserNameSignUp.setText(null);
+                                                                    binding.edtEmailSignUp.setText(null);
+                                                                    binding.edtPassSignUp.setText(null);
+                                                                    binding.edtConfirmPassSignUp.setText(null);
+                                                                }
+                                                            });
+                                                }
+
+                                                @Override
+                                                public void onCancelled(@NonNull DatabaseError error) {
+                                                    progressDialog.dismiss();
+                                                }
+                                            });
                                         }
                                     }
 
-                                    latestUserID++;
-                                    String ID = "Id" + latestUserID;
-                                    DatabaseReference currentUserDB = userDatabase.child(ID);
-                                    currentUserDB.child("fullName").setValue(userName);
-                                    currentUserDB.child("email").setValue(email);
-                                    currentUserDB.child("role").setValue("Staff");
-                                    currentUserDB.child("password").setValue(password);
-                                    progressDialog.dismiss();
-//                        Toast.makeText(getActivity(), "Add Staff Successfully.", Toast.LENGTH_SHORT).show();
-                                    General.showSuccessPopup(requireContext(), "Successfully", "An staff account added to your list", new OnDialogButtonClickListener() {
-                                        @Override
-                                        public void onDismissClicked(Dialog dialog) {
-                                            super.onDismissClicked(dialog);
-                                            binding.edtUserNameSignUp.setText(null);
-                                            binding.edtEmailSignUp.setText(null);
-                                            binding.edtPassSignUp.setText(null);
-                                            binding.edtConfirmPassSignUp.setText(null);
-                                        }
-                                    });
-                                }
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError error) {
 
-                                @Override
-                                public void onCancelled(@NonNull DatabaseError error) {
-                                    progressDialog.dismiss();
-                                }
-                            });
+                                    }
+                                });
+                            } else {
+                                progressDialog.dismiss();
+                                Toast.makeText(requireContext(), "Email already exists!", Toast.LENGTH_SHORT).show();
+                            }
                         }
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-
-                    }
-                });
+                    });
+                }
 
             } else {
                 progressDialog.dismiss();

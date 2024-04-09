@@ -23,7 +23,7 @@ import com.vdsl.cybermart.Favourite.View.Favourite_Fragment;
 import com.vdsl.cybermart.Home.View.HomeFragment;
 import com.vdsl.cybermart.Message.FragmentMessage;
 import com.vdsl.cybermart.Notify.Notify_Fragment;
-import com.vdsl.cybermart.Person.FragmentProfile;
+import com.vdsl.cybermart.Account.Person.FragmentProfile;
 import com.vdsl.cybermart.databinding.ActivityMainBinding;
 
 import java.util.HashMap;

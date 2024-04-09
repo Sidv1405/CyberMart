@@ -98,31 +98,23 @@ public class FragmentLogIn extends Fragment {
             if (!error) {
                 progressDialog.setMessage("Loging now...");
                 progressDialog.show();
-                userAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                userDatabase.orderByChild("email").equalTo(email).addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            userDatabase.orderByChild("email").equalTo(email).addListenerForSingleValueEvent(new ValueEventListener() {
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if (snapshot.exists()) {
+                            userAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                                 @Override
-                                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                    if (snapshot.exists()) {
+                                public void onComplete(@NonNull Task<AuthResult> task) {
+                                    if (task.isSuccessful()) {
                                         for (DataSnapshot userSnapshot : snapshot.getChildren()) {
-
-                                            progressDialog.dismiss();
-                                            Toast.makeText(requireActivity(), "Log in Successful", Toast.LENGTH_SHORT).show();
-
-                                            rememberUser(email, password, binding.chkRemember.isChecked());
-
                                             sharedPreferences = getActivity().getSharedPreferences("Users", Context.MODE_PRIVATE);
                                             SharedPreferences.Editor editor = sharedPreferences.edit();
                                             String ID = userSnapshot.getKey();
                                             String fullName = userSnapshot.child("fullName").getValue(String.class);
                                             String email = userSnapshot.child("email").getValue(String.class);
                                             String role = userSnapshot.child("role").getValue(String.class);
-
                                             String avatar = userSnapshot.child("avatar").getValue(String.class);
                                             /*String Address = userSnapshot.child("address").getValue(String.class);*/
-
                                             String phoneNumber = userSnapshot.child("phoneNumber").getValue(String.class);
 
                                             editor.putString("ID", ID);
@@ -139,6 +131,9 @@ public class FragmentLogIn extends Fragment {
                                             }
                                             /*editor.putString("address", Address);*/
 
+                                            progressDialog.dismiss();
+                                            Toast.makeText(requireActivity(), "Log in Successful", Toast.LENGTH_SHORT).show();
+                                            rememberUser(email, password, binding.chkRemember.isChecked());
                                             editor.putString("phoneNumber", phoneNumber);
                                             editor.apply();
                                             Intent intent = new Intent(requireActivity(), MainActivity.class);
@@ -150,24 +145,20 @@ public class FragmentLogIn extends Fragment {
                                         }
                                     } else {
                                         progressDialog.dismiss();
-                                        Toast.makeText(getActivity(), "Email not found!", Toast.LENGTH_SHORT).show();
-                                        return;
+                                        Toast.makeText(getActivity(), "Incorrect Password", Toast.LENGTH_SHORT).show();
                                     }
                                 }
-
-                                @Override
-                                public void onCancelled(@NonNull DatabaseError error1) {
-                                    progressDialog.dismiss();
-                                }
                             });
-                        } else{
-//                            Intent intent = new Intent(getActivity(), MainActivity.class);
-//                            startActivity(intent);
-//                            getActivity().finish();
-                            loginWithRealtimeDatabase(email,password);
-//                            progressDialog.dismiss();
-//                            Toast.makeText(getActivity(), "Failed, Please check your Email or Password", Toast.LENGTH_SHORT).show();
+                        } else {
+                            progressDialog.dismiss();
+                            Toast.makeText(getActivity(), "Email not found!", Toast.LENGTH_SHORT).show();
+                            return;
                         }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error1) {
+                        progressDialog.dismiss();
                     }
                 });
             }
@@ -186,9 +177,6 @@ public class FragmentLogIn extends Fragment {
                         String storedPassword = userSnapshot.child("password").getValue(String.class);
                         if (storedPassword != null && storedPassword.equals(password)) {
                             // Đăng nhập thành công bằng Realtime Database
-                            progressDialog.dismiss();
-                            Toast.makeText(requireActivity(), "Log in Successful", Toast.LENGTH_SHORT).show();
-                            rememberUser(email, password, binding.chkRemember.isChecked());
 
                             // Lưu thông tin người dùng vào SharedPreferences
                             sharedPreferences = getActivity().getSharedPreferences("Users", Context.MODE_PRIVATE);
@@ -198,6 +186,7 @@ public class FragmentLogIn extends Fragment {
                             String role = userSnapshot.child("role").getValue(String.class);
                             String avatar = userSnapshot.child("avatar").getValue(String.class);
                             String phoneNumber = userSnapshot.child("phoneNumber").getValue(String.class);
+                            String active = userSnapshot.child("active").getValue(String.class);
 
                             editor.putString("ID", ID);
                             editor.putString("fullName", fullName);
@@ -207,7 +196,15 @@ public class FragmentLogIn extends Fragment {
                             editor.putString("phoneNumber", phoneNumber != null ? phoneNumber : ""); // Kiểm tra PhoneNumber null
                             editor.apply();
 
+                            if (active != null && active.equals("Not working")) {
+                                progressDialog.dismiss();
+                                Toast.makeText(requireActivity(), "Your account has been locked. Please contact support.", Toast.LENGTH_SHORT).show();
+                                return;
+                            }
                             // Chuyển đến giao diện trang chủ
+                            progressDialog.dismiss();
+                            Toast.makeText(requireActivity(), "Log in Successful", Toast.LENGTH_SHORT).show();
+                            rememberUser(email, password, binding.chkRemember.isChecked());
                             Intent intent = new Intent(requireActivity(), MainActivity.class);
                             startActivity(intent);
                             getActivity().finish();
@@ -231,7 +228,6 @@ public class FragmentLogIn extends Fragment {
             }
         });
     }
-
 
 
     private void rememberUser(String email, String password, boolean checked) {
