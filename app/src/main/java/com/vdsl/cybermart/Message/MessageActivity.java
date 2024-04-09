@@ -3,6 +3,7 @@ package com.vdsl.cybermart.Message;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
@@ -171,9 +172,6 @@ public class MessageActivity extends AppCompatActivity {
             }
         });
         seenMessage(userEmail);
-        defaultBackground = ContextCompat.getDrawable(this, R.drawable.bg_chat);
-        int backgroundColor = sharedPreferences.getInt("backgroundColor", R.drawable.bg_chat);
-        binding.rcvChat.setBackground(ContextCompat.getDrawable(this, backgroundColor));
     }
 
     private void getIdFromEmail(String email, final FragmentMessage.OnIdReceivedListener listener) {
@@ -267,11 +265,8 @@ public class MessageActivity extends AppCompatActivity {
                 SharedPreferences.Editor editor = sharedPreferences.edit();
                 editor.putInt("backgroundColor", R.drawable.bg_chat1);
                 editor.apply();
-            } else {
-                binding.rcvChat.setBackground(defaultBackground);
-                SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.putInt("backgroundColor", R.drawable.bg_chat);
-                editor.apply();
+            }else{
+                binding.rcvChat.setBackgroundColor(Color.parseColor("white"));
             }
             return true;
         }
@@ -472,19 +467,16 @@ public class MessageActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        // Loại bỏ ValueEventListener khi người dùng rời khỏi Activity
         removeSeenListener();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        // Loại bỏ ValueEventListener khi người dùng rời khỏi Activity
         removeSeenListener();
     }
 
     private void removeSeenListener() {
-        // Kiểm tra xem seenListener có tồn tại không trước khi loại bỏ
         if (seenListener != null && reference != null) {
             reference.removeEventListener(seenListener);
         }

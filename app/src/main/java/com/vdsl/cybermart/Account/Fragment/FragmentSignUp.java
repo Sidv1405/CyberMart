@@ -143,6 +143,8 @@ public class FragmentSignUp extends Fragment {
                                     currentUserDB.child("fullName").setValue(fullName);
                                     currentUserDB.child("email").setValue(email);
                                     currentUserDB.child("role").setValue("Customer");
+                                    currentUserDB.child("status").setValue("offline");
+
 
                                     progressDialog.dismiss();
                                     Toast.makeText(getActivity(), "Sign Up Successful.", Toast.LENGTH_SHORT).show();

@@ -142,36 +142,5 @@ public class FragmentMessage extends Fragment {
         void onIdReceived(String id);
     }
 
-    private void status(String status) {
 
-
-        getIdFromEmail(userEmail, new OnIdReceivedListener() {
-            @Override
-            public void onIdReceived(String id) {
-                Log.d("TAG", "status: " + id);
-                if (id != null) {
-                    reference = FirebaseDatabase.getInstance().getReference("Account").child(id);
-                    Log.d("TAG", "onIdReceived: " + id);
-                    HashMap<String, Object> hashMap = new HashMap<>();
-                    hashMap.put("status",status);
-                    reference.updateChildren(hashMap);
-                } else {
-                    Log.d("FragmentMessage", "No user found with this email");
-                }
-            }
-        });
-
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        status(("online"));
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        status("offline");
-    }
 }
