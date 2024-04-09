@@ -65,14 +65,14 @@ public class FragmentAddress extends Fragment {
             }
         });
 
-//        if (currentUser != null) {
+        if (currentUser != null) {
         String email =sharedPreferences.getString("email",null);
-                usersRef.orderByChild("email").equalTo(email).addListenerForSingleValueEvent(new ValueEventListener() {
+                usersRef.orderByChild("email").equalTo(currentUser.getEmail()).addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         if (dataSnapshot.exists()) {
                             for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
-                                String userId = sharedPreferences.getString("ID",null);
+                                String userId = userSnapshot.getKey();
                                 if (userId != null) {
                                     databaseReference = FirebaseDatabase.getInstance().getReference().child("Account").child(userId).child("address");
                                     setupRecyclerView();
@@ -102,7 +102,7 @@ public class FragmentAddress extends Fragment {
                     public void onCancelled(@NonNull DatabaseError databaseError) {
                     }
                 });
-//        }
+        }
 
         binding.btnAddAddress.setOnClickListener(v -> {
             FragmentAddAddress fragmentAddAddress = new FragmentAddAddress();

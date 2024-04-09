@@ -1,6 +1,7 @@
 package com.vdsl.cybermart.Account.Fragment;
 
 import android.app.Dialog;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -41,15 +42,62 @@ public class FragmentUpdateStaff extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
         showInitData();
         databaseReference = FirebaseDatabase.getInstance().getReference().child("Account");
         binding.btnUpdateStaff.setOnClickListener(v -> {
             updateStaff();
         });
-        binding.btnDelete.setOnClickListener(v -> {
-            deleteStaff();
-        });
+        binding.SwLockAccount.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(requireActivity());
+                builder.setTitle("LOCK ACCOUNT");
+                builder.setMessage("Are you sure to lock this staff?");
 
+                builder.setNegativeButton("NO", (dialog, which) -> {
+                    binding.SwLockAccount.setChecked(false);
+                    builder.create().dismiss();
+                });
+                builder.setPositiveButton("YES", (dialog, which) -> {
+                    Bundle bundle = getArguments();
+                    String staffId = bundle.getString("staffId");
+                    DatabaseReference staffRef = databaseReference.child(staffId);
+                    staffRef.child("active").setValue("Not working").addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            Toast.makeText(getActivity(), "Account Locked Successfully", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(getActivity(), "Failed to Lock Account", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                });
+                builder.create().show();
+            } else {
+                AlertDialog.Builder builder = new AlertDialog.Builder(requireActivity());
+                builder.setTitle("UNLOCK ACCOUNT");
+                builder.setMessage("Are you sure to unlock this account?");
+
+                builder.setNegativeButton("NO", (dialog, which) -> {
+                    binding.SwLockAccount.setChecked(true);
+                    builder.create().dismiss();
+                });
+                builder.setPositiveButton("YES", (dialog, which) -> {
+                    Bundle bundle = getArguments();
+                    String staffId = bundle.getString("staffId");
+                    DatabaseReference staffRef = databaseReference.child(staffId);
+                    staffRef.child("active").setValue("Working").addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            Toast.makeText(getActivity(), "Account Unlocked Successfully",
+                                    Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(getActivity(), "Failed to Unlock Account",
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                });
+                builder.create().show();
+            }
+
+        });
         binding.layoutStaffPass.setOnClickListener(v -> {
             changeStaffPass();
         });
@@ -60,9 +108,27 @@ public class FragmentUpdateStaff extends Fragment {
         String fullName = bundle.getString("fullName");
         String phoneNumber = bundle.getString("phoneNumber");
         String email = bundle.getString("email");
+        String password = bundle.getString("password");
+        String active = bundle.getString("active");
         binding.edtStaffName.setText(fullName);
-        binding.edtStaffPhone.setText(phoneNumber);
+        if (phoneNumber == null) {
+            binding.edtStaffPhone.setText("No number yet");
+            binding.edtStaffPhone.setTextColor(Color.RED);
+            binding.edtStaffPhone.setOnClickListener(v -> {
+                binding.edtStaffPhone.setText(null);
+            });
+        } else {
+            binding.edtStaffPhone.setText(phoneNumber);
+        }
+        if (active != null && active.equals("Not working")) {
+            binding.SwLockAccount.setChecked(true);
+        } else if (active != null && active.equals("Working")) {
+            binding.SwLockAccount.setChecked(false);
+        } else {
+            binding.SwLockAccount.setChecked(false);
+        }
         binding.edtStaffEmail.setText(email);
+        binding.txtStaffPassword.setText("password");
     }
 
     private void updateStaff() {
@@ -97,14 +163,14 @@ public class FragmentUpdateStaff extends Fragment {
             staffRef.updateChildren(updateStaff).addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
                     General.showSuccessPopup(requireContext(), "Successfully", "You're updated " +
-                                    "staff with Id: '"+staffId+"'",
+                                    "staff with Id: '" + staffId + "'",
                             new OnDialogButtonClickListener() {
-                        @Override
-                        public void onDismissClicked(Dialog dialog) {
-                            super.onDismissClicked(dialog);
-                            requireActivity().getSupportFragmentManager().popBackStack();
-                        }
-                    });
+                                @Override
+                                public void onDismissClicked(Dialog dialog) {
+                                    super.onDismissClicked(dialog);
+                                    requireActivity().getSupportFragmentManager().popBackStack();
+                                }
+                            });
 //                    Toast.makeText(getActivity(), "Staff information updated successfully", Toast.LENGTH_SHORT).show();
                 } else {
                     General.showFailurePopup(requireContext(), "Failed", "Failed to update staff information", new OnDialogButtonClickListener() {
@@ -120,36 +186,6 @@ public class FragmentUpdateStaff extends Fragment {
 
     }
 
-    private void deleteStaff() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle("DELETE");
-        builder.setMessage("Are you sure to delete this staff?");
-        builder.setNegativeButton("NO", (dialog, which) -> builder.create().dismiss());
-
-        builder.setPositiveButton("YES", (dialog, which) -> {
-            Bundle bundle = getArguments();
-            String staffId = bundle.getString("staffId");
-            DatabaseReference staffRef = databaseReference.child(staffId);
-            staffRef.removeValue()
-                    .addOnSuccessListener(aVoid -> {
-                        AlertDialog.Builder deleteBuilder = new AlertDialog.Builder(getActivity());
-                        deleteBuilder.setTitle("Staff Deleted");
-                        deleteBuilder.setMessage("This staff's information no longer exists.");
-                        deleteBuilder.setPositiveButton("BACK TO STAFF MANAGEMENT", (dialog1, which1) -> {
-                            if (getActivity() != null) {
-                                getActivity().getSupportFragmentManager().popBackStack();
-                            }
-                        });
-                        deleteBuilder.setCancelable(false);
-                        deleteBuilder.create().show();
-                        Toast.makeText(getActivity(), "Staff deleted successfully", Toast.LENGTH_SHORT).show();
-                    })
-                    .addOnFailureListener(e -> {
-                        Toast.makeText(getActivity(), "Failed to delete staff", Toast.LENGTH_SHORT).show();
-                    });
-        });
-        builder.create().show();
-    }
 
     private void changeStaffPass() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -191,7 +227,6 @@ public class FragmentUpdateStaff extends Fragment {
 
                 @Override
                 public void onCancelled(@NonNull DatabaseError databaseError) {
-                    // Handle error
                 }
             });
         });

@@ -39,7 +39,9 @@ public class StaffMangeAdapter extends FirebaseRecyclerAdapter<UserModel, StaffM
             bundle.putString("fullName", userModel.getFullName());
             bundle.putString("phoneNumber", userModel.getPhoneNumber());
             bundle.putString("email", userModel.getEmail());
+            bundle.putString("password", userModel.getPassword());
             bundle.putString("staffId", staffId);
+            bundle.putString("active", userModel.getActive());
             fragmentUpdateStaff.setArguments(bundle);
             FragmentTransaction transaction = mActivity.getSupportFragmentManager().beginTransaction();
             transaction.replace(R.id.frag_container_main, fragmentUpdateStaff);
