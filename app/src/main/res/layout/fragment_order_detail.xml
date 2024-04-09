@@ -80,7 +80,36 @@
         app:layout_constraintStart_toEndOf="@+id/txtCustomer"
         app:layout_constraintTop_toBottomOf="@+id/txtSeri"
         app:layout_constraintVertical_bias="0.0" />
+    <TextView
+        android:id="@+id/txtPhoneNumberLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="PhoneNumber: "
+        android:textColor="#323131"
+        android:layout_marginTop="10dp"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txtCustomer"
+        app:layout_constraintVertical_bias="0.0" />
 
+    <TextView
+        android:id="@+id/txtPhoneNumber"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="000000000"
+        android:textColor="#323131"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/txtPhoneNumberLabel"
+        app:layout_constraintTop_toBottomOf="@+id/txtCustomer"
+        app:layout_constraintVertical_bias="0.0" />
     <TextView
         android:id="@+id/txtAddress"
         android:layout_width="wrap_content"
@@ -93,7 +122,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtCustomer"
+        app:layout_constraintTop_toBottomOf="@+id/txtPhoneNumberLabel"
         app:layout_constraintVertical_bias="0.0" />
 
     <TextView
@@ -109,7 +138,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/txtAddress"
-        app:layout_constraintTop_toBottomOf="@+id/txtCustomerName"
+        app:layout_constraintTop_toBottomOf="@+id/txtPhoneNumber"
         app:layout_constraintVertical_bias="0.0" />
 
     <TextView
