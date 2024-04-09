@@ -1,11 +1,8 @@
 package com.vdsl.cybermart.Order.Fragment;
 
 import android.annotation.SuppressLint;
-import static android.content.Intent.getIntent;
-
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
@@ -78,6 +75,7 @@ public class OrderDetailFragment extends Fragment {
                 binding.totalValue.setText(order.getCartModel().getTotalPrice()+"");
                 binding.txtAddressName.setText(order.getAddress());
                 binding.txtStatus.setText(order.getStatus());
+                binding.txtPhoneNumber.setText(order.getPhoneNumber());
                 binding.txtPaymentName.setText(order.getPaymentMethod());
                 binding.txtDate.setText(order.getCartModel().getDate());
                 setTextUser(order);
@@ -87,14 +85,11 @@ public class OrderDetailFragment extends Fragment {
                 String role = sharedPreferences.getString("role", "");
 
                 String idAccount = order.getCartModel().getAccountId();
-                getTokenFromId(idAccount, new OnIdReceivedListener() {
-                    @Override
-                    public void onIdReceived(String id) {
-                        userFCM = id;
-                        Log.e("check48", "onIdReceived: " + id + userFCM );
-                    }
+                getTokenFromId(idAccount, id1 -> {
+                    userFCM = id1;
+                    Log.e("check48", "onIdReceived: " + id1 + userFCM );
                 });
-              
+
                 if (!role.equals("Customer")) {
                     if(!order.getStatus().equals("Delivered")){
                         binding.txtStatus.setOnClickListener(v -> {
@@ -131,10 +126,10 @@ public class OrderDetailFragment extends Fragment {
         }
     }
 
-    private void setStatus(DialogInterface dialog, Order order, String status,String id) {
+    private void setStatus(DialogInterface dialog, Order order, String status, String id) {
         order.setStatus(status);
         order.setIdStaff(id);
-        order.setStatusId(status+order.getCartModel().getAccountId());
+        order.setStatusId(status + order.getCartModel().getAccountId());
         DatabaseReference referenceOrder = FirebaseDatabase.getInstance().
                 getReference("Orders").child(order.getSeri());
         referenceOrder.setValue(order);

@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 public class Order implements Serializable {
-    private String seri, idStaff, address, status, paymentMethod,voucher, statusId;
+    private String seri, idStaff, address, status, paymentMethod,voucher, statusId,phoneNumber;
 
     private CartModel cartModel;
 
@@ -50,6 +50,14 @@ public class Order implements Serializable {
         return status;
     }
 
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
     public void setStatus(String status) {
         this.status = status;
     }
@@ -78,9 +86,10 @@ public class Order implements Serializable {
         this.cartModel = cartModel;
     }
 
-    public Order(String seri, String address, String status, String paymentMethod, String voucher, CartModel cartModel,String statusId) {
+    public Order(String seri, String address,String phoneNumber, String status, String paymentMethod, String voucher, CartModel cartModel,String statusId) {
         this.seri = seri;
         this.address = address;
+        this.phoneNumber =phoneNumber;
         this.status = status;
         this.paymentMethod = paymentMethod;
         this.voucher = voucher;

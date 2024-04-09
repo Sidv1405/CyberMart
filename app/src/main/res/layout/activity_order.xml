@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingHorizontal="5dp"
+    android:background="#EDE8E8"
+    tools:context=".Order.OrderActivity">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="ORDER"
+        android:textColor="#2E7D32"
+        android:textSize="30sp"
+        android:textStyle="bold" />
+
+    <EditText
+        android:id="@+id/edtFullName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Full Name"
+        android:importantForAutofill="no"
+        android:inputType="text"
+        android:paddingHorizontal="5dp"
+        android:textColor="#000"
+        android:textSize="19sp"
+        tools:ignore="HardcodedText" />
+
+    <EditText
+        android:id="@+id/edtAddress"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Address"
+        android:importantForAutofill="no"
+        android:inputType="text"
+        android:paddingHorizontal="5dp"
+        android:textColor="#000"
+        android:textSize="19sp"
+        tools:ignore="HardcodedText" />
+    <EditText
+        android:id="@+id/edtPhone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Phone Number"
+        android:importantForAutofill="no"
+        android:inputType="phone"
+        android:paddingHorizontal="5dp"
+        android:textColor="#000"
+        android:textSize="19sp"
+        tools:ignore="HardcodedText,TextFields" />
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvProduct"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="#fff"
+        android:paddingVertical="5dp"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="27dp"
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="27dp"
+            android:layout_gravity="left"
+            android:singleLine="true"
+            android:text="Payment Method:"
+            android:textColor="#3D3D3D"
+            android:textSize="19sp"
+            tools:ignore="RtlHardcoded" />
+
+        <RadioGroup
+            android:id="@+id/rdoPayment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/rdoCredit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Credit Card"
+                android:textSize="19sp" />
+
+            <RadioButton
+                android:id="@+id/rdoCash"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:text="Cash"
+                android:textSize="19sp" />
+        </RadioGroup>
+    </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/container_group"
+        android:layout_width="match_parent"
+        android:layout_height="27dp"
+        android:layout_marginTop="10dp">
+
+        <TextView
+            android:id="@+id/text_total"
+            android:layout_width="wrap_content"
+            android:layout_height="27dp"
+            android:layout_gravity="left"
+            android:singleLine="true"
+            android:text="Total:"
+            android:textColor="#4A4949"
+            android:textSize="19sp"
+            tools:ignore="HardcodedText,RtlHardcoded" />
+
+        <TextView
+            android:id="@+id/text_total_price"
+            android:layout_width="match_parent"
+            android:layout_height="27dp"
+            android:layout_marginLeft="50dp"
+            android:gravity="right|center_vertical"
+            android:includeFontPadding="false"
+            android:singleLine="true"
+            android:text="00.00 $"
+            android:textColor="#FF303030"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            tools:ignore="RtlHardcoded" />
+    </FrameLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:orientation="horizontal"
+        android:gravity="center_horizontal"
+        android:layout_marginBottom="10dp">
+
+        <Button
+            android:id="@+id/btn_check_out_cart"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="20dp"
+            android:background="@drawable/button_black"
+            android:backgroundTint="#2E7D32"
+            android:includeFontPadding="false"
+            android:singleLine="true"
+            android:text="Check out"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+        <Button
+            android:id="@+id/btnCancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="35dp"
+            android:background="@drawable/button_black"
+            android:includeFontPadding="false"
+            android:singleLine="true"
+            android:layout_marginStart="40dp"
+            android:backgroundTint="#C62828"
+            android:text="CANCEL"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+</LinearLayout>
