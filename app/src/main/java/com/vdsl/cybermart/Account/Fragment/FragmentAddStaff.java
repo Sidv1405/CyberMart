@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -91,6 +92,7 @@ public class FragmentAddStaff extends Fragment {
                 error = true;
             }
             if (!error) {
+                Log.e("check41", "onViewCreated: " + "done" );
                 progressDialog.setMessage("loading...");
                 progressDialog.show();
                 if (userAuth.getCurrentUser() != null) {

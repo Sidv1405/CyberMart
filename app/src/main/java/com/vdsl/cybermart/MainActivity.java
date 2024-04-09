@@ -26,6 +26,8 @@ import com.vdsl.cybermart.Notify.Notify_Fragment;
 import com.vdsl.cybermart.Account.Person.FragmentProfile;
 import com.vdsl.cybermart.databinding.ActivityMainBinding;
 
+import java.util.HashMap;
+
 public class MainActivity extends AppCompatActivity {
 
     String userEmail;
@@ -36,6 +38,8 @@ public class MainActivity extends AppCompatActivity {
     public int MY_REQUEST_CODE=99;
     String role;
     SharedPreferences sharedPreferences;
+
+    DatabaseReference reference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -136,7 +140,7 @@ public class MainActivity extends AppCompatActivity {
     private void updateFCMToken(String token) {
         getIdFromEmail(userEmail, new FragmentMessage.OnIdReceivedListener() {
             @Override
-            public void onIdReceived(String id) {
+            public void onIdReceived(final String id) {
                 if (id != null) {
                     DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("Account").child(id);
                     userRef.child("fcmToken").addListenerForSingleValueEvent(new ValueEventListener() {
@@ -163,5 +167,37 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    private void status(String status) {
+        getIdFromEmail(userEmail, new FragmentMessage.OnIdReceivedListener() {
+            @Override
+            public void onIdReceived(String id) {
+                reference = FirebaseDatabase.getInstance().getReference("Account").child(id);
+                Log.d("TAG", "status: " + id);
+                if (id != null) {
+                    reference = FirebaseDatabase.getInstance().getReference("Account").child(id);
+                    Log.d("TAG", "onIdReceived: " + id);
+                    HashMap<String, Object> hashMap = new HashMap<>();
+                    hashMap.put("status",status);
+                    reference.updateChildren(hashMap);
+                } else {
+                    Log.d("FragmentMessage", "No user found with this email");
+                }
+            }
+        });
+
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        status(("online"));
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        status("offline");
     }
 }
