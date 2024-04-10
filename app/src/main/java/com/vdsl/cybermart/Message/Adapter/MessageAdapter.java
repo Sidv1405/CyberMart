@@ -94,7 +94,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
             SharedPreferences preferences = context.getSharedPreferences("user",MODE_PRIVATE);
             String avatar =preferences.getString("avatar","");
             Log.e("check50", "onBindViewHolder: " + avatar );
-            if (avatar.isEmpty() || avatar != null){
+            if (!avatar.isEmpty() ){
                 Picasso.get().load(avatar).into(holder.chatItemLeftBinding.imgProfile, new Callback() {
                     @Override
                     public void onSuccess() {
