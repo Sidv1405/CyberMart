@@ -1,8 +1,9 @@
 package com.vdsl.cybermart.Account.Fragment;
 
+import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
-import android.graphics.Color;
-import android.graphics.drawable.Drawable;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -24,8 +25,9 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.saadahmedsoft.popupdialog.listener.OnDialogButtonClickListener;
 import com.vdsl.cybermart.Account.Model.AddressModel;
-import com.vdsl.cybermart.R;
+import com.vdsl.cybermart.General;
 import com.vdsl.cybermart.databinding.FragmentAddAddressBinding;
 
 import java.util.HashMap;
@@ -35,6 +37,7 @@ public class FragmentUpdateAddress extends Fragment {
     FragmentAddAddressBinding binding;
     DatabaseReference databaseReference, addressRef;
     FirebaseUser currentUser;
+    SharedPreferences sharedPreferences;
 
     @Nullable
     @Override
@@ -50,7 +53,7 @@ public class FragmentUpdateAddress extends Fragment {
         showInitData();
         databaseReference = FirebaseDatabase.getInstance().getReference().child("Account");
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
-
+        sharedPreferences = getActivity().getSharedPreferences("Users", Context.MODE_PRIVATE);
         binding.btnDeleteAddress.setOnClickListener(v -> {
             deleteAddress();
         });
@@ -109,8 +112,10 @@ public class FragmentUpdateAddress extends Fragment {
         }
 
         if ((!error)) {
-            if (currentUser != null) {
-                databaseReference.orderByChild("email").equalTo(currentUser.getEmail()).addListenerForSingleValueEvent(new ValueEventListener() {
+            String ID = sharedPreferences.getString("ID", null);
+            if (ID != null) {
+                String email = sharedPreferences.getString("email", null);
+                databaseReference.orderByChild("email").equalTo(email).addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         if (snapshot.exists()) {
@@ -130,14 +135,27 @@ public class FragmentUpdateAddress extends Fragment {
                                         @Override
                                         public void onComplete(@NonNull Task<Void> task) {
                                             if (task.isSuccessful()) {
-                                                binding.btnSaveAddress.setText("BACK");
-                                                binding.btnSaveAddress.setBackgroundColor(Color.GRAY);
-                                                binding.btnSaveAddress.setOnClickListener(v -> {
-                                                    getActivity().getSupportFragmentManager().popBackStack();
-                                                });
-                                                Toast.makeText(getActivity(), "Address Updated Successfully", Toast.LENGTH_SHORT).show();
+                                                General.showSuccessPopup(requireActivity(),
+                                                        "Update address",
+                                                        "You have successfully update this address",
+                                                        new OnDialogButtonClickListener() {
+                                                            @Override
+                                                            public void onDismissClicked(Dialog dialog) {
+                                                                super.onDismissClicked(dialog);
+                                                                dialog.dismiss();
+                                                            }
+                                                        });
                                             } else {
-                                                Toast.makeText(getActivity(), "Address Updated Failed!", Toast.LENGTH_SHORT).show();
+                                                General.showFailurePopup(requireActivity(),
+                                                        "Update address",
+                                                        "Failed to update this address!",
+                                                        new OnDialogButtonClickListener() {
+                                                            @Override
+                                                            public void onDismissClicked(Dialog dialog) {
+                                                                super.onDismissClicked(dialog);
+                                                                dialog.dismiss();
+                                                            }
+                                                        });
                                             }
                                         }
                                     });
@@ -179,11 +197,29 @@ public class FragmentUpdateAddress extends Fragment {
                                             @Override
                                             public void onComplete(@NonNull Task<Void> task) {
                                                 if (task.isSuccessful()) {
-                                                    Toast.makeText(getActivity(), "Address Deleted Successfully", Toast.LENGTH_SHORT).show();
-                                                    getActivity().getSupportFragmentManager().popBackStack();
+                                                    General.showSuccessPopup(requireActivity(),
+                                                            "Delete address",
+                                                            "You have successfully deleted this address",
+                                                            new OnDialogButtonClickListener() {
+                                                                @Override
+                                                                public void onDismissClicked(Dialog dialog) {
+                                                                    super.onDismissClicked(dialog);
+                                                                    getActivity().getSupportFragmentManager().popBackStack();
+                                                                    dialog.dismiss();
+                                                                }
+                                                            });
 
                                                 } else {
-                                                    Toast.makeText(getActivity(), "Address Deleted Failed!", Toast.LENGTH_SHORT).show();
+                                                    General.showFailurePopup(requireActivity(),
+                                                            "Delete address",
+                                                            "Failed to delete this address!",
+                                                            new OnDialogButtonClickListener() {
+                                                                @Override
+                                                                public void onDismissClicked(Dialog dialog) {
+                                                                    super.onDismissClicked(dialog);
+                                                                    dialog.dismiss();
+                                                                }
+                                                            });
                                                 }
                                             }
                                         });
@@ -204,7 +240,7 @@ public class FragmentUpdateAddress extends Fragment {
         builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-               builder.create().dismiss();
+                builder.create().dismiss();
             }
         });
         builder.create().show();

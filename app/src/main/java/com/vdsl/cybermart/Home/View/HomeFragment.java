@@ -84,31 +84,31 @@ public class HomeFragment extends Fragment {
 //Banner
 
 
-//        list = new ArrayList<>();
-//        list.add(new Banner(R.drawable.banner1));
-//        list.add(new Banner(R.drawable.banner2));
-//        list.add(new Banner(R.drawable.banner3));
-//        list.add(new Banner(R.drawable.banner4));
-//
-//        ViewPager viewPager = binding.viewPage;
-//        BannerAdapter bannerAdapter = new BannerAdapter(list);
-//        viewPager.setAdapter(bannerAdapter);
-//
-//        if (timer == null) {
-//            timer = new Timer();
-//            timer.schedule(new TimerTask() {
-//                @Override
-//                public void run() {
-//                    new Handler(Looper.getMainLooper()).post(() -> {
-//                        if (viewPager.getCurrentItem() < list.size() - 1) {
-//                            viewPager.setCurrentItem(viewPager.getCurrentItem() + 1);
-//                        } else {
-//                            viewPager.setCurrentItem(0);
-//                        }
-//                    });
-//                }
-//            }, 1234, 2345);
-//        }
+        list = new ArrayList<>();
+        list.add(new Banner(R.drawable.banner1));
+        list.add(new Banner(R.drawable.banner2));
+        list.add(new Banner(R.drawable.banner3));
+        list.add(new Banner(R.drawable.banner4));
+
+        ViewPager viewPager = binding.viewPage;
+        BannerAdapter bannerAdapter = new BannerAdapter(list);
+        viewPager.setAdapter(bannerAdapter);
+
+        if (timer == null) {
+            timer = new Timer();
+            timer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    new Handler(Looper.getMainLooper()).post(() -> {
+                        if (viewPager.getCurrentItem() < list.size() - 1) {
+                            viewPager.setCurrentItem(viewPager.getCurrentItem() + 1);
+                        } else {
+                            viewPager.setCurrentItem(0);
+                        }
+                    });
+                }
+            }, 1234, 2345);
+        }
 
 //filter product
         categoryAdapter.setCategoryClickListener(categoryModel -> {

@@ -30,7 +30,6 @@ import com.vdsl.cybermart.Order.Model.Order;
 import com.vdsl.cybermart.databinding.FragmentRevenueBinding;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Objects;
 
@@ -50,35 +49,7 @@ public class RevenueFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        FirebaseDatabase.getInstance().getReference("Orders")
-                .addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        years = new HashSet<>();
-                        for (DataSnapshot orderSnapshot : snapshot.getChildren()) {
-                            String dateString = orderSnapshot.child("date").getValue(String.class);
-                            String[] parts;
-                            if (dateString != null) {
-                                parts = dateString.split("/");
-                                for (String y: parts){
-                                    if (y.length() >= 4) {
-                                        years.add(Integer.parseInt(y));
-                                    }
-                                }
-                            }
-
-                        }
-                        Log.d("TAG", "set size: " + years.size());
-                        ArrayAdapter<Integer> adapter = new ArrayAdapter<Integer>(requireContext(), android.R.layout.simple_list_item_1, new ArrayList<>(years));
-                        binding.spYear.setAdapter(adapter);
-                        adapter.notifyDataSetChanged();
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-                        Log.e("TAG", "Failed to read value.", error.toException());
-                    }
-                });
+        getYearAndSetToSpinner();
 
         binding.spYear.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -95,22 +66,61 @@ public class RevenueFragment extends Fragment {
 
     }
 
+    private void getYearAndSetToSpinner() {
+        FirebaseDatabase.getInstance().getReference("Orders")
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        years = new HashSet<>();
+                        for (DataSnapshot orderSnapshot : snapshot.getChildren()) {
+                            DataSnapshot cartModelSnapshot = orderSnapshot.child("cartModel");
+                            if (cartModelSnapshot.exists()) {
+                                DataSnapshot dateSnapshot = cartModelSnapshot.child("date");
+                                if (dateSnapshot.exists()) {
+                                    String dateString = dateSnapshot.getValue(String.class);
+                                    Log.d("TAG", "onDataChange: " + dateString);
+                                    String[] parts;
+                                    if (dateString != null) {
+                                        parts = dateString.split("/");
+                                        for (String y : parts) {
+                                            if (y.length() >= 4) {
+                                                years.add(Integer.parseInt(y));
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        Log.d("TAG", "set size: " + years.size());
+                        ArrayAdapter<Integer> adapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_list_item_1, new ArrayList<>(years));
+                        binding.spYear.setAdapter(adapter);
+                        adapter.notifyDataSetChanged();
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        Log.e("TAG", "Failed to read value.", error.toException());
+                    }
+                });
+    }
+
     private void updateUI(int month, float ch) {
         months = new ArrayList<>();
-        for (int i = 1; i <= 12; i++) {
-            months.add(String.valueOf(i));
+        for (int i = 0; i < 12; i++) {
+            months.add(String.valueOf(i + 1));
         }
         revenueList.add(new BarEntry(month, ch));
         binding.revenueChart.getAxisRight().setDrawLabels(false);
         YAxis yAxis = binding.revenueChart.getAxisLeft();
         yAxis.setAxisMinimum(0f);
-        yAxis.setAxisMaximum(500f);
+        yAxis.setAxisMaximum(50000f);
         yAxis.setAxisLineWidth(2f);
         yAxis.setAxisLineColor(Color.BLACK);
         yAxis.setLabelCount(10);
         BarDataSet barDataSet = new BarDataSet(revenueList, "Revenue");
         barDataSet.setColors(ColorTemplate.COLORFUL_COLORS);
         barDataSet.setValueTextColor(Color.GREEN);
+        barDataSet.setValueTextSize(20f);
         BarData barData = new BarData(barDataSet);
         binding.revenueChart.setData(barData);
         binding.revenueChart.getDescription().setEnabled(false);
@@ -126,31 +136,32 @@ public class RevenueFragment extends Fragment {
         revenueList = new ArrayList<>();
         for (int i = 1; i <= 12; i++) {
             final float[] totalInMonth = {0};
-            int[] total = {0};
             String startDate = String.format("%04d/%02d/01", year, i);
             String endDate = String.format("%04d/%02d/31", year, i);
             Query query = FirebaseDatabase.getInstance().getReference("Orders")
-                    .orderByChild("date").startAt(startDate).endAt(endDate);
-            int finalI = i;
+                    .orderByChild("cartModel/date").startAt(startDate).endAt(endDate);
+            int finalI = i - 1;
             query.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-
                         Order order = dataSnapshot.getValue(Order.class);
-                        total[0] = (int) order.getCartModel().getTotalPrice();
-                        DataSnapshot totalSnapshot = dataSnapshot.child("total");
-                        if (totalSnapshot.exists()) {
-                            float totalData = Objects.requireNonNull(totalSnapshot.getValue(Float.class));
-                            Log.d("TAG", "onDataChange: " + totalData);
-                            totalInMonth[0] += totalData;
-                        } else {
-                            Log.d("TAG", "onDataChange: " + totalSnapshot);
+                        if (order != null) {
+                            if (order.getStatus().equals("Delivered")) {
+                                DataSnapshot totalSnapshot = dataSnapshot.child("cartModel/totalPrice");
+                                if (totalSnapshot.exists()) {
+                                    float totalData = Objects.requireNonNull(totalSnapshot.getValue(Float.class));
+                                    totalInMonth[0] += totalData;
+
+                                } else {
+                                    Log.d("TAG", "onDataChange: " + totalSnapshot);
+                                }
+                            }
                         }
+
                     }
                     //do bất đồng bộ nên cần phải thêm vào list ở hàm khác
                     updateUI(finalI, totalInMonth[0]);
-                    Log.d("TAG", "getRevenue: " + Arrays.toString(total) + " " + Arrays.toString(totalInMonth));
                 }
 
                 @Override

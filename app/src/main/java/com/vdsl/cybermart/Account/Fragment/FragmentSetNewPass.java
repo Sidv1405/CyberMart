@@ -9,13 +9,15 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.vdsl.cybermart.R;
+import com.vdsl.cybermart.databinding.FragmentSetNewPassBinding;
 
 public class FragmentSetNewPass extends Fragment {
+    FragmentSetNewPassBinding binding;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_set_new_pass,container,false);
+        binding= FragmentSetNewPassBinding.inflate(inflater, container, false);
+        return binding.getRoot();
     }
 
     @Override

@@ -2,10 +2,13 @@ package com.vdsl.cybermart.Cart.View;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RadioButton;
@@ -29,10 +32,14 @@ import com.vdsl.cybermart.Cart.Model.CartModel;
 import com.vdsl.cybermart.General;
 import com.vdsl.cybermart.Order.Fragment.PrepareFragment;
 import com.vdsl.cybermart.Order.Model.Order;
+import com.vdsl.cybermart.Order.OrderActivity;
 import com.vdsl.cybermart.Product.Model.ProductModel;
 import com.vdsl.cybermart.R;
+import com.vdsl.cybermart.Voucher.Adapter.VoucherListAdapter;
+import com.vdsl.cybermart.Voucher.View.VoucherActivity;
 import com.vdsl.cybermart.Voucher.Voucher;
 import com.vdsl.cybermart.databinding.ActivityCartBinding;
+import com.vdsl.cybermart.databinding.FragmentVoucherBinding;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -49,6 +56,11 @@ public class CartActivity extends AppCompatActivity implements CartAdapter.Total
     private CartAdapter adapter;
     private TextView txtTotalPrice, txtVoucher;
 
+
+
+    FragmentVoucherBinding voucherBinding;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,43 +68,19 @@ public class CartActivity extends AppCompatActivity implements CartAdapter.Total
         setContentView(binding.getRoot());
         findViews();
         readData();
-        radioGroup.check(R.id.rdoCredit);
-        btnBack.setOnClickListener(v -> finish());
 
+        btnBack.setOnClickListener(v -> finish());
+        //chuyển sang activity đặt hàng
         btnCheckOut.setOnClickListener(v -> {
             if (cart.getCartDetail() != null) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                builder.setTitle("Thông báo");
-                builder.setMessage("Xác nhận thanh toán?");
-                builder.setNegativeButton("Không", ((dialog, which) -> {
-                }));
-                builder.setPositiveButton("Có", (dialog, which) -> {
-                    DatabaseReference orderRef = FirebaseDatabase.getInstance().getReference().child("Orders");
-                    orderRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
-                            DatabaseReference newOrderRef = orderRef.push();
-                            String id = newOrderRef.getKey();
-                            SharedPreferences sharedPreferences = getSharedPreferences("Users", Context.MODE_PRIVATE);
-                            String address = sharedPreferences.getString("address", "");
-                            String role = sharedPreferences.getString("Role", "");
-                            String payment = rdoCash.isChecked() ? "Cash" : "Credit Card";
-                            String voucher = txtVoucher.getText().toString().isEmpty() ? "0" : txtVoucher.getText().toString();
-                            Order order = new Order(id, address, "prepare", payment, voucher, cart);
-                            newOrderRef.setValue(order);
-                            General.loadFragment(getSupportFragmentManager(), new PrepareFragment(), null);
-                            finish();
-                        }
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("cart",cart);
+                String voucher = binding.textPromoCode.getText().toString().isEmpty() ? "0" : binding.textPromoCode.getText().toString();
+                Intent intent= new Intent(this, OrderActivity.class);
+                intent.putExtras(bundle);
+                intent.putExtra("voucher",voucher);
+                startActivity(intent);
 
-                        @Override
-                        public void onCancelled(@androidx.annotation.NonNull DatabaseError error) {
-
-                        }
-                    });
-                    dialog.cancel();
-                });
-                AlertDialog dialog = builder.create();
-                dialog.show();
             } else {
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
                 builder.setTitle("Thông báo");
@@ -127,9 +115,21 @@ public class CartActivity extends AppCompatActivity implements CartAdapter.Total
                 }
             });
         });
+
+
+        binding.btnListVoucher.setOnClickListener(v -> {
+            Intent intent = new Intent(CartActivity.this, VoucherActivity.class);
+            startActivity(intent);
+            //finish();
+        });
+        String reCode = getIntent().getStringExtra("voucherCode");
+        Log.e("check34", "onCreate: " + reCode );
+        binding.textPromoCode.setText(reCode);
     }
 
+
     private void readData() {
+        String reCode = getIntent().getStringExtra("voucherCode");
         RecyclerView rcvCart = findViewById(R.id.rcv_cart);
         rcvCart.setLayoutManager(new LinearLayoutManager(this));
 
@@ -141,7 +141,7 @@ public class CartActivity extends AppCompatActivity implements CartAdapter.Total
 
         adapter = new CartAdapter(new FirebaseRecyclerOptions.Builder<ProductModel>()
                 .setQuery(FirebaseDatabase.getInstance().getReference().child("carts").child(cartId).child("cartDetail"), ProductModel.class)
-                .build(), this, this);
+                .build(), this, this,reCode);
         rcvCart.setAdapter(adapter);
 
         txtTotalPrice = findViewById(R.id.text_total_price);
@@ -157,6 +157,11 @@ public class CartActivity extends AppCompatActivity implements CartAdapter.Total
                     }
                 }
                 String formattedPrice = String.format(Locale.getDefault(), "%.2f", totalCartPrice);
+                SharedPreferences pref = getSharedPreferences("price",MODE_PRIVATE);
+                SharedPreferences.Editor editor = pref.edit();
+                editor.putString("oldPrice", String.valueOf(totalCartPrice));
+                editor.commit();
+
                 txtTotalPrice.setText(String.format("%s $", formattedPrice));
             }
 
@@ -183,6 +188,9 @@ public class CartActivity extends AppCompatActivity implements CartAdapter.Total
         Date currentDate = new Date();
         DatabaseReference userVouchersRef = FirebaseDatabase.getInstance().getReference("UserVouchers").child(accountId);
         DatabaseReference totalPriceRef = FirebaseDatabase.getInstance().getReference("carts/" + cartId + "/totalPrice");
+
+
+
 
         String dateString = voucher.getExpiryDate();
         try {
@@ -218,6 +226,7 @@ public class CartActivity extends AppCompatActivity implements CartAdapter.Total
                         });
                     } else {
                         updateTotalPriceAndMarkVoucherUsed(totalPriceRef, userVouchersRef, voucherCode, discount);
+
                     }
                 } else {
                     userVouchersRef.child(voucherCode).setValue(true).addOnCompleteListener(task -> {
@@ -234,8 +243,9 @@ public class CartActivity extends AppCompatActivity implements CartAdapter.Total
         });
     }
 
-    private void updateTotalPriceAndMarkVoucherUsed(DatabaseReference
-                                                            totalPriceRef, DatabaseReference userVouchersRef, String voucherCode, double discount) {
+
+
+    private void updateTotalPriceAndMarkVoucherUsed(DatabaseReference totalPriceRef, DatabaseReference userVouchersRef, String voucherCode, double discount) {
         totalPriceRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -253,6 +263,11 @@ public class CartActivity extends AppCompatActivity implements CartAdapter.Total
                     });
 
                     // Đánh dấu voucher đã sử dụng
+                    SharedPreferences pref = getSharedPreferences("price",MODE_PRIVATE);
+                    SharedPreferences.Editor editor = pref.edit();
+                    editor.putString("voucherCode", voucherCode);
+                    editor.putString("discount", String.valueOf(discount));
+                    editor.commit();
                     userVouchersRef.child(voucherCode).setValue(true);
                 }
             }
@@ -262,6 +277,9 @@ public class CartActivity extends AppCompatActivity implements CartAdapter.Total
             }
         });
     }
+
+
+
 
 
     @Override
@@ -285,9 +303,24 @@ public class CartActivity extends AppCompatActivity implements CartAdapter.Total
     private void findViews() {
         btnBack = findViewById(R.id.c_ic_back);
         btnCheckOut = findViewById(R.id.btn_check_out_cart);
-        radioGroup = findViewById(R.id.rdoPayment);
-        rdoCash = findViewById(R.id.rdoCash);
-        rdoCredit = findViewById(R.id.rdoCredit);
         txtVoucher = findViewById(R.id.text_promo_code);
     }
+
+    /*@Override
+    public void onClickVoucher(Voucher voucher) {
+        DatabaseReference userVouchersRef = FirebaseDatabase.getInstance().getReference("UserVouchers").child(accountId);
+        DatabaseReference totalPriceRef = FirebaseDatabase.getInstance().getReference("carts/" + cartId + "/totalPrice");
+        double discount = ((double) voucher.getDiscount() / 100);
+        adapter.setCartItemClickListener(new CartAdapter.CartItemClickListener() {
+            @Override
+            public void onPlusClicked(ProductModel productModel, double oldPrice) {
+                updateTotalPriceAndMarkVoucherUsed(totalPriceRef,userVouchersRef,voucher.getCode(),discount);
+            }
+
+            @Override
+            public void onMinusClicked(ProductModel productModel, double oldPrice) {
+
+            }
+        });
+    }*/
 }

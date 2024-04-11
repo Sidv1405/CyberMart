@@ -2,20 +2,30 @@ package com.vdsl.cybermart.Message;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.annotations.concurrent.Background;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -24,6 +34,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Picasso;
 import com.vdsl.cybermart.Account.Model.UserModel;
 import com.vdsl.cybermart.General;
 import com.vdsl.cybermart.MainActivity;
@@ -33,9 +44,20 @@ import com.vdsl.cybermart.R;
 import com.vdsl.cybermart.databinding.ActivityMessageBinding;
 import com.vdsl.cybermart.databinding.ActivityVoucherBinding;
 
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Objects;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 public class MessageActivity extends AppCompatActivity {
 
@@ -53,7 +75,10 @@ public class MessageActivity extends AppCompatActivity {
 
     ValueEventListener seenListener;
 
-    String userEmail;
+    String userEmail,userFCM;
+
+    private Drawable defaultBackground;
+    private SharedPreferences sharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,6 +100,7 @@ public class MessageActivity extends AppCompatActivity {
             startActivity(intent1);
         });
 
+        sharedPreferences = getSharedPreferences("MyPrefs", MODE_PRIVATE);
 
         binding.rcvChat.setHasFixedSize(true);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(MessageActivity.this, LinearLayoutManager.VERTICAL, false);
@@ -84,6 +110,7 @@ public class MessageActivity extends AppCompatActivity {
 
         intent = getIntent();
         userEmail = intent.getStringExtra("userEmail");
+        userFCM = intent.getStringExtra("fcmToken");
         Log.d("Tagne", "onCreate: " + userEmail);
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
 
@@ -111,6 +138,25 @@ public class MessageActivity extends AppCompatActivity {
 
                             if (user != null) {
                                 binding.txtUsername.setText(user.getFullName());
+                                SharedPreferences pref = getSharedPreferences("user",MODE_PRIVATE);
+                                SharedPreferences.Editor editor = pref.edit();
+                                editor.putString("avatar", user.getAvatar());
+                                editor.commit();
+
+                            }if (user.getAvatar() != null && !user.getAvatar().isEmpty() ){
+                                Picasso.get().load(user.getAvatar()).into(binding.imgProfile, new com.squareup.picasso.Callback() {
+                                    @Override
+                                    public void onSuccess() {
+                                        Log.d("check47", "onSuccess: " + user.getAvatar());
+                                    }
+
+                                    @Override
+                                    public void onError(Exception e) {
+                                        binding.imgProfile.setImageResource(R.drawable.img_default_profile_image);
+                                    }
+                                });
+                            }else {
+                                binding.imgProfile.setImageResource(R.drawable.img_default_profile_image);
                             }
                             readMessage(firebaseUser.getEmail(), userEmail);
                         }
@@ -198,9 +244,33 @@ public class MessageActivity extends AppCompatActivity {
         map.put("statusSeen", false);
 
         reference1.child("Chats").push().setValue(map);
+        sendNotification(mesage);
 
         updateChatList(sender, receiver);
         updateChatList(receiver, sender);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_message,menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == R.id.nav_change_bg) {
+            if (binding.rcvChat.getBackground() == defaultBackground) {
+                binding.rcvChat.setBackground(ContextCompat.getDrawable(this, R.drawable.bg_chat1));
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putInt("backgroundColor", R.drawable.bg_chat1);
+                editor.apply();
+            }else{
+                binding.rcvChat.setBackgroundColor(Color.parseColor("white"));
+            }
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
 
@@ -315,6 +385,72 @@ public class MessageActivity extends AppCompatActivity {
 
     }
 
+
+    private void sendNotification(String message) {
+        Log.e("check37", "sendNotification: " + firebaseUser.getEmail() );
+        getIdFromEmail(firebaseUser.getEmail(), new FragmentMessage.OnIdReceivedListener() {
+            @Override
+            public void onIdReceived(String id) {
+                Log.e("check40", "onIdReceived: " + id );
+                DatabaseReference userRef = FirebaseDatabase.getInstance().getReference().child("Account").child(id);
+                userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if (snapshot.exists()){
+                            UserModel model = snapshot.getValue(UserModel.class);
+                            try {
+                                JSONObject jsonObject = new JSONObject();
+                                JSONObject notificationObj = new JSONObject();
+                                notificationObj.put("title",model.getFullName());
+                                notificationObj.put("body",message);
+                                JSONObject dataObj = new JSONObject();
+                                dataObj.put("email",model.getEmail());
+
+                                jsonObject.put("notification",notificationObj);
+                                jsonObject.put("data",dataObj);
+                                jsonObject.put("to",userFCM);
+                                Log.e("check39", "onDataChange: " + userFCM );
+                                callApi(jsonObject);
+                            }catch (Exception e){
+
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+            }
+        });
+    }
+
+    void callApi(JSONObject jsonObject){
+        MediaType JSON = MediaType.get("application/json; charset=utf-8");
+
+        OkHttpClient client = new OkHttpClient();
+        String url = "https://fcm.googleapis.com/fcm/send";
+        RequestBody body = RequestBody.create(jsonObject.toString(),JSON);
+        Log.e("check44", "callApi Message: " + jsonObject.toString() );
+        Request request = new Request.Builder()
+                .url(url)
+                .post(body)
+                .header("Authorization","Bearer AAAA5pa11nw:APA91bH9w1IfcYjdTiuQsj-o3Ttrh689JQxiL0ydOQf6qyEeSxlkbznOz7IYG6yC3rVEo6mCAM7CenfstwWe6nXPsirmoI43hcNVqpcxuNZ5uSWhNHImi0fMI-VXbirIX2GX1zWdzf80")
+                .build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+
+            }
+        });
+    }
+
     @Override
     public void onResume() {
         super.onResume();
@@ -331,19 +467,16 @@ public class MessageActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        // Loại bỏ ValueEventListener khi người dùng rời khỏi Activity
         removeSeenListener();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        // Loại bỏ ValueEventListener khi người dùng rời khỏi Activity
         removeSeenListener();
     }
 
     private void removeSeenListener() {
-        // Kiểm tra xem seenListener có tồn tại không trước khi loại bỏ
         if (seenListener != null && reference != null) {
             reference.removeEventListener(seenListener);
         }

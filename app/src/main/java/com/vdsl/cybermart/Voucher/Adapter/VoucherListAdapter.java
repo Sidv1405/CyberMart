@@ -1,5 +1,6 @@
 package com.vdsl.cybermart.Voucher.Adapter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
@@ -52,8 +53,8 @@ public class VoucherListAdapter extends FirebaseRecyclerAdapter<Voucher,VoucherL
             String voucherCode = voucher.getCode();
             Intent intent = new Intent(context, CartActivity.class);
             intent.putExtra("voucherCode", voucherCode);
-            intent.putExtra("discount", voucher.getDiscount());
             context.startActivity(intent);
+            ((Activity) context).finish();
         });
     }
 
@@ -92,6 +93,7 @@ public class VoucherListAdapter extends FirebaseRecyclerAdapter<Voucher,VoucherL
             binding.tvId.setText(voucher.getCode());
             binding.tvName.setText(voucher.getTitle());
             binding.tvPrice.setText(voucher.getDiscount() + "%");
+            binding.tvDate.setText(voucher.getExpiryDate());
         }
     }
 

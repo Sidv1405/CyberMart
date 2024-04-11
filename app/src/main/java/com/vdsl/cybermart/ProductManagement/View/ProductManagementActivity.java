@@ -140,7 +140,8 @@ public class ProductManagementActivity extends AppCompatActivity {
                         } else {
                             DatabaseReference newProdRef = prodReference.push();
 
-                            ProductModel productModel = new ProductModel(name, description, price, quantity, image, cateName, true);
+                            String id = newProdRef.getKey();
+                            ProductModel productModel = new ProductModel(id,name, description, price, quantity, image, cateName, true);
 
                             newProdRef.setValue(productModel);
                             alertDialog.dismiss();

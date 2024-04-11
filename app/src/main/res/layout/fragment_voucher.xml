@@ -17,23 +17,23 @@
             android:layout_height="wrap_content"
             android:paddingHorizontal="20dp">
 
-            <ImageButton
-                android:layout_width="25dp"
-                android:layout_height="25dp"
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
                 android:src="@drawable/ic_back"
                 app:backgroundTint="@null"
                 android:layout_marginVertical="10dp"
                 android:id="@+id/btnBack"
                 />
 
-            <TextView
+            <!--<TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Lịch Sử"
                 android:layout_alignParentEnd="true"
                 android:textSize="15sp"
                 android:layout_marginVertical="10dp"
-                />
+                />-->
 
             <TextView
                 android:layout_marginVertical="10dp"

@@ -63,13 +63,20 @@
         android:layout_marginEnd="20dp"
         android:background="@drawable/border1">
 
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_list"
+            android:layout_gravity="center_vertical"
+            android:id="@+id/btnListVoucher"
+            />
 
         <EditText
             android:backgroundTint="@android:color/transparent"
             android:id="@+id/text_promo_code"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
+            android:layout_marginLeft="60dp"
             android:layout_marginTop="11dp"
             android:layout_marginBottom="11dp"
             android:gravity="left|center_vertical"
@@ -81,63 +88,19 @@
             android:textSize="19sp"
             tools:ignore="RtlHardcoded" />
 
-        <androidx.cardview.widget.CardView
-            android:layout_gravity="center_vertical"
-            android:id="@+id/container_group2"
-            android:layout_width="44dp"
-            android:layout_height="44dp"
-            android:layout_marginStart="310dp"
-            android:backgroundTint="@color/black"
-            android:scaleType="centerInside"
-            android:src="@drawable/ic_voucher"
-            app:cardCornerRadius="8dp"
-            >
 
-            <ImageView
-                android:id="@+id/btnVoucher"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:src="@drawable/ic_voucher" />
-        </androidx.cardview.widget.CardView>
-    </FrameLayout>
+        <ImageView
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="27dp"
-        android:orientation="horizontal"
-        android:layout_marginStart="40dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="40dp">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="27dp"
-            android:layout_gravity="left"
-            android:singleLine="true"
-            android:text="Payment:"
-            android:textColor="#FF808080"
-            android:textSize="19sp"
-            tools:ignore="RtlHardcoded" />
-        <RadioGroup
-            android:id="@+id/rdoPayment"
+            android:id="@+id/btnVoucher"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
-            <RadioButton
-                android:id="@+id/rdoCredit"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="19sp"
-                android:text="Credit Card"/>
-            <RadioButton
-                android:id="@+id/rdoCash"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="19sp"
-                android:text="Cash"/>
-        </RadioGroup>
-    </LinearLayout>
+            android:layout_gravity="end|center_vertical"
+            android:padding="2dp"
+            android:layout_marginEnd="5dp"
+            android:background="@drawable/border2"
+            android:src="@drawable/ic_voucher" />
+    </FrameLayout>
+
     <FrameLayout
         android:id="@+id/container_group"
         android:layout_width="match_parent"

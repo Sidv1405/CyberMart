@@ -7,6 +7,16 @@
     android:padding="10dp"
     tools:context=".Order.Fragment.OrderDetailFragment">
 
+    <ImageView
+        android:id="@+id/img_back"
+        android:layout_width="30dp"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_back"
+        app:layout_constraintEnd_toStartOf="@+id/txtTitle"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <TextView
         android:id="@+id/txtTitle"
         android:layout_width="wrap_content"
@@ -24,7 +34,7 @@
         android:id="@+id/txtSeri"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Order: "
+        android:text="Seri: "
         android:textColor="#323131"
         android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -41,7 +51,7 @@
         android:layout_toEndOf="@id/txtSeri"
         android:text="178Dh45810"
         android:textColor="@color/black"
-        android:textSize="20sp"
+        android:textSize="18sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@+id/txtSeri"
         app:layout_constraintEnd_toEndOf="parent"
@@ -80,7 +90,36 @@
         app:layout_constraintStart_toEndOf="@+id/txtCustomer"
         app:layout_constraintTop_toBottomOf="@+id/txtSeri"
         app:layout_constraintVertical_bias="0.0" />
+    <TextView
+        android:id="@+id/txtPhoneNumberLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="PhoneNumber: "
+        android:textColor="#323131"
+        android:layout_marginTop="10dp"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txtCustomer"
+        app:layout_constraintVertical_bias="0.0" />
 
+    <TextView
+        android:id="@+id/txtPhoneNumber"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="000000000"
+        android:textColor="#323131"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/txtPhoneNumberLabel"
+        app:layout_constraintTop_toBottomOf="@+id/txtCustomer"
+        app:layout_constraintVertical_bias="0.0" />
     <TextView
         android:id="@+id/txtAddress"
         android:layout_width="wrap_content"
@@ -93,7 +132,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtCustomer"
+        app:layout_constraintTop_toBottomOf="@+id/txtPhoneNumberLabel"
         app:layout_constraintVertical_bias="0.0" />
 
     <TextView
@@ -109,11 +148,11 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/txtAddress"
-        app:layout_constraintTop_toBottomOf="@+id/txtCustomerName"
+        app:layout_constraintTop_toBottomOf="@+id/txtPhoneNumber"
         app:layout_constraintVertical_bias="0.0" />
 
     <TextView
-        android:id="@+id/date"
+        android:id="@+id/txtDate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
@@ -173,7 +212,7 @@
         android:layout_alignParentEnd="true"
         android:layout_marginStart="2dp"
         android:gravity="center_vertical"
-        android:text="Deliver"
+        android:text="Cash"
         android:textColor="#060606"
         android:layout_marginTop="10dp"
         android:textSize="20sp"
@@ -206,7 +245,6 @@
         android:id="@+id/totalValue"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="300dp"
         android:layout_toEndOf="@id/totalLabel"
         android:text="150$"
         android:textColor="#000"

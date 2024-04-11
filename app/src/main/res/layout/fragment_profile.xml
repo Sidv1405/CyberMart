@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?><LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -13,11 +14,13 @@
         android:orientation="horizontal"
         android:paddingHorizontal="20dp"
         android:paddingVertical="10dp">
+
         <ImageView
             android:id="@+id/img_back"
             android:layout_width="30dp"
             android:layout_height="wrap_content"
             android:src="@drawable/ic_back" />
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -36,7 +39,7 @@
 
     </LinearLayout>
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="20dp"
@@ -44,18 +47,42 @@
         android:paddingHorizontal="20dp"
         android:paddingVertical="5dp">
 
-        <ImageView
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/imgAvatar"
             android:layout_width="100dp"
             android:layout_height="100dp"
-            android:id="@+id/imgAvatar"
-            android:src="@drawable/img_default_profile_image" />
+            android:src="@drawable/img_default_profile_image"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/imgEditAvatar"
+            android:layout_width="26dp"
+            android:layout_height="26dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginBottom="5dp"
+            android:src="@drawable/ic_edit_pen"
+            app:civ_border_color="#D1D0D0"
+            app:civ_border_overlay="false"
+            app:civ_border_width="4dp"
+            app:civ_circle_background_color="#D1D0D0"
+            app:layout_constraintBottom_toBottomOf="@id/imgAvatar"
+            app:layout_constraintRight_toRightOf="@id/imgAvatar" />
 
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_width="290dp"
+            android:layout_height="61dp"
             android:gravity="center"
             android:orientation="vertical"
-            android:padding="5dp">
+            android:padding="5dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintLeft_toRightOf="@+id/imgAvatar"
+            app:layout_constraintStart_toEndOf="@+id/imgAvatar"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.512">
 
             <TextView
                 android:id="@+id/txt_YourName"
@@ -76,7 +103,7 @@
                 android:textSize="16sp" />
 
         </LinearLayout>
-    </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <ScrollView
         android:layout_width="match_parent"
@@ -108,6 +135,7 @@
                     android:orientation="vertical">
 
                     <TextView
+                        android:id="@+id/txtOrder"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:paddingHorizontal="5dp"
@@ -117,11 +145,12 @@
                         android:textSize="22dp" />
 
                     <TextView
+                        android:id="@+id/txtOrderTitle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:paddingHorizontal="5dp"
                         android:paddingVertical="2dp"
-                        android:text="Already have 10 orders"
+                        android:text="Review your orders"
                         android:textColor="#777777"
                         android:textSize="18dp" />
 
@@ -136,13 +165,13 @@
             </androidx.cardview.widget.CardView>
 
             <androidx.cardview.widget.CardView
+                android:id="@+id/CvSettings"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"
                 android:layout_marginHorizontal="20dp"
                 android:layout_marginVertical="10dp"
                 android:padding="10dp"
-                android:id="@+id/CvSettings"
                 app:cardElevation="4dp">
 
 
@@ -158,7 +187,7 @@
                         android:layout_height="wrap_content"
                         android:paddingHorizontal="5dp"
                         android:paddingVertical="2dp"
-                        android:text="Settings"
+                        android:text="Account"
                         android:textColor="@color/black"
                         android:textSize="22dp" />
 
@@ -181,16 +210,150 @@
                     android:src="@drawable/ic_more" />
             </androidx.cardview.widget.CardView>
 
+
+
+<!--            <androidx.cardview.widget.CardView-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_gravity="start"-->
+<!--                android:layout_marginHorizontal="20dp"-->
+<!--                android:layout_marginVertical="10dp"-->
+<!--                android:padding="10dp"-->
+<!--                app:cardElevation="4dp">-->
+
+
+<!--                <LinearLayout-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_marginVertical="10dp"-->
+<!--                    android:layout_marginLeft="5dp"-->
+<!--                    android:orientation="vertical">-->
+
+<!--                    <TextView-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:paddingHorizontal="5dp"-->
+<!--                        android:paddingVertical="2dp"-->
+<!--                        android:text="Payment Methods"-->
+<!--                        android:textColor="@color/black"-->
+<!--                        android:textSize="22dp" />-->
+
+<!--                    <TextView-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:paddingHorizontal="5dp"-->
+<!--                        android:paddingVertical="2dp"-->
+<!--                        android:text="You have 02 cards"-->
+<!--                        android:textColor="#777777"-->
+<!--                        android:textSize="18dp" />-->
+
+<!--                </LinearLayout>-->
+
+<!--                <ImageView-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_gravity="end|center"-->
+<!--                    android:layout_margin="10dp"-->
+<!--                    android:src="@drawable/ic_more" />-->
+<!--            </androidx.cardview.widget.CardView>-->
+
+<!--            <androidx.cardview.widget.CardView-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_gravity="start"-->
+<!--                android:layout_marginHorizontal="20dp"-->
+<!--                android:layout_marginVertical="10dp"-->
+<!--                android:padding="10dp"-->
+<!--                app:cardElevation="4dp">-->
+
+<!--                <LinearLayout-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_marginVertical="10dp"-->
+<!--                    android:layout_marginLeft="5dp"-->
+<!--                    android:orientation="vertical">-->
+
+<!--                    <TextView-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:paddingHorizontal="5dp"-->
+<!--                        android:paddingVertical="2dp"-->
+<!--                        android:text="My Reviews"-->
+<!--                        android:textColor="@color/black"-->
+<!--                        android:textSize="22dp" />-->
+
+<!--                    <TextView-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:paddingHorizontal="5dp"-->
+<!--                        android:paddingVertical="2dp"-->
+<!--                        android:text="Reviews for 10 items"-->
+<!--                        android:textColor="#777777"-->
+<!--                        android:textSize="18dp" />-->
+
+<!--                </LinearLayout>-->
+
+<!--                <ImageView-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_gravity="end|center"-->
+<!--                    android:layout_margin="10dp"-->
+<!--                    android:src="@drawable/ic_more" />-->
+<!--            </androidx.cardview.widget.CardView>-->
+
+<!--            <androidx.cardview.widget.CardView-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_gravity="start"-->
+<!--                android:layout_marginHorizontal="20dp"-->
+<!--                android:layout_marginVertical="10dp"-->
+<!--                android:padding="10dp"-->
+<!--                app:cardElevation="4dp">-->
+
+<!--                <LinearLayout-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_marginVertical="10dp"-->
+<!--                    android:layout_marginLeft="5dp"-->
+<!--                    android:orientation="vertical">-->
+
+<!--                    <TextView-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:paddingHorizontal="5dp"-->
+<!--                        android:paddingVertical="2dp"-->
+<!--                        android:text="Setting"-->
+<!--                        android:textColor="@color/black"-->
+<!--                        android:textSize="22dp" />-->
+
+<!--                    <TextView-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:paddingHorizontal="5dp"-->
+<!--                        android:paddingVertical="2dp"-->
+<!--                        android:text="Notifications, Password...."-->
+<!--                        android:textColor="#777777"-->
+<!--                        android:textSize="18dp" />-->
+
+<!--                </LinearLayout>-->
+
+<!--                <ImageView-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_gravity="end|center"-->
+<!--                    android:layout_margin="10dp"-->
+<!--                    android:src="@drawable/ic_more" />-->
+<!--            </androidx.cardview.widget.CardView>-->
             <androidx.cardview.widget.CardView
+                android:id="@+id/btnManage"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"
+                android:visibility="gone"
                 android:layout_marginHorizontal="20dp"
                 android:layout_marginVertical="10dp"
                 android:padding="10dp"
-                android:id="@+id/CvCreateStaff"
                 app:cardElevation="4dp">
-
 
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -200,12 +363,11 @@
                     android:orientation="vertical">
 
                     <TextView
-                        android:id="@+id/cv_staff_manager"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:paddingHorizontal="5dp"
                         android:paddingVertical="2dp"
-                        android:text="Create an Staff account"
+                        android:text="Manage Store"
                         android:textColor="@color/black"
                         android:textSize="22dp" />
 
@@ -214,7 +376,7 @@
                         android:layout_height="wrap_content"
                         android:paddingHorizontal="5dp"
                         android:paddingVertical="2dp"
-                        android:text="Create accounts for staffs"
+                        android:text="Category, Product...."
                         android:textColor="#777777"
                         android:textSize="18dp" />
 
@@ -228,312 +390,6 @@
                     android:src="@drawable/ic_more" />
             </androidx.cardview.widget.CardView>
 
-            <androidx.cardview.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="start"
-                android:layout_marginHorizontal="20dp"
-                android:layout_marginVertical="10dp"
-                android:padding="10dp"
-                app:cardElevation="4dp">
-
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginVertical="10dp"
-                    android:layout_marginLeft="5dp"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:paddingHorizontal="5dp"
-                        android:paddingVertical="2dp"
-                        android:text="Payment Methods"
-                        android:textColor="@color/black"
-                        android:textSize="22dp" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:paddingHorizontal="5dp"
-                        android:paddingVertical="2dp"
-                        android:text="You have 02 cards"
-                        android:textColor="#777777"
-                        android:textSize="18dp" />
-
-                </LinearLayout>
-
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="end|center"
-                    android:layout_margin="10dp"
-                    android:src="@drawable/ic_more" />
-            </androidx.cardview.widget.CardView>
-
-            <androidx.cardview.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="start"
-                android:layout_marginHorizontal="20dp"
-                android:layout_marginVertical="10dp"
-                android:padding="10dp"
-                app:cardElevation="4dp">
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginVertical="10dp"
-                    android:layout_marginLeft="5dp"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:paddingHorizontal="5dp"
-                        android:paddingVertical="2dp"
-                        android:text="My Reviews"
-                        android:textColor="@color/black"
-                        android:textSize="22dp" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:paddingHorizontal="5dp"
-                        android:paddingVertical="2dp"
-                        android:text="Reviews for 10 items"
-                        android:textColor="#777777"
-                        android:textSize="18dp" />
-
-                </LinearLayout>
-
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="end|center"
-                    android:layout_margin="10dp"
-                    android:src="@drawable/ic_more" />
-            </androidx.cardview.widget.CardView>
-
-            <androidx.cardview.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="start"
-                android:layout_marginHorizontal="20dp"
-                android:layout_marginVertical="10dp"
-                android:padding="10dp"
-                app:cardElevation="4dp">
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginVertical="10dp"
-                    android:layout_marginLeft="5dp"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:paddingHorizontal="5dp"
-                        android:paddingVertical="2dp"
-                        android:text="Setting"
-                        android:textColor="@color/black"
-                        android:textSize="22dp" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:paddingHorizontal="5dp"
-                        android:paddingVertical="2dp"
-                        android:text="Notifications, Password...."
-                        android:textColor="#777777"
-                        android:textSize="18dp" />
-
-                </LinearLayout>
-
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="end|center"
-                    android:layout_margin="10dp"
-                    android:src="@drawable/ic_more" />
-            </androidx.cardview.widget.CardView>
-
-            <androidx.cardview.widget.CardView
-                android:id="@+id/cv_cate_manage"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="start"
-                android:layout_marginHorizontal="20dp"
-                android:layout_marginVertical="10dp"
-                android:padding="10dp"
-                app:cardElevation="4dp">
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginVertical="10dp"
-                    android:layout_marginLeft="5dp"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:paddingHorizontal="5dp"
-                        android:paddingVertical="2dp"
-                        android:text="Category Management"
-                        android:textColor="@color/black"
-                        android:textSize="22dp" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:paddingHorizontal="5dp"
-                        android:paddingVertical="2dp"
-                        android:text="Create/update category"
-                        android:textColor="#777777"
-                        android:textSize="18dp" />
-
-                </LinearLayout>
-
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="end|center"
-                    android:layout_margin="10dp"
-                    android:src="@drawable/ic_more" />
-            </androidx.cardview.widget.CardView>
-
-            <androidx.cardview.widget.CardView
-                android:id="@+id/cv_prod_manage"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="start"
-                android:layout_marginHorizontal="20dp"
-                android:layout_marginVertical="10dp"
-                android:padding="10dp"
-                app:cardElevation="4dp">
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginVertical="10dp"
-                    android:layout_marginLeft="5dp"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:paddingHorizontal="5dp"
-                        android:paddingVertical="2dp"
-                        android:text="Product Management"
-                        android:textColor="@color/black"
-                        android:textSize="22dp" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:paddingHorizontal="5dp"
-                        android:paddingVertical="2dp"
-                        android:text="Create/update/delete product"
-                        android:textColor="#777777"
-                        android:textSize="18dp" />
-
-                </LinearLayout>
-
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="end|center"
-                    android:layout_margin="10dp"
-                    android:src="@drawable/ic_more" />
-            </androidx.cardview.widget.CardView>
-
-            <androidx.cardview.widget.CardView
-                android:id="@+id/btnMyVoucher"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="start"
-                android:layout_marginHorizontal="20dp"
-                android:layout_marginVertical="10dp"
-                android:padding="10dp"
-                app:cardElevation="4dp">
-
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginVertical="10dp"
-                    android:layout_marginLeft="5dp"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:paddingHorizontal="5dp"
-                        android:paddingVertical="2dp"
-                        android:text="Voucher Mangement"
-                        android:textColor="@color/black"
-                        android:textSize="22dp" />
-
-                    <TextView
-                        android:id="@+id/txtCountVoucher"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:paddingHorizontal="5dp"
-                        android:paddingVertical="2dp"
-                        android:text="03 voucher"
-                        android:textColor="#777777"
-                        android:textSize="18dp" />
-
-                </LinearLayout>
-
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="end|center"
-                    android:layout_margin="10dp"
-                    android:src="@drawable/ic_more" />
-            </androidx.cardview.widget.CardView>
-            <androidx.cardview.widget.CardView
-                android:id="@+id/btnStatistic"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="start"
-                android:layout_marginHorizontal="20dp"
-                android:layout_marginVertical="10dp"
-                android:padding="10dp"
-                app:cardElevation="4dp">
-
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginVertical="10dp"
-                    android:layout_marginLeft="5dp"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:paddingHorizontal="5dp"
-                        android:paddingVertical="2dp"
-                        android:text="Our Statistical"
-                        android:textColor="@color/black"
-                        android:textSize="22dp" />
-
-
-                </LinearLayout>
-
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="end|center"
-                    android:layout_margin="10dp"
-                    android:src="@drawable/ic_more" />
-            </androidx.cardview.widget.CardView>
         </LinearLayout>
 
 

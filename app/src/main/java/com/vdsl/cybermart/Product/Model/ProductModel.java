@@ -1,6 +1,8 @@
 package com.vdsl.cybermart.Product.Model;
 
-public class ProductModel {
+import java.io.Serializable;
+
+public class ProductModel implements Serializable {
     private String prodId;
     private String name;
     private String description;
@@ -17,7 +19,8 @@ public class ProductModel {
         this.image = image;
     }
 
-    public ProductModel(String name, Double price, int quantity, String image) {
+    public ProductModel(String prodId, String name, Double price, int quantity, String image) {
+        this.prodId = prodId;
         this.name = name;
         this.price = price;
         this.quantity = quantity;
@@ -33,8 +36,9 @@ public class ProductModel {
         this.price = price;
         this.image = image;
     }
-
-    public ProductModel(String name, String description, Double price, int quantity, String image, String categoryId, boolean status) {
+    //sửa thành id để cập nhật số lượng 
+    public ProductModel(String prodId, String name, String description, Double price, int quantity, String image, String categoryId, boolean status) {
+        this.prodId = prodId;
         this.name = name;
         this.description = description;
         this.price = price;
@@ -57,8 +61,8 @@ public class ProductModel {
         return prodId;
     }
 
-    public void setProdId(String id) {
-        this.prodId = id;
+    public void setProdId(String prodId) {
+        this.prodId = prodId;
     }
 
     public String getName() {

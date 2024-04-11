@@ -6,6 +6,10 @@ public class UserModel {
     private String role;
 
     private String status;
+    private String avatar;
+
+    private String fcmToken;
+    private String active;
 
     public UserModel() {
     }
@@ -30,6 +34,11 @@ public class UserModel {
         this.phoneNumber = phoneNumber;
         this.role = role;
     }*/
+
+    public UserModel(String fullName, String phoneNumber) {
+        this.fullName = fullName;
+        this.phoneNumber = phoneNumber;
+    }
 
     public UserModel(String userName, String fullName, String email, String password, String phoneNumber, String role, String status) {
         this.userName = userName;
@@ -105,6 +114,14 @@ public class UserModel {
         this.status = status;
     }
 
+    public String getFcmToken() {
+        return fcmToken;
+    }
+
+    public void setFcmToken(String fcmToken) {
+        this.fcmToken = fcmToken;
+    }
+
     @Override
     public String toString() {
         return "UserModel{" +
@@ -116,5 +133,21 @@ public class UserModel {
                 ", phoneNumber='" + phoneNumber + '\'' +
                 ", role='" + role + '\'' +
                 '}';
+    }
+
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
+    }
+
+    public String getActive() {
+        return active;
+    }
+
+    public void setActive(String active) {
+        this.active = active;
     }
 }

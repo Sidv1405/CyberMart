@@ -35,21 +35,18 @@ public class StatisticFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         fragments = new ArrayList<>();
         fragments.add(new RevenueFragment());
-        fragments.add(new ProcessingOrderFragment());
         ViewPager2Adapter adapter = new ViewPager2Adapter(requireActivity(),fragments);
         binding.vpOrder.setAdapter(adapter);
         TabLayoutMediator mediator = new TabLayoutMediator(binding.tabLayout,binding.vpOrder,((tab, i) -> {
-            switch (i){
-                case 0:{
-                    tab.setText("Revenue");
-                    break;
-                }
-                case 1:{
-                    tab.setText("Processing");
-                    break;
-                }
+            if (i == 0) {
+                tab.setText("Revenue");
             }
         }));
         mediator.attach();
+        binding.imgBack.setOnClickListener(v -> {
+            if (getActivity() != null) {
+                getActivity().getSupportFragmentManager().popBackStack();
+            }
+        });
     }
 }

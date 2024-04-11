@@ -8,6 +8,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,11 +41,11 @@ public class PrepareFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         sharedPreferences = requireActivity().getSharedPreferences("Users", Context.MODE_PRIVATE);
         String id = sharedPreferences.getString("ID", "");
-        String role = sharedPreferences.getString("Role", "");
-        if (role.equals("Customers")) {
+        String role = sharedPreferences.getString("role", "");
+        Log.d("TAG", "onViewCreated: "+id+role);
+        if (role.equals("Customer")) {
             query = FirebaseDatabase.getInstance().getReference("Orders")
-                    .orderByChild("status").equalTo("Prepare");
-            query.orderByChild("idUser").equalTo(id);
+                    .orderByChild("statusId").equalTo("Prepare"+id);
         } else {
             query = FirebaseDatabase.getInstance().getReference("Orders")
                     .orderByChild("status").equalTo("Prepare");

@@ -109,34 +109,37 @@ public class FragmentSetting extends Fragment {
                         for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                             String userId = dataSnapshot.getKey();
                             if (userId != null) {
-                                String Password = preferencesGetPass.getString("password", "nothing to show");
-                                binding.txtPassword.setText(Password);
-                                String FullName = dataSnapshot.child("fullName").getValue(String.class);
-                                String Email = dataSnapshot.child("email").getValue(String.class);
-                                String PhoneNumber = dataSnapshot.child("phoneNumber").getValue(String.class);
-                                long AddressCount = dataSnapshot.child("address").getChildrenCount();
-                                String Address = addressPref.getString("address", "No address yet");
+                                String password = preferencesGetPass.getString("password", "nothing to show");
+                                String fullName = dataSnapshot.child("fullName").getValue(String.class);
+                                String email =  dataSnapshot.child("email").getValue(String.class);
+                                String phoneNumber = dataSnapshot.child("phoneNumber").getValue(String.class);
+                                long addressCount = dataSnapshot.child("address").getChildrenCount();
+                                String address = addressPref.getString("address", "No address yet");
 
-                                binding.txtName.setText(FullName);
-                                binding.txtEmail.setText(Email);
-                                binding.txtAddress.setText(Address);
-                                binding.txtPhoneNumber.setText(PhoneNumber);
-                                if (FullName.equals(null)) {
+                                binding.txtPassword.setText(password);
+                                binding.txtName.setText(fullName);
+                                binding.txtEmail.setText(email);
+                                binding.txtPhoneNumber.setText(phoneNumber);
+                                if (fullName==null) {
                                     binding.txtName.setTextColor(Color.RED);
                                 } else {
                                     binding.txtName.setTextColor(Color.BLACK);
                                 }
-                                if (Address.equals("No address yet") || AddressCount==0) {
+                                if (address.equals("No address yet") || addressCount == 0) {
                                     binding.txtAddress.setText("No address yet");
                                     binding.txtAddress.setTextColor(Color.RED);
                                 } else {
+                                    binding.txtAddress.setText(address);
                                     binding.txtAddress.setTextColor(Color.BLACK);
                                 }
-                                if (PhoneNumber.equals(null)) {
-                                    binding.txtPhoneNumber.setTextColor(Color.RED);
-                                } else {
+                                if (phoneNumber != null && !phoneNumber.isEmpty()) {
+                                    binding.txtPhoneNumber.setText(phoneNumber);
                                     binding.txtPhoneNumber.setTextColor(Color.BLACK);
+                                } else {
+                                    binding.txtPhoneNumber.setText("No phone number");
+                                    binding.txtPhoneNumber.setTextColor(Color.RED);
                                 }
+
                             }
                         }
                     }
@@ -147,8 +150,8 @@ public class FragmentSetting extends Fragment {
 
                 }
             });
-
-
+//
+//
         } else {
             Log.d("loginnow", "not logged in");
         }
@@ -166,7 +169,7 @@ public class FragmentSetting extends Fragment {
         dialog.show();
 
         dialogInformation.edtName.setText(binding.txtName.getText().toString());
-        if (binding.txtPhoneNumber.getText() == null) {
+        if (binding.txtPhoneNumber.getText().toString().trim().equals("No phone number")) {
             dialogInformation.edtPhoneNumber.setText(null);
         } else {
             dialogInformation.edtPhoneNumber.setText(binding.txtPhoneNumber.getText().toString());
@@ -276,17 +279,40 @@ public class FragmentSetting extends Fragment {
             }
 
             if (!error) {
-                user.updatePassword(newPass).addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        if (task.isSuccessful()) {
-                            Toast.makeText(getActivity(), "Change password successfully", Toast.LENGTH_SHORT).show();
-                        } else {
-                            Toast.makeText(getActivity(), "Failed to change password!", Toast.LENGTH_SHORT).show();
+                if (user!=null){
+                    user.updatePassword(newPass).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if (task.isSuccessful()) {
+                                Toast.makeText(getActivity(), "Change password successfully", Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(getActivity(), "Failed to change password!", Toast.LENGTH_SHORT).show();
+
+                            }
+                        }
+                    });
+                }else{
+                    String email=preferencesGetInfor.getString("email","null");
+                    String userId=preferencesGetInfor.getString("ID","null");
+                    databaseReference.orderByChild("email").equalTo(email).addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            if (snapshot.exists()) {
+                                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                                    DatabaseReference userRef = databaseReference.child(userId);
+                                    userRef.child("password").setValue(newPass);
+                                    Toast.makeText(requireActivity(), "Successfully", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
 
                         }
-                    }
-                });
+                    });
+                }
+
             }
         });
     }

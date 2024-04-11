@@ -1,7 +1,10 @@
 package com.vdsl.cybermart.Message.Adapter;
 
+import static android.content.Context.MODE_PRIVATE;
+
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,9 +17,18 @@ import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.Picasso;
 import com.vdsl.cybermart.Account.Model.UserModel;
 import com.vdsl.cybermart.Message.MessageActivity;
 import com.vdsl.cybermart.Message.Model.Chat;
+import com.vdsl.cybermart.R;
+import com.vdsl.cybermart.Voucher.View.VoucherActivity;
 import com.vdsl.cybermart.databinding.ChatItemLeftBinding;
 import com.vdsl.cybermart.databinding.ChatItemRightBinding;
 import com.vdsl.cybermart.databinding.ItemUserMessageBinding;
@@ -79,6 +91,26 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
             } else {
                 holder.chatItemLeftBinding.txtSeen.setVisibility(View.GONE);
             }
+            SharedPreferences preferences = context.getSharedPreferences("user",MODE_PRIVATE);
+            String avatar =preferences.getString("avatar","");
+            Log.e("check50", "onBindViewHolder: " + avatar );
+            if (!avatar.isEmpty() ){
+                Picasso.get().load(avatar).into(holder.chatItemLeftBinding.imgProfile, new Callback() {
+                    @Override
+                    public void onSuccess() {
+                        Log.d("check47", "onSuccess: " + avatar);
+                    }
+
+                    @Override
+                    public void onError(Exception e) {
+                        holder.chatItemLeftBinding.imgProfile.setImageResource(R.drawable.img_default_profile_image);
+                    }
+                });
+            }else {
+                holder.chatItemLeftBinding.imgProfile.setImageResource(R.drawable.img_default_profile_image);
+            }
+
+
         }
     }
 
