@@ -215,7 +215,7 @@ public class ProductDetailActivity extends AppCompatActivity {
             ProductModel productDetailF = new ProductModel(productNameTextView.getText().toString(), productDescription.toString(), Double.parseDouble(productPriceTextView.getText().toString().substring(1)), productImage);
             productDetailF.setImage(productImage);
             Map<String, ProductModel> listFav = new HashMap<>();
-            listFav.put(accountId, productDetailF);
+            listFav.put(productDetailF.getName(), productDetailF);
 
             favRef.orderByChild("accountId").equalTo(accountId).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
