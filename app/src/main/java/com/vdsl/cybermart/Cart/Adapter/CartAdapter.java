@@ -71,7 +71,7 @@ public class CartAdapter extends FirebaseRecyclerAdapter<ProductModel, CartAdapt
                 discountChecked = true;
                 Log.e("check58", "onBindViewHolder: " + oldCartPrice  + discountChecked);
             }
-            DatabaseReference databaseReference = getRef(i);
+            DatabaseReference databaseReference = getRef(cartViewHolder.getPosition());
             databaseReference.removeValue();
             double oldPrice = (productModel.getPrice() * productModel.getQuantity()) * (1-cartDiscount);
 
@@ -209,8 +209,8 @@ public class CartAdapter extends FirebaseRecyclerAdapter<ProductModel, CartAdapt
                             totalPriceRef.setValue(totalCartPrice);
                             totalPriceListener.onTotalPriceUpdated(totalCartPrice);
                         }else{
-                            totalPriceRef.setValue(totalPrice + oldPrice);
-                            totalPriceListener.onTotalPriceUpdated(totalPrice + oldPrice);
+                            totalPriceRef.setValue(totalPrice - oldPrice);
+                            totalPriceListener.onTotalPriceUpdated(totalPrice - oldPrice);
                         }
                     }
 

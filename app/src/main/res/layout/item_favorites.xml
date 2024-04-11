@@ -67,7 +67,8 @@
                     android:layout_width="26dp"
                     android:layout_height="26dp"
                     android:scaleType="fitXY"
-                    android:src="@drawable/ic_close" />
+                    android:src="@drawable/ic_close"
+                    android:visibility="gone" />
             </LinearLayout>
 
             <LinearLayout

@@ -16,7 +16,7 @@
             android:id="@+id/img_category"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:background="@drawable/border1"
+            android:scaleType="centerCrop"
             android:src="@drawable/clothes_nightwear_outfit_svgrepo_com" />
 
         <TextView
