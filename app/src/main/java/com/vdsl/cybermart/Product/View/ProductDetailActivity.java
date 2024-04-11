@@ -189,7 +189,13 @@ public class ProductDetailActivity extends AppCompatActivity {
                                                 cartEditor.apply();
 
                                                 newCartRef.setValue(cartModel);
-                                                finish();
+                                                General.showSuccessPopup(ProductDetailActivity.this, "Successfully", "Add successfully product to cart!", new OnDialogButtonClickListener() {
+                                                    @Override
+                                                    public void onDismissClicked(Dialog dialog) {
+                                                        super.onDismissClicked(dialog);
+                                                        finish();
+                                                    }
+                                                });
                                             }
                                         }
 
