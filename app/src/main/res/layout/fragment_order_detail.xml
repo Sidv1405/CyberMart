@@ -7,6 +7,16 @@
     android:padding="10dp"
     tools:context=".Order.Fragment.OrderDetailFragment">
 
+    <ImageView
+        android:id="@+id/img_back"
+        android:layout_width="30dp"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_back"
+        app:layout_constraintEnd_toStartOf="@+id/txtTitle"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <TextView
         android:id="@+id/txtTitle"
         android:layout_width="wrap_content"
@@ -235,7 +245,6 @@
         android:id="@+id/totalValue"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="300dp"
         android:layout_toEndOf="@id/totalLabel"
         android:text="150$"
         android:textColor="#000"
