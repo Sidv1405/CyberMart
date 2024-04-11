@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical">
 
     <RelativeLayout
@@ -13,23 +13,22 @@
         <RelativeLayout
             android:id="@+id/btn_cart"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            >
+            android:layout_height="wrap_content">
 
             <ImageView
                 android:id="@+id/cart"
                 android:layout_width="28dp"
                 android:layout_height="28dp"
+                android:layout_alignParentEnd="true"
                 android:layout_marginTop="10dp"
-                android:src="@drawable/shopping_cart_svg"
-                android:layout_alignParentEnd="true"/>
+                android:src="@drawable/shopping_cart_svg" />
 
             <com.nex3z.notificationbadge.NotificationBadge
 
                 android:id="@+id/badge"
-                android:layout_alignEnd="@id/cart"
                 android:layout_width="28dp"
                 android:layout_height="28dp"
+                android:layout_alignEnd="@id/cart"
                 android:layout_marginLeft="10dp"
                 app:nbMaxTextLength="2" />
         </RelativeLayout>
@@ -39,6 +38,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
+            android:visibility="gone"
             app:defaultQueryHint="Nội dung tìm kiếm"
             app:iconifiedByDefault="true"
             app:searchIcon="@drawable/search_svg" />
