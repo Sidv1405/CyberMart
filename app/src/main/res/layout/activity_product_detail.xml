@@ -200,6 +200,7 @@
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_gravity="center"
+                android:layout_marginLeft="25dp"
                 android:scaleType="centerInside"
                 android:src="@drawable/ic_heart_black" />
 
