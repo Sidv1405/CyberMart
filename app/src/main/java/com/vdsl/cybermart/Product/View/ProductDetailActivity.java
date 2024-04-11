@@ -1,6 +1,7 @@
 package com.vdsl.cybermart.Product.View;
 
 import android.annotation.SuppressLint;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -23,9 +24,12 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.saadahmedsoft.popupdialog.listener.OnDialogButtonClickListener;
 import com.squareup.picasso.Picasso;
 import com.vdsl.cybermart.Cart.Model.CartModel;
+import com.vdsl.cybermart.Cart.View.CartActivity;
 import com.vdsl.cybermart.Favourite.Model.FavoriteModel;
+import com.vdsl.cybermart.General;
 import com.vdsl.cybermart.Product.Model.ProductModel;
 import com.vdsl.cybermart.R;
 
@@ -164,7 +168,13 @@ public class ProductDetailActivity extends AppCompatActivity {
                                                     cartEditor.apply();
 
                                                     cartRef.child(cartId).setValue(existingCart);
-                                                    finish();
+                                                    General.showSuccessPopup(ProductDetailActivity.this, "Successfully", "Add successfully product to cart!", new OnDialogButtonClickListener() {
+                                                        @Override
+                                                        public void onDismissClicked(Dialog dialog) {
+                                                            super.onDismissClicked(dialog);
+                                                            finish();
+                                                        }
+                                                    });
                                                     break;
                                                 }
                                             } else {
@@ -235,9 +245,21 @@ public class ProductDetailActivity extends AppCompatActivity {
                                 listFav.remove(productDetailF.getName());
                                 imgHeart.setImageDrawable(getDrawable(R.drawable.ic_heart_black));
                                 favRef.child(favoritesId).setValue(existingFavorites);
+                                General.showSuccessPopup(ProductDetailActivity.this, "Add Successfully", "Remove successfully product from favourites!", new OnDialogButtonClickListener() {
+                                    @Override
+                                    public void onDismissClicked(Dialog dialog) {
+                                        super.onDismissClicked(dialog);
+                                    }
+                                });
                             } else {
                                 listFav.put(productDetailF.getName(), productDetailF);
                                 imgHeart.setImageDrawable(getDrawable(R.drawable.ic_heart_red));
+                                General.showSuccessPopup(ProductDetailActivity.this, "Remove Successfully", "Add successfully product to favourites!", new OnDialogButtonClickListener() {
+                                    @Override
+                                    public void onDismissClicked(Dialog dialog) {
+                                        super.onDismissClicked(dialog);
+                                    }
+                                });
                             }
                             String favoritesDetailName = "favoritesDetail_" + accountId;
                             SharedPreferences favoritesSharedPreferences = getSharedPreferences(favoritesDetailName, Context.MODE_PRIVATE);
