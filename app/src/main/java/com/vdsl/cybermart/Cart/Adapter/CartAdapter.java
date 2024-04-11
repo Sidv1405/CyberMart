@@ -137,7 +137,7 @@ public class CartAdapter extends FirebaseRecyclerAdapter<ProductModel, CartAdapt
             }
 
             double oldPrice = productModel.getPrice();
-            DatabaseReference databaseReference = getRef(i);
+            DatabaseReference databaseReference = getRef(cartViewHolder.getPosition());
             databaseReference.child("quantity").setValue(count);
             String accountId = sharedPreferences.getString("ID", "");
             String cartDetailName = "cartDetail_" + accountId;
@@ -193,7 +193,7 @@ public class CartAdapter extends FirebaseRecyclerAdapter<ProductModel, CartAdapt
                 }
 
                 double oldPrice = productModel.getPrice();
-                DatabaseReference databaseReference = getRef(i);
+                DatabaseReference databaseReference = getRef(cartViewHolder.getPosition());
                 databaseReference.child("quantity").setValue(count);
                 String accountId = sharedPreferences.getString("ID", "");
                 String cartDetailName = "cartDetail_" + accountId;
