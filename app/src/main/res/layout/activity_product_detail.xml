@@ -6,15 +6,19 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".Product.View.ProductDetailActivity">
-
+<androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        android:id="@+id/tren"
+        tools:ignore="MissingConstraints">
 
         <ImageView
             android:id="@+id/product_image"
             android:layout_width="match_parent"
-            android:layout_height="470dp"
+            android:layout_height="410dp"
             android:layout_marginLeft="25dp"
             android:layout_marginRight="25dp"
             android:src="@drawable/clothes_nightwear_outfit_svgrepo_com" />
@@ -179,55 +183,56 @@
             android:scaleType="centerInside"
             android:src="@drawable/ic_back"
             tools:ignore="RtlHardcoded" />
-
-        <FrameLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="top|left"
-            android:layout_marginLeft="25dp"
-            android:layout_marginTop="722dp"
-            tools:ignore="RtlHardcoded">
-
-            <LinearLayout
-                android:id="@+id/container_frame1"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="left|top"
-                android:orientation="horizontal">
-
-                <ImageView
-                    android:id="@+id/ic_heart"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:layout_gravity="center"
-                    android:scaleType="centerInside"
-                    android:src="@drawable/ic_heart_black" />
-
-
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/container_group"
-                    android:layout_width="270dp"
-                    android:layout_height="60dp"
-                    android:layout_marginStart="45dp"
-                    app:cardBackgroundColor="@color/black"
-                    app:cardCornerRadius="8dp">
-
-                    <Button
-                        android:id="@+id/btn_add_to_cart"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:backgroundTint="@color/black"
-                        android:gravity="center_horizontal|center_vertical"
-                        android:includeFontPadding="false"
-                        android:maxLines="1"
-                        android:singleLine="true"
-                        android:text="Add to cart "
-                        android:textColor="@color/white"
-                        android:textSize="20sp"
-                        android:textStyle="bold" />
-                </androidx.cardview.widget.CardView>
-            </LinearLayout>
-        </FrameLayout>
     </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/duoi"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top|left"
+        app:layout_constraintTop_toBottomOf="@+id/tren"
+        tools:ignore="MissingConstraints,RtlHardcoded">
+        <LinearLayout
+            android:id="@+id/container_frame1"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="left|top"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/ic_heart"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_gravity="center"
+                android:scaleType="centerInside"
+                android:src="@drawable/ic_heart_black" />
+
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/container_group"
+                android:layout_width="270dp"
+                android:layout_height="60dp"
+                android:layout_marginStart="45dp"
+                app:cardBackgroundColor="@color/black"
+                app:cardCornerRadius="8dp">
+
+                <Button
+                    android:id="@+id/btn_add_to_cart"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:backgroundTint="@color/black"
+                    android:gravity="center_horizontal|center_vertical"
+                    android:includeFontPadding="false"
+                    android:maxLines="1"
+                    android:singleLine="true"
+                    android:text="Add to cart "
+                    android:textColor="@color/white"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+            </androidx.cardview.widget.CardView>
+        </LinearLayout>
+    </FrameLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
