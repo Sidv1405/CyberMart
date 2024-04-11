@@ -39,6 +39,7 @@ import com.vdsl.cybermart.Account.Activity.LoginActivity;
 import com.vdsl.cybermart.Account.Fragment.FragmentSetting;
 import com.vdsl.cybermart.General;
 import com.vdsl.cybermart.Order.Fragment.FragmentContainer;
+import com.vdsl.cybermart.ProductManagement.View.ProductManagementActivity;
 import com.vdsl.cybermart.R;
 import com.vdsl.cybermart.databinding.FragmentProfileBinding;
 
@@ -124,6 +125,8 @@ public class FragmentProfile extends Fragment {
                 General.loadFragment(getParentFragmentManager(), new FragmentSetting(), null));
         binding.btnManage.setOnClickListener(v ->
                 General.loadFragment(getParentFragmentManager(), new ManagerFragment(), null));
+        binding.btnShopping.setOnClickListener(v ->
+              startActivity(new Intent(requireActivity(), ProductManagementActivity.class)));
     }
     private void showItemMenu() {
         String role = sharedPreferences.getString("role", "");
@@ -132,6 +135,8 @@ public class FragmentProfile extends Fragment {
            binding.txtOrder.setText("Manage Orders");
            binding.txtOrderTitle.setText("Edit order status");
            binding.btnManage.setVisibility(View.VISIBLE);
+        }else if(role.equals("Customer")){
+            binding.btnShopping.setVisibility(View.VISIBLE);
         }
     }
 

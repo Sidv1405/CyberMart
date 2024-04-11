@@ -9,7 +9,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -37,7 +36,7 @@ public class FragmentUpdateAddress extends Fragment {
     FragmentAddAddressBinding binding;
     DatabaseReference databaseReference, addressRef;
     FirebaseUser currentUser;
-    SharedPreferences sharedPreferences;
+    SharedPreferences sharedPreferences, addressPref;
 
     @Nullable
     @Override
@@ -54,6 +53,7 @@ public class FragmentUpdateAddress extends Fragment {
         databaseReference = FirebaseDatabase.getInstance().getReference().child("Account");
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
         sharedPreferences = getActivity().getSharedPreferences("Users", Context.MODE_PRIVATE);
+        addressPref = getActivity().getSharedPreferences("addressPref", Context.MODE_PRIVATE);
         binding.btnDeleteAddress.setOnClickListener(v -> {
             deleteAddress();
         });
@@ -197,6 +197,9 @@ public class FragmentUpdateAddress extends Fragment {
                                             @Override
                                             public void onComplete(@NonNull Task<Void> task) {
                                                 if (task.isSuccessful()) {
+                                                    SharedPreferences.Editor editor = addressPref.edit();
+                                                    editor.remove("address");
+                                                    editor.apply();
                                                     General.showSuccessPopup(requireActivity(),
                                                             "Delete address",
                                                             "You have successfully deleted this address",

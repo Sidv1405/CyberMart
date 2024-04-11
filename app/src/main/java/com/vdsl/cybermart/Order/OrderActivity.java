@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -44,14 +45,20 @@ public class OrderActivity extends AppCompatActivity {
                 if (cartModel != null) {
                     getProductInOrder(cartModel);
                     SharedPreferences sharedPreferences = getSharedPreferences("Users", Context.MODE_PRIVATE);
-                    String address = sharedPreferences.getString("address", "");
+                    SharedPreferences addressPref = getSharedPreferences("addressPref", Context.MODE_PRIVATE);
+                    String address = addressPref.getString("address", null);
                     String fullName = sharedPreferences.getString("fullName", "");
                     String phoneNumber = sharedPreferences.getString("phoneNumber", "");
-                    binding.edtAddress.setText(address);
+                    Log.d("address", "onCreate: "+address+"\n"+addressPref);
+                    if (address == null) {
+                        binding.edtAddress.setText(null);
+                    } else {
+                        binding.edtAddress.setText(address);
+                    }
                     binding.edtFullName.setText(fullName);
                     binding.edtPhone.setText(phoneNumber);
                     updateTotalPrice(cartModel);
-                    binding.btnCheckOutCart.setOnClickListener(v -> orderOnclick(cartModel,voucher));
+                    binding.btnCheckOutCart.setOnClickListener(v -> orderOnclick(cartModel, voucher));
                     binding.btnCancel.setOnClickListener(v -> finish());
                 }
             }
@@ -91,7 +98,7 @@ public class OrderActivity extends AppCompatActivity {
             AlertDialog dialog = builder.create();
             dialog.show();
         } else {
-            if (phoneNumber.length()<10||!phoneNumber.startsWith("0")){
+            if (phoneNumber.length() < 10 || !phoneNumber.startsWith("0")) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
                 builder.setTitle("Thông báo");
                 builder.setMessage("Nhập số điện thoại đúng định dạng");
@@ -99,7 +106,7 @@ public class OrderActivity extends AppCompatActivity {
                 }));
                 AlertDialog dialog = builder.create();
                 dialog.show();
-            }else {
+            } else {
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
                 builder.setTitle("Thông báo");
                 builder.setMessage("Xác nhận đặt hàng?");
@@ -122,7 +129,7 @@ public class OrderActivity extends AppCompatActivity {
                                     CartModel cartModelNew = snapshot.getValue(CartModel.class);
                                     if (cartModelNew != null) {
                                         binding.textTotalPrice.setText(cartModelNew.getTotalPrice() + "");
-                                        Order order = new Order(id, address,phoneNumber, "Prepare", payment, voucher, cartModelNew, "Prepare" + cartModel.getAccountId());
+                                        Order order = new Order(id, address, phoneNumber, "Prepare", payment, voucher, cartModelNew, "Prepare" + cartModel.getAccountId());
                                         newOrderRef.setValue(order);
 
                                         AlertDialog.Builder builder = new AlertDialog.Builder(OrderActivity.this);
