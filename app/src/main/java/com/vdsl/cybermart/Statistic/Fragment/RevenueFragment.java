@@ -113,7 +113,7 @@ public class RevenueFragment extends Fragment {
         binding.revenueChart.getAxisRight().setDrawLabels(false);
         YAxis yAxis = binding.revenueChart.getAxisLeft();
         yAxis.setAxisMinimum(0f);
-        yAxis.setAxisMaximum(5000f);
+        yAxis.setAxisMaximum(50000f);
         yAxis.setAxisLineWidth(2f);
         yAxis.setAxisLineColor(Color.BLACK);
         yAxis.setLabelCount(10);

@@ -120,6 +120,7 @@ public class CartActivity extends AppCompatActivity implements CartAdapter.Total
         binding.btnListVoucher.setOnClickListener(v -> {
             Intent intent = new Intent(CartActivity.this, VoucherActivity.class);
             startActivity(intent);
+            //finish();
         });
         String reCode = getIntent().getStringExtra("voucherCode");
         Log.e("check34", "onCreate: " + reCode );

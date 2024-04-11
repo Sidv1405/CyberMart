@@ -43,5 +43,10 @@ public class StatisticFragment extends Fragment {
             }
         }));
         mediator.attach();
+        binding.imgBack.setOnClickListener(v -> {
+            if (getActivity() != null) {
+                getActivity().getSupportFragmentManager().popBackStack();
+            }
+        });
     }
 }

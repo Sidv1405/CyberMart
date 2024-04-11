@@ -20,7 +20,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -37,15 +36,10 @@ import com.google.firebase.storage.StorageReference;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.vdsl.cybermart.Account.Activity.LoginActivity;
-import com.vdsl.cybermart.Account.Fragment.FragmentManagementStaff;
 import com.vdsl.cybermart.Account.Fragment.FragmentSetting;
-import com.vdsl.cybermart.CategoryManagement.View.CategoryManagementActivity;
 import com.vdsl.cybermart.General;
 import com.vdsl.cybermart.Order.Fragment.FragmentContainer;
-import com.vdsl.cybermart.ProductManagement.View.ProductManagementActivity;
 import com.vdsl.cybermart.R;
-import com.vdsl.cybermart.Statistic.Fragment.StatisticFragment;
-import com.vdsl.cybermart.Voucher.View.VoucherActivity;
 import com.vdsl.cybermart.databinding.FragmentProfileBinding;
 
 public class FragmentProfile extends Fragment {
@@ -79,10 +73,7 @@ public class FragmentProfile extends Fragment {
         sharedPreferences = requireActivity().getSharedPreferences("Users", Context.MODE_PRIVATE);
         currentUser = auth.getCurrentUser();
         progressDialog = new ProgressDialog(getActivity());
-
-        //role and menu
         showItemMenu();
-
         //show infor
         showInitInfor();
         //back
@@ -127,50 +118,25 @@ public class FragmentProfile extends Fragment {
 
         binding.imgAvatar.setOnClickListener(v -> openAvatarDialog());
         binding.imgEditAvatar.setOnClickListener(v -> openAvatarDialog());
-
-        binding.CvCreateStaff.setOnClickListener(v -> {
-            FragmentManagementStaff fragmentManagementStaff = new FragmentManagementStaff();
-            FragmentTransaction transaction = requireActivity().getSupportFragmentManager().beginTransaction();
-            transaction.replace(R.id.frag_container_main, fragmentManagementStaff);
-            transaction.addToBackStack(null);
-            transaction.commit();
-        });
-
-
-        binding.btnMyOrder.setOnClickListener(v -> General.loadFragment(getParentFragmentManager(), new FragmentContainer(), null));
-        binding.cvCateManage.setOnClickListener(v -> startActivity(new Intent(getContext(), CategoryManagementActivity.class)));
-        binding.cvProManage.setOnClickListener(v -> startActivity(new Intent(getContext(), ProductManagementActivity.class)));
-        binding.btnMyVoucher.setOnClickListener(v -> {
-            Intent intent = new Intent(getContext(), VoucherActivity.class);
-            startActivity(intent);
-        });
-        binding.CvSettings.setOnClickListener(v5 -> {
-            FragmentSetting fragmentSetting = new FragmentSetting();
-            FragmentTransaction transaction = requireActivity().getSupportFragmentManager().beginTransaction();
-            transaction.replace(R.id.frag_container_main, fragmentSetting);
-            transaction.addToBackStack(null);
-            transaction.commit();
-        });
-        binding.btnStatistic.setOnClickListener(v -> General.loadFragment(getParentFragmentManager(), new StatisticFragment(), null));
+        binding.btnMyOrder.setOnClickListener(v ->
+                General.loadFragment(getParentFragmentManager(), new FragmentContainer(), null));
+        binding.CvSettings.setOnClickListener(v ->
+                General.loadFragment(getParentFragmentManager(), new FragmentSetting(), null));
+        binding.btnManage.setOnClickListener(v ->
+                General.loadFragment(getParentFragmentManager(), new ManagerFragment(), null));
     }
-
     private void showItemMenu() {
         String role = sharedPreferences.getString("role", "");
         Log.d("TAG", "showItemMenu: " + role);
-        if (role.equals("Admin")) {
-            binding.cvCateManage.setVisibility(View.VISIBLE);
-            binding.cvProManage.setVisibility(View.VISIBLE);
-            binding.btnMyVoucher.setVisibility(View.VISIBLE);
-            binding.btnStatistic.setVisibility(View.VISIBLE);
-            binding.CvCreateStaff.setVisibility(View.VISIBLE);
-        } else if (role.equals("Staff")) {
-            binding.cvCateManage.setVisibility(View.VISIBLE);
-            binding.cvProManage.setVisibility(View.VISIBLE);
+        if (!role.equals("Customer")) {
+           binding.txtOrder.setText("Manage Orders");
+           binding.txtOrderTitle.setText("Edit order status");
+           binding.btnManage.setVisibility(View.VISIBLE);
         }
     }
 
-
     private void showInitInfor() {
+
         if (auth.getCurrentUser() != null) {
             Log.d("loginnow", "logged in");
             databaseReference.orderByChild("email").equalTo(currentUser.getEmail()).addValueEventListener(new ValueEventListener() {
@@ -205,13 +171,6 @@ public class FragmentProfile extends Fragment {
                                     });
                                 } else {
                                     binding.imgAvatar.setImageResource(R.drawable.img_default_profile_image);
-                                }
-                                if (!role.isEmpty() && !role.equals("nothing to show") && role.equals("Admin")) {
-                                    binding.CvCreateStaff.setVisibility(View.VISIBLE);
-                                    Log.d("loginnow", "Role: " + role);
-                                } else {
-                                    binding.CvCreateStaff.setVisibility(View.GONE);
-                                    Log.d("loginnow", "Role: " + role);
                                 }
                             }
                         }

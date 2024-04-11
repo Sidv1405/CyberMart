@@ -1,5 +1,6 @@
 package com.vdsl.cybermart.Voucher.Adapter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
@@ -53,6 +54,7 @@ public class VoucherListAdapter extends FirebaseRecyclerAdapter<Voucher,VoucherL
             Intent intent = new Intent(context, CartActivity.class);
             intent.putExtra("voucherCode", voucherCode);
             context.startActivity(intent);
+            ((Activity) context).finish();
         });
     }
 
