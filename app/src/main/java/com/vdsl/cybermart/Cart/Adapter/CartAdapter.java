@@ -58,22 +58,28 @@ public class CartAdapter extends FirebaseRecyclerAdapter<ProductModel, CartAdapt
         cartViewHolder.bind(productModel);
 
         SharedPreferences preferences = mContext.getSharedPreferences("price",MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
         String  discount =preferences.getString("discount","");
         String price =preferences.getString("oldPrice","");
         /*String voucherCode =preferences.getString("voucherCode","");*/
-
+        Log.e("check59", "onBindViewHolder: " + discount );
 
 
 
         cartViewHolder.binding.imgDelete.setOnClickListener(v -> {
-            if (!discountChecked && !discount.isEmpty()){
+            if (!discount.isEmpty()){
                 cartDiscount = Double.parseDouble(discount);
-                discountChecked = true;
-                Log.e("check58", "onBindViewHolder: " + oldCartPrice  + discountChecked);
+                Log.e("check58", "onBindViewHolder: " + oldCartPrice  + discountChecked + discount);
             }
             DatabaseReference databaseReference = getRef(cartViewHolder.getPosition());
             databaseReference.removeValue();
-            double oldPrice = (productModel.getPrice() * productModel.getQuantity()) * (1-cartDiscount);
+            double oldPrice;
+
+            if (voucherCode != null && !voucherCode.isEmpty()){
+                oldPrice = (productModel.getPrice() * productModel.getQuantity()) * (1-cartDiscount);
+            }else{
+                oldPrice = (productModel.getPrice() * productModel.getQuantity());
+            }
 
             String accountId = sharedPreferences.getString("ID", "");
             String cartDetailName = "cartDetail_" + accountId;

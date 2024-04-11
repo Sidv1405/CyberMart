@@ -227,11 +227,22 @@ public class CartActivity extends AppCompatActivity implements CartAdapter.Total
                     } else {
                         updateTotalPriceAndMarkVoucherUsed(totalPriceRef, userVouchersRef, voucherCode, discount);
 
+                        SharedPreferences pref = getSharedPreferences("price",MODE_PRIVATE);
+                        SharedPreferences.Editor editor = pref.edit();
+                        editor.putString("voucherCode", voucherCode);
+                        editor.putString("discount", String.valueOf(discount));
+                        editor.commit();
                     }
                 } else {
                     userVouchersRef.child(voucherCode).setValue(true).addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {
                             updateTotalPriceAndMarkVoucherUsed(totalPriceRef, userVouchersRef, voucherCode, discount);
+
+                            SharedPreferences pref = getSharedPreferences("price",MODE_PRIVATE);
+                            SharedPreferences.Editor editor = pref.edit();
+                            editor.putString("voucherCode", voucherCode);
+                            editor.putString("discount", String.valueOf(discount));
+                            editor.commit();
                         }
                     });
                 }
@@ -263,11 +274,6 @@ public class CartActivity extends AppCompatActivity implements CartAdapter.Total
                     });
 
                     // Đánh dấu voucher đã sử dụng
-                    SharedPreferences pref = getSharedPreferences("price",MODE_PRIVATE);
-                    SharedPreferences.Editor editor = pref.edit();
-                    editor.putString("voucherCode", voucherCode);
-                    editor.putString("discount", String.valueOf(discount));
-                    editor.commit();
                     userVouchersRef.child(voucherCode).setValue(true);
                 }
             }
@@ -305,22 +311,4 @@ public class CartActivity extends AppCompatActivity implements CartAdapter.Total
         btnCheckOut = findViewById(R.id.btn_check_out_cart);
         txtVoucher = findViewById(R.id.text_promo_code);
     }
-
-    /*@Override
-    public void onClickVoucher(Voucher voucher) {
-        DatabaseReference userVouchersRef = FirebaseDatabase.getInstance().getReference("UserVouchers").child(accountId);
-        DatabaseReference totalPriceRef = FirebaseDatabase.getInstance().getReference("carts/" + cartId + "/totalPrice");
-        double discount = ((double) voucher.getDiscount() / 100);
-        adapter.setCartItemClickListener(new CartAdapter.CartItemClickListener() {
-            @Override
-            public void onPlusClicked(ProductModel productModel, double oldPrice) {
-                updateTotalPriceAndMarkVoucherUsed(totalPriceRef,userVouchersRef,voucher.getCode(),discount);
-            }
-
-            @Override
-            public void onMinusClicked(ProductModel productModel, double oldPrice) {
-
-            }
-        });
-    }*/
 }
