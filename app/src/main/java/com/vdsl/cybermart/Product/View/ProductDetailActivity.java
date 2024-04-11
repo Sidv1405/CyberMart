@@ -86,7 +86,7 @@ public class ProductDetailActivity extends AppCompatActivity {
         imgMinus = findViewById(R.id.img_minus);
         imgPlus = findViewById(R.id.img_plus);
         txtQuantity = findViewById(R.id.txt_quantity);
-        
+
         imgMinus.setOnClickListener(v -> {
             int count = Integer.parseInt(txtQuantity.getText().toString());
             count -= 1;
@@ -116,50 +116,51 @@ public class ProductDetailActivity extends AppCompatActivity {
             SharedPreferences sharedPreferences = getSharedPreferences("Users", MODE_PRIVATE);
             String accountId = sharedPreferences.getString("ID", "");
             String proName = productNameTextView.getText().toString();
-            Log.d("TAG", "onDataChange:proName "+proName);
+            Log.d("TAG", "onDataChange:proName " + proName);
             Query query = FirebaseDatabase.getInstance().getReference("products").orderByChild("name").equalTo(proName);
             query.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     if (snapshot.exists()) {
-                        for (DataSnapshot s:snapshot.getChildren()){
+                        for (DataSnapshot s : snapshot.getChildren()) {
                             ProductModel curPro = s.getValue(ProductModel.class);
-                            if(curPro!=null){
-                                if(curPro.getName().equals(proName)){
-                                    Log.d("TAG", "onDataChange:curPro "+curPro.getProdId());
-                                    ProductModel productDetail = new ProductModel(curPro.getProdId(), proName,
-                                            Double.parseDouble(productPriceTextView.getText().toString().substring(1)),
-                                            Integer.parseInt(txtQuantity.getText().toString()), productImage);
-                                    productDetail.setImage(productImage);
-                                    Map<String, ProductModel> cartDetail = new HashMap<>();
+                            if (curPro != null && curPro.getName().equals(proName)) {
+                                Log.d("TAG", "onDataChange:curPro " + curPro.getProdId());
+                                double productPrice = Double.parseDouble(productPriceTextView.getText().toString().substring(1));
+                                int quantity = Integer.parseInt(txtQuantity.getText().toString());
 
-                                    cartDetail.put(productDetail.getName(), productDetail);
+                                ProductModel productDetail = new ProductModel(curPro.getProdId(), proName, productPrice, quantity, productImage);
+                                productDetail.setImage(productImage);
 
-                                    double totalMoney = productDetail.getPrice() * productDetail.getQuantity();
-                                    Date currentDate = new Date();
-                                    @SuppressLint("SimpleDateFormat") SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
-                                    String date = dateFormat.format(currentDate);
-                                    Log.d("TAG", "onCreate: " + date);
+                                double totalMoney = productPrice * quantity;
+                                Date currentDate = new Date();
+                                @SuppressLint("SimpleDateFormat") SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
+                                String date = dateFormat.format(currentDate);
+                                Log.d("TAG", "onCreate: " + date);
 
-                                    cartRef.orderByChild("accountId").equalTo(accountId).addListenerForSingleValueEvent(new ValueEventListener() {
-                                        @Override
-                                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                            if (snapshot.exists()) {
-                                                for (DataSnapshot cartSnapshot : snapshot.getChildren()) {
-                                                    String cartId = cartSnapshot.getKey();
-                                                    CartModel existingCart = cartSnapshot.getValue(CartModel.class);
-                                                    if (!cartSnapshot.hasChild("cartDetail")) {
+                                cartRef.orderByChild("accountId").equalTo(accountId).addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                        if (snapshot.exists()) {
+                                            for (DataSnapshot cartSnapshot : snapshot.getChildren()) {
+                                                String cartId = cartSnapshot.getKey();
+                                                CartModel existingCart = cartSnapshot.getValue(CartModel.class);
+                                                if (existingCart != null) {
+                                                    if (existingCart.getCartDetail() != null) {
+                                                        if (!existingCart.getCartDetail().containsKey(productDetail.getName())) {
+                                                            existingCart.getCartDetail().put(productDetail.getName(), productDetail);
+                                                            existingCart.setTotalPrice(existingCart.getTotalPrice() + totalMoney);
+                                                        } else {
+                                                            ProductModel existingProduct = existingCart.getCartDetail().get(productDetail.getName());
+                                                            existingProduct.setQuantity(existingProduct.getQuantity() + quantity);
+                                                            existingCart.setTotalPrice(existingCart.getTotalPrice() + totalMoney);
+                                                        }
+                                                    } else {
                                                         Map<String, ProductModel> cartDetail = new HashMap<>();
+                                                        cartDetail.put(productDetail.getName(), productDetail);
                                                         existingCart.setCartDetail(cartDetail);
+                                                        existingCart.setTotalPrice(totalMoney);
                                                     }
-
-                                                    if (existingCart.getCartDetail() == null) {
-                                                        existingCart.setCartDetail(new HashMap<>());
-                                                    }
-
-                                                    existingCart.getCartDetail().put(productDetail.getName(), productDetail);
-
-                                                    existingCart.setTotalPrice(existingCart.getTotalPrice() + totalMoney);
 
                                                     String cartDetailName = "cartDetail_" + accountId;
                                                     SharedPreferences cartSharedPreferences = getSharedPreferences(cartDetailName, Context.MODE_PRIVATE);
@@ -168,6 +169,7 @@ public class ProductDetailActivity extends AppCompatActivity {
                                                     cartEditor.apply();
 
                                                     cartRef.child(cartId).setValue(existingCart);
+
                                                     General.showSuccessPopup(ProductDetailActivity.this, "Successfully", "Add successfully product to cart!", new OnDialogButtonClickListener() {
                                                         @Override
                                                         public void onDismissClicked(Dialog dialog) {
@@ -175,39 +177,39 @@ public class ProductDetailActivity extends AppCompatActivity {
                                                             finish();
                                                         }
                                                     });
-                                                    break;
                                                 }
-                                            } else {
-                                                DatabaseReference newCartRef = cartRef.push();
-                                                String cartId = newCartRef.getKey();
-                                                CartModel cartModel = new CartModel(cartId, accountId, cartDetail, totalMoney, date);
-
-                                                String cartDetailName = "cartDetail_" + accountId;
-                                                SharedPreferences cartSharedPreferences = getSharedPreferences(cartDetailName, Context.MODE_PRIVATE);
-                                                SharedPreferences.Editor cartEditor = cartSharedPreferences.edit();
-                                                cartEditor.putString("id", cartId);
-                                                cartEditor.apply();
-
-                                                newCartRef.setValue(cartModel);
-                                                General.showSuccessPopup(ProductDetailActivity.this, "Successfully", "Add successfully product to cart!", new OnDialogButtonClickListener() {
-                                                    @Override
-                                                    public void onDismissClicked(Dialog dialog) {
-                                                        super.onDismissClicked(dialog);
-                                                        finish();
-                                                    }
-                                                });
                                             }
-                                        }
+                                        } else {
+                                            DatabaseReference newCartRef = cartRef.push();
+                                            String cartId = newCartRef.getKey();
+                                            Map<String, ProductModel> cartDetail = new HashMap<>();
+                                            cartDetail.put(productDetail.getName(), productDetail);
 
-                                        @Override
-                                        public void onCancelled(@NonNull DatabaseError error) {
+                                            CartModel cartModel = new CartModel(cartId, accountId, cartDetail, totalMoney, date);
+
+                                            String cartDetailName = "cartDetail_" + accountId;
+                                            SharedPreferences cartSharedPreferences = getSharedPreferences(cartDetailName, Context.MODE_PRIVATE);
+                                            SharedPreferences.Editor cartEditor = cartSharedPreferences.edit();
+                                            cartEditor.putString("id", cartId);
+                                            cartEditor.apply();
+
+                                            newCartRef.setValue(cartModel);
+                                            General.showSuccessPopup(ProductDetailActivity.this, "Successfully", "Add successfully product to cart!", new OnDialogButtonClickListener() {
+                                                @Override
+                                                public void onDismissClicked(Dialog dialog) {
+                                                    super.onDismissClicked(dialog);
+                                                    finish();
+                                                }
+                                            });
                                         }
-                                    });
-                                }
+                                    }
+
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError error) {
+                                    }
+                                });
                             }
-
                         }
-
                     }
                 }
 
@@ -216,8 +218,6 @@ public class ProductDetailActivity extends AppCompatActivity {
 
                 }
             });
-
-
         });
 
         //    add to favorites
