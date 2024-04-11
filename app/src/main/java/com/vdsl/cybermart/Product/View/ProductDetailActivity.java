@@ -251,7 +251,7 @@ public class ProductDetailActivity extends AppCompatActivity {
                                 listFav.remove(productDetailF.getName());
                                 imgHeart.setImageDrawable(getDrawable(R.drawable.ic_heart_black));
                                 favRef.child(favoritesId).setValue(existingFavorites);
-                                General.showSuccessPopup(ProductDetailActivity.this, "Add Successfully", "Remove successfully product from favourites!", new OnDialogButtonClickListener() {
+                                General.showSuccessPopup(ProductDetailActivity.this, "Remove Successfully", "Remove successfully product from favourites!", new OnDialogButtonClickListener() {
                                     @Override
                                     public void onDismissClicked(Dialog dialog) {
                                         super.onDismissClicked(dialog);
@@ -260,7 +260,7 @@ public class ProductDetailActivity extends AppCompatActivity {
                             } else {
                                 listFav.put(productDetailF.getName(), productDetailF);
                                 imgHeart.setImageDrawable(getDrawable(R.drawable.ic_heart_red));
-                                General.showSuccessPopup(ProductDetailActivity.this, "Remove Successfully", "Add successfully product to favourites!", new OnDialogButtonClickListener() {
+                                General.showSuccessPopup(ProductDetailActivity.this, "Add Successfully", "Add successfully product to favourites!", new OnDialogButtonClickListener() {
                                     @Override
                                     public void onDismissClicked(Dialog dialog) {
                                         super.onDismissClicked(dialog);
