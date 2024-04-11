@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/white"
+    android:orientation="vertical"
+    tools:context=".Account.Person.ManagerFragment">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="5dp"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:paddingHorizontal="20dp"
+        android:paddingVertical="10dp">
+
+        <ImageView
+            android:id="@+id/img_back"
+            android:layout_width="30dp"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_back" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:fontFamily="serif"
+            android:gravity="center_horizontal"
+            android:text="Manage Store"
+            android:textSize="24dp"
+            android:textStyle="bold" />
+
+
+    </LinearLayout>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cvCateManage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="start"
+        android:layout_marginHorizontal="20dp"
+        android:layout_marginVertical="10dp"
+        android:padding="10dp"
+        app:cardElevation="4dp">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="10dp"
+            android:layout_marginLeft="5dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="5dp"
+                android:paddingVertical="2dp"
+                android:text="Category Management"
+                android:textColor="@color/black"
+                android:textSize="22dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="5dp"
+                android:paddingVertical="2dp"
+                android:text="Create/update category"
+                android:textColor="#777777"
+                android:textSize="18dp" />
+
+        </LinearLayout>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end|center"
+            android:layout_margin="10dp"
+            android:src="@drawable/ic_more" />
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cvProManage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="start"
+        android:layout_marginHorizontal="20dp"
+        android:layout_marginVertical="10dp"
+        android:padding="10dp"
+        app:cardElevation="4dp">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="10dp"
+            android:layout_marginLeft="5dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="5dp"
+                android:paddingVertical="2dp"
+                android:text="Product Management"
+                android:textColor="@color/black"
+                android:textSize="22dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="5dp"
+                android:paddingVertical="2dp"
+                android:text="Create/update/delete product"
+                android:textColor="#777777"
+                android:textSize="18dp" />
+
+        </LinearLayout>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end|center"
+            android:layout_margin="10dp"
+            android:src="@drawable/ic_more" />
+    </androidx.cardview.widget.CardView>
+    <androidx.cardview.widget.CardView
+        android:id="@+id/CvCreateStaff"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="start"
+        android:layout_marginHorizontal="20dp"
+        android:layout_marginVertical="10dp"
+        android:padding="10dp"
+        android:visibility="gone"
+        app:cardElevation="4dp">
+
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="10dp"
+            android:layout_marginLeft="5dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/cv_staff_manager"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="5dp"
+                android:paddingVertical="2dp"
+                android:text="Staff Management"
+                android:textColor="@color/black"
+                android:textSize="22dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="5dp"
+                android:paddingVertical="2dp"
+                android:text="Create accounts or update Staff's information"
+                android:textColor="#777777"
+                android:textSize="18dp" />
+
+        </LinearLayout>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end|center"
+            android:layout_margin="10dp"
+            android:src="@drawable/ic_more" />
+    </androidx.cardview.widget.CardView>
+    <androidx.cardview.widget.CardView
+        android:id="@+id/btnMyVoucher"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="start"
+        android:layout_marginHorizontal="20dp"
+        android:layout_marginVertical="10dp"
+        android:padding="10dp"
+        android:visibility="gone"
+        app:cardElevation="4dp">
+
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="10dp"
+            android:layout_marginLeft="5dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="5dp"
+                android:paddingVertical="2dp"
+                android:text="Voucher Mangement"
+                android:textColor="@color/black"
+                android:textSize="22dp" />
+
+            <TextView
+                android:id="@+id/txtCountVoucher"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="5dp"
+                android:paddingVertical="2dp"
+                android:text="Manage voucher"
+                android:textColor="#777777"
+                android:textSize="18dp" />
+
+        </LinearLayout>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end|center"
+            android:layout_margin="10dp"
+            android:src="@drawable/ic_more" />
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/btnStatistic"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="start"
+        android:layout_marginHorizontal="20dp"
+        android:layout_marginVertical="10dp"
+        android:padding="10dp"
+        android:visibility="gone"
+        app:cardElevation="4dp">
+
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="10dp"
+            android:layout_marginLeft="5dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="5dp"
+                android:paddingVertical="2dp"
+                android:text="Our Statistical"
+                android:textColor="@color/black"
+                android:textSize="22dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="5dp"
+                android:paddingVertical="2dp"
+                android:text="Revenue Manage"
+                android:textColor="#777777"
+                android:textSize="18dp" />
+
+        </LinearLayout>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end|center"
+            android:layout_margin="10dp"
+            android:src="@drawable/ic_more" />
+    </androidx.cardview.widget.CardView>
+
+</LinearLayout>
