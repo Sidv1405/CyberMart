@@ -62,11 +62,13 @@ public class CartAdapter extends FirebaseRecyclerAdapter<ProductModel, CartAdapt
         String  discount =preferences.getString("discount","");
         String price =preferences.getString("oldPrice","");
         /*String voucherCode =preferences.getString("voucherCode","");*/
-        Log.e("check59", "onBindViewHolder: " + discount );
+
 
 
 
         cartViewHolder.binding.imgDelete.setOnClickListener(v -> {
+            Boolean isUse = preferences.getBoolean("isUse",true);
+            Log.e("check59", "onBindViewHolder: " + discount + isUse);
             if (!discount.isEmpty()){
                 cartDiscount = Double.parseDouble(discount);
                 Log.e("check58", "onBindViewHolder: " + oldCartPrice  + discountChecked + discount);
@@ -75,8 +77,9 @@ public class CartAdapter extends FirebaseRecyclerAdapter<ProductModel, CartAdapt
             databaseReference.removeValue();
             double oldPrice;
 
-            if (voucherCode != null && !voucherCode.isEmpty()){
+            if (voucherCode != null && !voucherCode.isEmpty() && isUse == false ){
                 oldPrice = (productModel.getPrice() * productModel.getQuantity()) * (1-cartDiscount);
+                Log.e("check59", "omCheck: " + discount + isUse);
             }else{
                 oldPrice = (productModel.getPrice() * productModel.getQuantity());
             }
