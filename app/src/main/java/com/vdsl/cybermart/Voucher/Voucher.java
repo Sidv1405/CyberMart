@@ -60,4 +60,14 @@ public class Voucher {
 
         return map;
     }
+
+    @Override
+    public String toString() {
+        return "Voucher{" +
+                "code='" + code + '\'' +
+                ", title='" + title + '\'' +
+                ", expiryDate='" + expiryDate + '\'' +
+                ", discount=" + discount +
+                '}';
+    }
 }

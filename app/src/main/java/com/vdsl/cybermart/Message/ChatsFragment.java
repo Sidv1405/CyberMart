@@ -79,7 +79,6 @@ public class ChatsFragment extends Fragment {
                         for (DataSnapshot snapshot1 : snapshot.getChildren()) {
                             String email = snapshot1.child("email").getValue(String.class);
                             Log.e("Mytom", "onIdReceived: " + email );
-                            // Tạo một đối tượng ChatList từ email và thêm vào userList
                             ChatList chatList = new ChatList(email);
                             userList.add(chatList);
                         }

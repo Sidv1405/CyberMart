@@ -9,10 +9,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.ContextMenu;
 import android.view.LayoutInflater;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 
 import androidx.activity.EdgeToEdge;
@@ -26,22 +23,16 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
-import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.ktx.Firebase;
 import com.saadahmedsoft.popupdialog.listener.OnDialogButtonClickListener;
-import com.vdsl.cybermart.CategoryManagement.Adapter.CateManageAdapter;
 import com.vdsl.cybermart.General;
-import com.vdsl.cybermart.Order.Model.Order;
 import com.vdsl.cybermart.R;
 import com.vdsl.cybermart.Voucher.Adapter.VoucherListAdapter;
 import com.vdsl.cybermart.Voucher.Voucher;
-import com.vdsl.cybermart.databinding.ActivityMainBinding;
 import com.vdsl.cybermart.databinding.ActivityVoucherBinding;
 import com.vdsl.cybermart.databinding.UpdateVoucherBinding;
 
@@ -54,6 +45,8 @@ public class VoucherActivity extends AppCompatActivity {
     VoucherListAdapter adapter;
 
     DatabaseReference voucherRef;
+
+    ArrayList<Voucher> voucherList;
 
     String role;
 
@@ -69,17 +62,16 @@ public class VoucherActivity extends AppCompatActivity {
         });
         binding = ActivityVoucherBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        voucherList = new ArrayList<>();
 
-        SharedPreferences preferences = VoucherActivity.this.getSharedPreferences("Users",MODE_PRIVATE);
-         role =preferences.getString("role","");
+        SharedPreferences preferences = VoucherActivity.this.getSharedPreferences("Users", MODE_PRIVATE);
+        role = preferences.getString("role", "");
+
+        writeUserVoucher();
 
         readDataVoucher();
 
-        showAdminOption();
-
-
-
-
+        /*showAdminOption();*/
 
 
         binding.btnBack.setOnClickListener(v -> {
@@ -94,22 +86,39 @@ public class VoucherActivity extends AppCompatActivity {
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                Query query = FirebaseDatabase.getInstance().getReference("Voucher")
-                        .orderByChild("code").startAt(newText).endAt(newText + "\uf8ff");
-                FirebaseRecyclerOptions<Voucher> options = new FirebaseRecyclerOptions.Builder<Voucher>()
-                        .setQuery(query, Voucher.class).build();
-
-                VoucherListAdapter newAdapter = new VoucherListAdapter(options,VoucherActivity.this);
-
-                binding.rcvVoucher.setAdapter(newAdapter);
-
-                newAdapter.startListening();
-
+                searchVoucher(newText);
                 return false;
             }
         });
 
 
+    }
+
+    private void searchVoucher(String query) {
+        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+        DatabaseReference reference = firebaseDatabase.getReference("Notification");
+
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                voucherList.clear();
+                for (DataSnapshot snapshot1 : snapshot.getChildren()) {
+                    Voucher voucher = snapshot1.getValue(Voucher.class);
+                    if (voucher != null &&
+                            voucher.getCode().contains(query)) {
+                        voucherList.add(voucher);
+                    }
+                }
+                adapter = new VoucherListAdapter(voucherList, VoucherActivity.this);
+                binding.rcvVoucher.setAdapter(adapter);
+                adapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 
     private void showDialogDetail(Voucher voucher) {
@@ -181,11 +190,11 @@ public class VoucherActivity extends AppCompatActivity {
     }
 
 
-    private void showAdminOption() {
+   /* private void showAdminOption() {
 
-        if (role.equals("Admin")){
+        if (role.equals("Admin")) {
 
-            Log.e("checkIfelse", "onCreate: " + role );
+            Log.e("checkIfelse", "onCreate: " + role);
             adapter.setOnItemClick(new VoucherListAdapter.OnItemClick() {
                 @Override
                 public void onItemClick(int position, Voucher voucher) {
@@ -196,44 +205,148 @@ public class VoucherActivity extends AppCompatActivity {
                 Intent intent = new Intent(VoucherActivity.this, VoucherAddActivity.class);
                 startActivity(intent);
             });
-        }else{
+        } else {
             binding.flAddVoucher.setVisibility(View.GONE);
         }
-    }
+    }*/
 
     private void readDataVoucher() {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+        SharedPreferences sharedPreferences = getSharedPreferences("Users", Context.MODE_PRIVATE);
+        String accountId = sharedPreferences.getString("ID", "");
+        DatabaseReference voucherRef = database.getReference().child("Voucher");
+        DatabaseReference userVoucherRef = database.getReference().child("UserVouchers").child(accountId);
+
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(VoucherActivity.this, LinearLayoutManager.VERTICAL, false);
         binding.rcvVoucher.setLayoutManager(linearLayoutManager);
 
-        voucherRef = database.getReference().child("Voucher");
-        FirebaseRecyclerOptions<Voucher> options =
-                new FirebaseRecyclerOptions.Builder<Voucher>()
-                        .setQuery(voucherRef, Voucher.class)
-                        .build();
+        if (role.equals("Admin")){
+            voucherRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    voucherList.clear();
+                    for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                        Voucher voucher = dataSnapshot.getValue(Voucher.class);
+                        if (voucher != null) {
+                            voucherList.add(voucher);
+                            Log.e("check63", "onDataChange: " + voucherList.toString() );
+                        }
+                    }
+                    // Sau khi đã thêm hết dữ liệu vào danh sách, set adapter cho RecyclerView
+                    Log.e("check68", "onDataChange: " + voucherList.toString() + voucherList.size());
+                    adapter = new VoucherListAdapter(voucherList, VoucherActivity.this);
+                    binding.rcvVoucher.setAdapter(adapter);
+                    adapter.notifyDataSetChanged(); // Bắt buộc gọi hàm này để cập nhật giao diện
+                }
 
-        Log.d("VoucherActivity", "Querying Firebase for vouchers...");
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                    Log.e("readDataVoucher", "Database Error: " + error.getMessage());
+                }
+            });
+        }else{
+            voucherCustomer();
+        }
+    }
 
-        voucherRef.addListenerForSingleValueEvent(new ValueEventListener() {
+
+    private void writeUserVoucher() {
+
+        SharedPreferences sharedPreferences = getSharedPreferences("Users", Context.MODE_PRIVATE);
+        String accountId = sharedPreferences.getString("ID", "");
+        DatabaseReference vouchersRef = FirebaseDatabase.getInstance().getReference("Voucher");
+        DatabaseReference userVoucherRef = FirebaseDatabase.getInstance().getReference("UserVouchers");
+
+        // Lấy danh sách tất cả các voucher
+        vouchersRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if (dataSnapshot.exists()) {
-                    Log.d("VoucherActivity", "Vouchers data received from Firebase." + voucherRef);
-                } else {
-                    Log.d("VoucherActivity", "No Voucher data found in Firebase.");
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    for (DataSnapshot voucherSnapshot : snapshot.getChildren()) {
+                        String voucherCode = voucherSnapshot.child("code").getValue(String.class);
+                        Log.e("check61", "writeUserVoucher: " + voucherCode);
+                        Log.e("check62", "writeUserVoucher: " + accountId);
+
+                        // Kiểm tra xem mã code đã tồn tại trong bảng UserVoucher chưa
+                        userVoucherRef.child(accountId).child(voucherCode).addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                if (!dataSnapshot.exists()) {
+                                    // Nếu mã code chưa tồn tại, thêm vào bảng UserVoucher
+                                    userVoucherRef.child(accountId).child(voucherCode).setValue(false);
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+                                Log.e("writeUserVoucher", "Database Error: " + databaseError.getMessage());
+                            }
+                        });
+                    }
                 }
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                Log.d("VoucherActivity", "Firebase query cancelled: " + databaseError.getMessage());
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.e("writeUserVoucher", "Database Error: " + error.getMessage());
             }
         });
-
-        adapter = new VoucherListAdapter(options,VoucherActivity.this);
-        binding.rcvVoucher.setAdapter(adapter);
     }
 
+
+    public void voucherCustomer(){
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        SharedPreferences sharedPreferences = getSharedPreferences("Users", Context.MODE_PRIVATE);
+        String accountId = sharedPreferences.getString("ID", "");
+        DatabaseReference voucherRef = database.getReference().child("Voucher");
+        DatabaseReference userVoucherRef = database.getReference().child("UserVouchers").child(accountId);
+        userVoucherRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot voucherSnapshot : dataSnapshot.getChildren()) {
+                    String voucherCode = voucherSnapshot.getKey(); // Lấy mã code của voucher
+                    boolean isUsed = voucherSnapshot.getValue(Boolean.class); // Kiểm tra xem nó có bằng false không
+
+                    Log.e("check64", "onDataChange: " + voucherCode + isUsed);
+
+                    if (!isUsed && voucherCode != null) {
+                        voucherRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                for (DataSnapshot voucherSnapshot : snapshot.getChildren()) {
+                                    if (snapshot.exists()) {
+                                        Voucher voucher = voucherSnapshot.getValue(Voucher.class);
+                                        if (voucher != null && voucher.getCode().equals(voucherCode)) {
+                                            // Nếu trùng khớp, thêm vào danh sách
+                                            voucherList.add(voucher);
+                                            Log.e("check65", "onDataChange: " + voucherCode + isUsed + voucher.toString());
+                                            Log.e("check66", "onDataChange: " + voucherList.toString());
+                                            /*break;*/
+                                        }
+                                    }
+                                }
+                                Log.e("check67", "onDataChange: " + voucherList.toString());
+                                adapter = new VoucherListAdapter(voucherList, VoucherActivity.this);
+                                binding.rcvVoucher.setAdapter(adapter);
+                                adapter.notifyDataSetChanged();
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+                                Log.e("readDataVoucher", "Database Error: " + error.getMessage());
+                            }
+                        });
+                    }
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.e("readDataVoucher", "Database Error: " + error.getMessage());
+            }
+        });
+    }
 
     private void onClickDeleteVoucher(Voucher voucher) {
         new AlertDialog.Builder(this)
@@ -301,18 +414,5 @@ public class VoucherActivity extends AppCompatActivity {
         void onIdReceived(String id);
     }
 
-
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        adapter.startListening();
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        adapter.stopListening();
-    }
 
 }
