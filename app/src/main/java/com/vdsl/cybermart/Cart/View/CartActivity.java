@@ -178,6 +178,13 @@ public class CartActivity extends AppCompatActivity implements CartAdapter.Total
     }
 
     private void applyVoucher(Voucher voucher) {
+        final boolean[] isUse = {true};
+        SharedPreferences pref = getSharedPreferences("price",MODE_PRIVATE);
+        SharedPreferences.Editor editor = pref.edit();
+        editor.putBoolean("isUse",isUse[0]);
+        editor.commit();
+        Log.e("check61", "applyVoucher: " + isUse[0] );
+
         SharedPreferences sharedPreferences = getSharedPreferences("Users", Context.MODE_PRIVATE);
         String accountId = sharedPreferences.getString("ID", "");
         String cartDetailName = "cartDetail_" + accountId;
@@ -226,10 +233,11 @@ public class CartActivity extends AppCompatActivity implements CartAdapter.Total
                         });
                     } else {
                         updateTotalPriceAndMarkVoucherUsed(totalPriceRef, userVouchersRef, voucherCode, discount);
+                        isUse[0] = false;
 
-                        SharedPreferences pref = getSharedPreferences("price",MODE_PRIVATE);
-                        SharedPreferences.Editor editor = pref.edit();
+                        Log.e("check61", "applyVoucher: " + isUse[0] );
                         editor.putString("voucherCode", voucherCode);
+                        editor.putBoolean("isUse", isUse[0]);
                         editor.putString("discount", String.valueOf(discount));
                         editor.commit();
                     }
@@ -238,9 +246,10 @@ public class CartActivity extends AppCompatActivity implements CartAdapter.Total
                         if (task.isSuccessful()) {
                             updateTotalPriceAndMarkVoucherUsed(totalPriceRef, userVouchersRef, voucherCode, discount);
 
-                            SharedPreferences pref = getSharedPreferences("price",MODE_PRIVATE);
-                            SharedPreferences.Editor editor = pref.edit();
+                            isUse[0] = false;
+
                             editor.putString("voucherCode", voucherCode);
+                            editor.putBoolean("isUse", isUse[0]);
                             editor.putString("discount", String.valueOf(discount));
                             editor.commit();
                         }
