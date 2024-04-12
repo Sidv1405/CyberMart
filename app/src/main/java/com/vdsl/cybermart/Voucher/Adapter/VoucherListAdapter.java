@@ -22,7 +22,7 @@ import com.vdsl.cybermart.databinding.ItemVoucherBinding;
 
 import java.util.List;
 
-public class VoucherListAdapter extends FirebaseRecyclerAdapter<Voucher,VoucherListAdapter.ViewHolderVoucher> {
+public class VoucherListAdapter extends RecyclerView.Adapter<VoucherListAdapter.ViewHolderVoucher> {
     private List<Voucher> voucherList;
 
     Context context;
@@ -33,30 +33,11 @@ public class VoucherListAdapter extends FirebaseRecyclerAdapter<Voucher,VoucherL
         super(options);
     }*/
 
-    public VoucherListAdapter(@NonNull FirebaseRecyclerOptions<Voucher> options, Context context) {
-        super(options);
+    public VoucherListAdapter(List<Voucher> voucherList, Context context) {
+        this.voucherList = voucherList;
         this.context = context;
     }
 
-    @Override
-    protected void onBindViewHolder(@NonNull ViewHolderVoucher viewHolderVoucher, int i, @NonNull Voucher voucher) {
-        Log.e("VoucherListAdapter", "Binding Voucher at position " + i + ": " + voucher.toString());
-        viewHolderVoucher.bind(voucher);
-
-        viewHolderVoucher.itemView.setOnClickListener(v -> {
-            if (mListener != null) {
-                mListener.onItemClick(i, voucher);
-            }
-        });
-
-        viewHolderVoucher.binding.btnVoucher.setOnClickListener(v -> {
-            String voucherCode = voucher.getCode();
-            Intent intent = new Intent(context, CartActivity.class);
-            intent.putExtra("voucherCode", voucherCode);
-            context.startActivity(intent);
-            ((Activity) context).finish();
-        });
-    }
 
     public interface OnItemClick {
         void onItemClick(int position, Voucher voucher);
@@ -81,6 +62,33 @@ public class VoucherListAdapter extends FirebaseRecyclerAdapter<Voucher,VoucherL
         return new ViewHolderVoucher(binding);
     }
 
+    @Override
+    public void onBindViewHolder(@NonNull ViewHolderVoucher holder, int position) {
+        Voucher voucher = voucherList.get(position);
+        Log.e("VoucherListAdapter", "Binding Voucher at position " + position + ": " + voucher.toString());
+        holder.bind(voucher);
+
+        holder.itemView.setOnClickListener(v -> {
+            if (mListener != null) {
+                mListener.onItemClick(position, voucher);
+            }
+        });
+
+        holder.binding.btnVoucher.setOnClickListener(v -> {
+            String voucherCode = voucher.getCode();
+            Intent intent = new Intent(context, CartActivity.class);
+            intent.putExtra("voucherCode", voucherCode);
+            context.startActivity(intent);
+            ((Activity) context).finish();
+        });
+    }
+
+    @Override
+    public int getItemCount() {
+        Log.d("VoucherListAdapter", "getItemCount: " + voucherList.size());
+        return voucherList.size();
+    }
+
     public static class ViewHolderVoucher extends RecyclerView.ViewHolder {
 
         ItemVoucherBinding binding;
@@ -99,7 +107,7 @@ public class VoucherListAdapter extends FirebaseRecyclerAdapter<Voucher,VoucherL
 
     public Voucher getVoucherAtPosition(int position) {
         if (position >= 0 && position < getItemCount()) {
-            return getItem(position);
+            return voucherList.get(position);
         }
         return null;
     }

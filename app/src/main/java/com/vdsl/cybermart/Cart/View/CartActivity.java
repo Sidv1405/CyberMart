@@ -222,9 +222,10 @@ public class CartActivity extends AppCompatActivity implements CartAdapter.Total
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.exists()) {
-                    if (snapshot.child(voucherCode).exists()) {
+                    boolean isVoucherUsed = snapshot.child(voucherCode).getValue(Boolean.class);
+                    if (isVoucherUsed) {
                         // Nếu voucher đã được sử dụng, hiển thị thông báo
-                        Log.d("CartActivity", "Voucher đã được sử dụng trước đó");
+                        Log.d("CartActivity", "Voucher đã được sử dụng trước đó" + isVoucherUsed);
                         General.showFailurePopup(CartActivity.this, "Sử Dụng Voucher", "Bạn đã dùng voucher này!", new OnDialogButtonClickListener() {
                             @Override
                             public void onDismissClicked(Dialog dialog) {
@@ -241,7 +242,7 @@ public class CartActivity extends AppCompatActivity implements CartAdapter.Total
                         editor.putString("discount", String.valueOf(discount));
                         editor.commit();
                     }
-                } else {
+                } /*else {
                     userVouchersRef.child(voucherCode).setValue(true).addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {
                             updateTotalPriceAndMarkVoucherUsed(totalPriceRef, userVouchersRef, voucherCode, discount);
@@ -254,7 +255,7 @@ public class CartActivity extends AppCompatActivity implements CartAdapter.Total
                             editor.commit();
                         }
                     });
-                }
+                }*/
             }
 
             @Override
