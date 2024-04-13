@@ -67,12 +67,13 @@ public class VoucherActivity extends AppCompatActivity {
         SharedPreferences preferences = VoucherActivity.this.getSharedPreferences("Users", MODE_PRIVATE);
         role = preferences.getString("role", "");
 
-        writeUserVoucher();
+
 
         readDataVoucher();
 
-        /*showAdminOption();*/
+        showAdminOption();
 
+        writeUserVoucher();
 
         binding.btnBack.setOnClickListener(v -> {
             super.onBackPressed();
@@ -194,12 +195,14 @@ public class VoucherActivity extends AppCompatActivity {
         if (role.equals("Admin")) {
 
             Log.e("checkIfelse", "onCreate: " + role);
-            adapter.setOnItemClick(new VoucherListAdapter.OnItemClick() {
-                @Override
-                public void onItemClick(int position, Voucher voucher) {
-                    showDialogDetail(adapter.getVoucherAtPosition(position));
-                }
-            });
+            if (adapter != null) {
+                adapter.setOnItemClick(new VoucherListAdapter.OnItemClick() {
+                    @Override
+                    public void onItemClick(int position, Voucher voucher) {
+                        showDialogDetail(adapter.getVoucherAtPosition(position));
+                    }
+                });
+            }
             binding.flAddVoucher.setOnClickListener(v -> {
                 Intent intent = new Intent(VoucherActivity.this, VoucherAddActivity.class);
                 startActivity(intent);

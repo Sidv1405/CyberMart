@@ -126,6 +126,7 @@ public class FragmentAddStaff extends Fragment {
                                                     currentUserDB.child("fullName").setValue(userName);
                                                     currentUserDB.child("email").setValue(email);
                                                     currentUserDB.child("role").setValue("Staff");
+                                                    currentUserDB.child("status").setValue("offline");
                                                     progressDialog.dismiss();
                                                     General.showSuccessPopup(requireContext(),
                                                                              "Successfully", "An staff account " +
