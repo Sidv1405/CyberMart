@@ -96,7 +96,7 @@ public class VoucherActivity extends AppCompatActivity {
 
     private void searchVoucher(String query) {
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-        DatabaseReference reference = firebaseDatabase.getReference("Notification");
+        DatabaseReference reference = firebaseDatabase.getReference("Voucher");
 
         reference.addValueEventListener(new ValueEventListener() {
             @Override
@@ -104,8 +104,7 @@ public class VoucherActivity extends AppCompatActivity {
                 voucherList.clear();
                 for (DataSnapshot snapshot1 : snapshot.getChildren()) {
                     Voucher voucher = snapshot1.getValue(Voucher.class);
-                    if (voucher != null &&
-                            voucher.getCode().contains(query)) {
+                    if (voucher != null && voucher.getCode().contains(query)) {
                         voucherList.add(voucher);
                     }
                 }
@@ -190,7 +189,7 @@ public class VoucherActivity extends AppCompatActivity {
     }
 
 
-   /* private void showAdminOption() {
+    private void showAdminOption() {
 
         if (role.equals("Admin")) {
 
@@ -208,7 +207,7 @@ public class VoucherActivity extends AppCompatActivity {
         } else {
             binding.flAddVoucher.setVisibility(View.GONE);
         }
-    }*/
+    }
 
     private void readDataVoucher() {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
