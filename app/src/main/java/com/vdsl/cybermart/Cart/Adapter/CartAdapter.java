@@ -190,58 +190,62 @@ public class CartAdapter extends FirebaseRecyclerAdapter<ProductModel, CartAdapt
 
         cartViewHolder.binding.imgMinusCart.setOnClickListener(v -> {
             Boolean isUse = preferences.getBoolean("isUse",true);
-            int count = Integer.parseInt(cartViewHolder.binding.cartProdQuantity.getText().toString());
-            if (count > 1) {
-                count -= 1;
-                if (count < 10) {
-                    cartViewHolder.binding.cartProdQuantity.setText("0" + count);
-                } else {
-                    cartViewHolder.binding.cartProdQuantity.setText(String.valueOf(count));
-                }
+            long currentTime = SystemClock.elapsedRealtime();
+            if (currentTime - lastMinusButtonClickTime > DEBOUNCE_INTERVAL){
+                lastMinusButtonClickTime = currentTime;
+                int count = Integer.parseInt(cartViewHolder.binding.cartProdQuantity.getText().toString());
+                if (count > 1) {
+                    count -= 1;
+                    if (count < 10) {
+                        cartViewHolder.binding.cartProdQuantity.setText("0" + count);
+                    } else {
+                        cartViewHolder.binding.cartProdQuantity.setText(String.valueOf(count));
+                    }
 
-                if (!discountChecked && !discount.isEmpty()){
-                    oldCartPrice = Double.parseDouble(price);
-                    cartDiscount = Double.parseDouble(discount);
-                    discountChecked = true;
-                    Log.e("check58", "onBindViewHolder: " + oldCartPrice  + discountChecked);
-                }
+                    if (!discountChecked && !discount.isEmpty()){
+                        oldCartPrice = Double.parseDouble(price);
+                        cartDiscount = Double.parseDouble(discount);
+                        discountChecked = true;
+                        Log.e("check58", "onBindViewHolder: " + oldCartPrice  + discountChecked);
+                    }
 
-                double oldPrice = productModel.getPrice();
-                DatabaseReference databaseReference = getRef(cartViewHolder.getPosition());
-                databaseReference.child("quantity").setValue(count);
-                String accountId = sharedPreferences.getString("ID", "");
-                String cartDetailName = "cartDetail_" + accountId;
-                SharedPreferences cartSharedPreferences = mContext.getSharedPreferences(cartDetailName, Context.MODE_PRIVATE);
-                String cartId = cartSharedPreferences.getString("id", "");
-                DatabaseReference totalPriceRef = FirebaseDatabase.getInstance().getReference("carts/" + cartId + "/totalPrice");
-                if (cartItemClickListener != null) {
-                    cartItemClickListener.onMinusClicked(productModel,oldPrice);
-                }
+                    double oldPrice = productModel.getPrice();
+                    DatabaseReference databaseReference = getRef(cartViewHolder.getPosition());
+                    databaseReference.child("quantity").setValue(count);
+                    String accountId = sharedPreferences.getString("ID", "");
+                    String cartDetailName = "cartDetail_" + accountId;
+                    SharedPreferences cartSharedPreferences = mContext.getSharedPreferences(cartDetailName, Context.MODE_PRIVATE);
+                    String cartId = cartSharedPreferences.getString("id", "");
+                    DatabaseReference totalPriceRef = FirebaseDatabase.getInstance().getReference("carts/" + cartId + "/totalPrice");
+                    if (cartItemClickListener != null) {
+                        cartItemClickListener.onMinusClicked(productModel,oldPrice);
+                    }
 
-                oldCartPrice -= oldPrice;
-                Log.e("check57", "onBindViewHolder: " + oldCartPrice );
-                totalPriceRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        double totalPrice = snapshot.getValue(Double.class);
-                        if (voucherCode != null && !voucherCode.isEmpty() && !isUse){
-                            double totalCartPrice = (oldCartPrice) * (1 - cartDiscount);
-                            totalPriceRef.setValue(totalCartPrice);
-                            totalPriceListener.onTotalPriceUpdated(totalCartPrice);
-                        }else{
-                            totalPriceRef.setValue(totalPrice - oldPrice);
-                            totalPriceListener.onTotalPriceUpdated(totalPrice - oldPrice);
+                    oldCartPrice -= oldPrice;
+                    Log.e("check57", "onBindViewHolder: " + oldCartPrice );
+                    totalPriceRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            double totalPrice = snapshot.getValue(Double.class);
+                            if (voucherCode != null && !voucherCode.isEmpty() && !isUse){
+                                double totalCartPrice = (oldCartPrice) * (1 - cartDiscount);
+                                totalPriceRef.setValue(totalCartPrice);
+                                totalPriceListener.onTotalPriceUpdated(totalCartPrice);
+                            }else{
+                                totalPriceRef.setValue(totalPrice - oldPrice);
+                                totalPriceListener.onTotalPriceUpdated(totalPrice - oldPrice);
+                            }
                         }
-                    }
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-                    }
-                });
-            } else {
-                cartViewHolder.binding.cartProdQuantity.setText("01");
-                DatabaseReference databaseReference = getRef(i);
-                databaseReference.child("quantity").setValue(1);
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+                        }
+                    });
+                } else {
+                    cartViewHolder.binding.cartProdQuantity.setText("01");
+                    DatabaseReference databaseReference = getRef(i);
+                    databaseReference.child("quantity").setValue(1);
+                }
             }
         });
     }
