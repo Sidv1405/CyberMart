@@ -92,21 +92,21 @@ public class FragmentAddStaff extends Fragment {
                 error = true;
             }
             if (!error) {
-                Log.e("check41", "onViewCreated: " + "done" );
+                Log.e("check41", "onViewCreated: " + "done");
                 progressDialog.setMessage("loading...");
                 progressDialog.show();
                 if (userAuth.getCurrentUser() != null) {
-                    userAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                    userDatabase.orderByChild("email").equalTo(email).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
-                        public void onComplete(@NonNull Task<AuthResult> task) {
-                            if (task.isSuccessful()) {
-                                userDatabase.orderByChild("email").equalTo(email).addListenerForSingleValueEvent(new ValueEventListener() {
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            if (snapshot.exists()) {
+                                progressDialog.dismiss();
+                                binding.edtEmailSignUp.setError("Email already exists!");
+                            } else {
+                                userAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                                     @Override
-                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                        if (snapshot.exists()) {
-                                            progressDialog.dismiss();
-                                            Toast.makeText(requireContext(), "Email already exists!", Toast.LENGTH_SHORT).show();
-                                        } else {
+                                    public void onComplete(@NonNull Task<AuthResult> task) {
+                                        if (task.isSuccessful()) {
                                             userDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
                                                 @Override
                                                 public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -128,18 +128,18 @@ public class FragmentAddStaff extends Fragment {
                                                     currentUserDB.child("role").setValue("Staff");
                                                     progressDialog.dismiss();
                                                     General.showSuccessPopup(requireContext(),
-                                                            "Successfully", "An staff account " +
-                                                                    "added successfully",
-                                                            new OnDialogButtonClickListener() {
-                                                                @Override
-                                                                public void onDismissClicked(Dialog dialog) {
-                                                                    super.onDismissClicked(dialog);
-                                                                    binding.edtUserNameSignUp.setText(null);
-                                                                    binding.edtEmailSignUp.setText(null);
-                                                                    binding.edtPassSignUp.setText(null);
-                                                                    binding.edtConfirmPassSignUp.setText(null);
-                                                                }
-                                                            });
+                                                                             "Successfully", "An staff account " +
+                                                                                     "added successfully",
+                                                                             new OnDialogButtonClickListener() {
+                                                                                 @Override
+                                                                                 public void onDismissClicked(Dialog dialog) {
+                                                                                     super.onDismissClicked(dialog);
+                                                                                     binding.edtUserNameSignUp.setText(null);
+                                                                                     binding.edtEmailSignUp.setText(null);
+                                                                                     binding.edtPassSignUp.setText(null);
+                                                                                     binding.edtConfirmPassSignUp.setText(null);
+                                                                                 }
+                                                                             });
                                                 }
 
                                                 @Override
@@ -147,18 +147,26 @@ public class FragmentAddStaff extends Fragment {
                                                     progressDialog.dismiss();
                                                 }
                                             });
+//                                        }
+//                                    }
+//
+//                                    @Override
+//                                    public void onCancelled(@NonNull DatabaseError error) {
+//
+//                                    }
+//                                });
+                                        } else {
+                                            progressDialog.dismiss();
+                                            Toast.makeText(requireContext(), "Email already exists!", Toast.LENGTH_SHORT).show();
                                         }
                                     }
-
-                                    @Override
-                                    public void onCancelled(@NonNull DatabaseError error) {
-
-                                    }
                                 });
-                            } else {
-                                progressDialog.dismiss();
-                                Toast.makeText(requireContext(), "Email already exists!", Toast.LENGTH_SHORT).show();
                             }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+
                         }
                     });
                 }

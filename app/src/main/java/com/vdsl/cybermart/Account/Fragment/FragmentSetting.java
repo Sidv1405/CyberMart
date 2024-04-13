@@ -107,12 +107,14 @@ public class FragmentSetting extends Fragment {
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     if (snapshot.exists()) {
                         for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                            String userId = dataSnapshot.getKey();
+//                            String userId = dataSnapshot.getKey();
+                            String userId = preferencesGetInfor.getString("ID",null);
                             if (userId != null) {
                                 String password = preferencesGetPass.getString("password", "nothing to show");
-                                String fullName = dataSnapshot.child("fullName").getValue(String.class);
-                                String email =  dataSnapshot.child("email").getValue(String.class);
-                                String phoneNumber = dataSnapshot.child("phoneNumber").getValue(String.class);
+                                String fullName =
+                                        preferencesGetInfor.getString("fullName",null);
+                                String email =  preferencesGetInfor.getString("email",null);
+                                String phoneNumber = preferencesGetInfor.getString("phoneNumber",null);
                                 long addressCount = dataSnapshot.child("address").getChildrenCount();
                                 String address = addressPref.getString("address", "No address yet");
 
