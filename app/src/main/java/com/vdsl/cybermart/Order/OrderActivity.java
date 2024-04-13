@@ -6,9 +6,12 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.firebase.database.DataSnapshot;
@@ -17,6 +20,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.vdsl.cybermart.Account.Fragment.FragmentAddress;
 import com.vdsl.cybermart.Cart.Model.CartModel;
 import com.vdsl.cybermart.Order.Adapter.ProductsListAdapterInOrder;
 import com.vdsl.cybermart.Order.Model.Order;
@@ -60,6 +64,22 @@ public class OrderActivity extends AppCompatActivity {
                     updateTotalPrice(cartModel);
                     binding.btnCheckOutCart.setOnClickListener(v -> orderOnclick(cartModel, voucher));
                     binding.btnCancel.setOnClickListener(v -> finish());
+                    binding.imgChooseAddress.setOnClickListener(v -> {
+                        binding.txtTitle.setVisibility(View.GONE);
+                        binding.edtFullName.setVisibility(View.GONE);
+                        binding.lnAddress.setVisibility(View.GONE);
+                        binding.edtPhone.setVisibility(View.GONE);
+                        binding.rvProduct.setVisibility(View.GONE);
+                        binding.lnPayMethod.setVisibility(View.GONE);
+                        binding.containerGroup.setVisibility(View.GONE);
+                        binding.lnbutton.setVisibility(View.GONE);
+                        binding.frOrder.setVisibility(View.VISIBLE);
+                        FragmentManager fragmentManager = getSupportFragmentManager();
+                        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                        fragmentTransaction.replace(R.id.frOrder, new FragmentAddress());
+                        fragmentTransaction.addToBackStack(null);
+                        fragmentTransaction.commit();
+                    });
                 }
             }
         }
