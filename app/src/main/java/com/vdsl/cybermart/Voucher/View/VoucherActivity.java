@@ -72,11 +72,13 @@ public class VoucherActivity extends AppCompatActivity {
 
 
 
+        writeUserVoucher();
+
         readDataVoucher();
 
         showAdminOption();
 
-        writeUserVoucher();
+
 
         binding.btnBack.setOnClickListener(v ->{
             startActivity(new Intent(this, CartActivity.class));
@@ -239,11 +241,11 @@ public class VoucherActivity extends AppCompatActivity {
                             Log.e("check63", "onDataChange: " + voucherList.toString());
                         }
                     }
-                    // Sau khi đã thêm hết dữ liệu vào danh sách, set adapter cho RecyclerView
+
                     Log.e("check68", "onDataChange: " + voucherList.toString() + voucherList.size());
                     adapter = new VoucherListAdapter(voucherList, VoucherActivity.this);
                     binding.rcvVoucher.setAdapter(adapter);
-                    adapter.notifyDataSetChanged(); // Bắt buộc gọi hàm này để cập nhật giao diện
+                    adapter.notifyDataSetChanged();
                 }
 
                 @Override
