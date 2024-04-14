@@ -72,7 +72,8 @@ public class FragmentAddress extends Fragment {
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         if (dataSnapshot.exists()) {
                             for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
-                                String userId = userSnapshot.getKey();
+//                                String userId = userSnapshot.getKey();
+                                String userId = sharedPreferences.getString("ID",null);
                                 if (userId != null) {
                                     databaseReference = FirebaseDatabase.getInstance().getReference().child("Account").child(userId).child("address");
                                     setupRecyclerView();

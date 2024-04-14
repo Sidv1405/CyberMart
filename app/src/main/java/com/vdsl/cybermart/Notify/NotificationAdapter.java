@@ -21,7 +21,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
 
     private int type;
 
-    public NotificationAdapter(List<NotifyModel> list,Context context) {
+    public NotificationAdapter(List<NotifyModel> list, Context context) {
         this.list = list;
     }
 
@@ -43,12 +43,12 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
     public void onBindViewHolder(@NonNull NotificationViewHolder holder, int position) {
         NotifyModel notifyModel = list.get(position);
         holder.bind(notifyModel);
-        if (notifyModel.getType() == 2){
+        if (notifyModel.getType() == 2) {
             holder.binding.txtTitle.setText(notifyModel.getTitle() + " đã gửi bạn một tin nhắn");
             holder.binding.layout.setBackgroundColor(Color.parseColor("#EDC6C6"));
             holder.binding.iconMSG.setVisibility(View.VISIBLE);
-        }else{
-            holder.binding.txtTitle.setText("trạng đơn hàng " + notifyModel.getTitle() + " đã thay đổi");
+        } else {
+            holder.binding.txtTitle.setText("Trạng thái đơn hàng " + notifyModel.getTitle() + " đã thay đổi");
             holder.binding.layout.setBackgroundColor(Color.parseColor("#EDECC6"));
             holder.binding.iconOrder.setVisibility(View.VISIBLE);
         }
@@ -68,7 +68,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
             this.binding = binding;
         }
 
-        public void bind(NotifyModel notifyModel){
+        public void bind(NotifyModel notifyModel) {
             binding.txtMessage.setText(notifyModel.getBody());
         }
     }

@@ -5,9 +5,9 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#EDE8E8"
     android:orientation="vertical"
     android:paddingHorizontal="5dp"
-    android:background="#EDE8E8"
     tools:context=".Order.OrderActivity">
 
     <TextView
@@ -17,6 +17,7 @@
         android:text="ORDER"
         android:textColor="#2E7D32"
         android:textSize="30sp"
+        android:id="@+id/txtTitle"
         android:textStyle="bold" />
 
     <EditText
@@ -31,17 +32,35 @@
         android:textSize="19sp"
         tools:ignore="HardcodedText" />
 
-    <EditText
-        android:id="@+id/edtAddress"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Address"
-        android:importantForAutofill="no"
-        android:inputType="text"
-        android:paddingHorizontal="5dp"
-        android:textColor="#000"
-        android:textSize="19sp"
-        tools:ignore="HardcodedText" />
+        android:id="@+id/lnAddress"
+        android:orientation="horizontal">
+
+        <EditText
+            android:id="@+id/edtAddress"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Address"
+            android:importantForAutofill="no"
+            android:inputType="text"
+            android:paddingHorizontal="5dp"
+            android:textColor="#000"
+            android:textSize="19sp"
+            tools:ignore="HardcodedText" />
+
+<!--        <ImageView-->
+<!--            android:id="@+id/imgChooseAddress"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_gravity="center"-->
+<!--            android:layout_marginLeft="-30dp"-->
+<!--            android:layout_marginBottom="5dp"-->
+<!--            android:src="@drawable/three_dot" />-->
+
+    </LinearLayout>
+
     <EditText
         android:id="@+id/edtPhone"
         android:layout_width="match_parent"
@@ -53,6 +72,7 @@
         android:textColor="#000"
         android:textSize="19sp"
         tools:ignore="HardcodedText,TextFields" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvProduct"
         android:layout_width="match_parent"
@@ -66,6 +86,7 @@
         android:layout_width="match_parent"
         android:layout_height="27dp"
         android:layout_marginTop="10dp"
+        android:id="@+id/lnPayMethod"
         android:orientation="horizontal">
 
         <TextView
@@ -138,36 +159,44 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
-        android:orientation="horizontal"
+        android:layout_marginBottom="10dp"
         android:gravity="center_horizontal"
-        android:layout_marginBottom="10dp">
+        android:id="@+id/lnbutton"
+        android:orientation="horizontal">
 
         <Button
             android:id="@+id/btn_check_out_cart"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingHorizontal="20dp"
             android:background="@drawable/button_black"
             android:backgroundTint="#2E7D32"
             android:includeFontPadding="false"
+            android:paddingHorizontal="20dp"
             android:singleLine="true"
             android:text="Check out"
             android:textColor="@color/white"
             android:textSize="20sp"
             android:textStyle="bold" />
+
         <Button
             android:id="@+id/btnCancel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingHorizontal="35dp"
-            android:background="@drawable/button_black"
-            android:includeFontPadding="false"
-            android:singleLine="true"
             android:layout_marginStart="40dp"
+            android:background="@drawable/button_black"
             android:backgroundTint="#C62828"
+            android:includeFontPadding="false"
+            android:paddingHorizontal="35dp"
+            android:singleLine="true"
             android:text="CANCEL"
             android:textColor="@color/white"
             android:textSize="20sp"
             android:textStyle="bold" />
     </LinearLayout>
+
+<!--    <androidx.fragment.app.FragmentContainerView-->
+<!--        android:id="@+id/frOrder"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="match_parent"-->
+<!--        android:visibility="gone" />-->
 </LinearLayout>

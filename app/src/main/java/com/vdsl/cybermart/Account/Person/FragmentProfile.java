@@ -39,6 +39,7 @@ import com.vdsl.cybermart.Account.Activity.LoginActivity;
 import com.vdsl.cybermart.Account.Fragment.FragmentSetting;
 import com.vdsl.cybermart.General;
 import com.vdsl.cybermart.Order.Fragment.FragmentContainer;
+import com.vdsl.cybermart.ProductManagement.View.ProductManagementActivity;
 import com.vdsl.cybermart.R;
 import com.vdsl.cybermart.databinding.FragmentProfileBinding;
 
@@ -119,19 +120,24 @@ public class FragmentProfile extends Fragment {
         binding.imgAvatar.setOnClickListener(v -> openAvatarDialog());
         binding.imgEditAvatar.setOnClickListener(v -> openAvatarDialog());
         binding.btnMyOrder.setOnClickListener(v ->
-                General.loadFragment(getParentFragmentManager(), new FragmentContainer(), null));
+                                                      General.loadFragment(getParentFragmentManager(), new FragmentContainer(), null));
         binding.CvSettings.setOnClickListener(v ->
-                General.loadFragment(getParentFragmentManager(), new FragmentSetting(), null));
+                                                      General.loadFragment(getParentFragmentManager(), new FragmentSetting(), null));
         binding.btnManage.setOnClickListener(v ->
-                General.loadFragment(getParentFragmentManager(), new ManagerFragment(), null));
+                                                     General.loadFragment(getParentFragmentManager(), new ManagerFragment(), null));
+        binding.btnShopping.setOnClickListener(v ->
+                                                       startActivity(new Intent(requireActivity(), ProductManagementActivity.class)));
     }
+
     private void showItemMenu() {
         String role = sharedPreferences.getString("role", "");
         Log.d("TAG", "showItemMenu: " + role);
         if (!role.equals("Customer")) {
-           binding.txtOrder.setText("Manage Orders");
-           binding.txtOrderTitle.setText("Edit order status");
-           binding.btnManage.setVisibility(View.VISIBLE);
+            binding.txtOrder.setText("Manage Orders");
+            binding.txtOrderTitle.setText("Edit order status");
+            binding.btnManage.setVisibility(View.VISIBLE);
+        } else if (role.equals("Customer")) {
+            binding.btnShopping.setVisibility(View.VISIBLE);
         }
     }
 
@@ -143,15 +149,19 @@ public class FragmentProfile extends Fragment {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     if (snapshot.exists()) {
-//                    String userId = sharedPreferences.getString("ID", null);
+                    String userId = sharedPreferences.getString("ID", null);
                         for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                            String userId = dataSnapshot.getKey();
+//                            String userId = dataSnapshot.getKey();
                             if (userId != null) {
-                                String fullName =
-                                        dataSnapshot.child("fullName").getValue(String.class);
-                                String email = dataSnapshot.child("email").getValue(String.class);
-                                String avatar = dataSnapshot.child("avatar").getValue(String.class);
-                                String role = dataSnapshot.child("role").getValue(String.class);
+//                                String fullName =
+//                                        dataSnapshot.child("fullName").getValue(String.class);
+//                                String email = dataSnapshot.child("email").getValue(String.class);
+//                                String avatar = dataSnapshot.child("avatar").getValue(String.class);
+//                                String role = dataSnapshot.child("role").getValue(String.class);
+                                String fullName =sharedPreferences.getString("fullName", null);
+                                String email = sharedPreferences.getString("email", null);
+                                String avatar = sharedPreferences.getString("avatar", null);
+                                String role = sharedPreferences.getString("role", null);
                                 binding.txtYourName.setText(fullName);
                                 binding.txtYourEmail.setText(email);
                                 Log.d("loginnow", "fname: " + fullName);

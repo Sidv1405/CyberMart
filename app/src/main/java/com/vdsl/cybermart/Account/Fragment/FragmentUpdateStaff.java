@@ -48,56 +48,109 @@ public class FragmentUpdateStaff extends Fragment {
         binding.btnUpdateStaff.setOnClickListener(v -> {
             updateStaff();
         });
-        binding.SwLockAccount.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            if (isChecked) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(requireActivity());
-                builder.setTitle("LOCK ACCOUNT");
-                builder.setMessage("Are you sure to lock this staff?");
+        binding.SwLockAccount.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+               boolean isChecked= binding.SwLockAccount.isChecked();
+                if (isChecked) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(requireActivity());
+                    builder.setTitle("LOCK ACCOUNT");
+                    builder.setMessage("Are you sure to lock this staff?");
 
-                builder.setNegativeButton("NO", (dialog, which) -> {
+                    builder.setNegativeButton("NO", (dialog, which) -> {
                     binding.SwLockAccount.setChecked(false);
-                    builder.create().dismiss();
-                });
-                builder.setPositiveButton("YES", (dialog, which) -> {
-                    Bundle bundle = getArguments();
-                    String staffId = bundle.getString("staffId");
-                    DatabaseReference staffRef = databaseReference.child(staffId);
-                    staffRef.child("active").setValue("Not working").addOnCompleteListener(task -> {
-                        if (task.isSuccessful()) {
-                            Toast.makeText(getActivity(), "Account Locked Successfully", Toast.LENGTH_SHORT).show();
-                        } else {
-                            Toast.makeText(getActivity(), "Failed to Lock Account", Toast.LENGTH_SHORT).show();
-                        }
+                        builder.create().dismiss();
                     });
-                });
-                builder.create().show();
-            } else {
-                AlertDialog.Builder builder = new AlertDialog.Builder(requireActivity());
-                builder.setTitle("UNLOCK ACCOUNT");
-                builder.setMessage("Are you sure to unlock this account?");
+                    builder.setPositiveButton("YES", (dialog, which) -> {
+                        Bundle bundle = getArguments();
+                        String staffId = bundle.getString("staffId");
+                        DatabaseReference staffRef = databaseReference.child(staffId);
+                        staffRef.child("active").setValue("Not working").addOnCompleteListener(task -> {
+                            if (task.isSuccessful()) {
+                                Toast.makeText(getActivity(), "Account Locked Successfully", Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(getActivity(), "Failed to Lock Account", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    });
+                    builder.create().show();
+                } else {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(requireActivity());
+                    builder.setTitle("UNLOCK ACCOUNT");
+                    builder.setMessage("Are you sure to unlock this account?");
 
-                builder.setNegativeButton("NO", (dialog, which) -> {
+                    builder.setNegativeButton("NO", (dialog, which) -> {
                     binding.SwLockAccount.setChecked(true);
-                    builder.create().dismiss();
-                });
-                builder.setPositiveButton("YES", (dialog, which) -> {
-                    Bundle bundle = getArguments();
-                    String staffId = bundle.getString("staffId");
-                    DatabaseReference staffRef = databaseReference.child(staffId);
-                    staffRef.child("active").setValue("Working").addOnCompleteListener(task -> {
-                        if (task.isSuccessful()) {
-                            Toast.makeText(getActivity(), "Account Unlocked Successfully",
-                                    Toast.LENGTH_SHORT).show();
-                        } else {
-                            Toast.makeText(getActivity(), "Failed to Unlock Account",
-                                    Toast.LENGTH_SHORT).show();
-                        }
+                        builder.create().dismiss();
                     });
-                });
-                builder.create().show();
+                    builder.setPositiveButton("YES", (dialog, which) -> {
+                        Bundle bundle = getArguments();
+                        String staffId = bundle.getString("staffId");
+                        DatabaseReference staffRef = databaseReference.child(staffId);
+                        staffRef.child("active").setValue("Working").addOnCompleteListener(task -> {
+                            if (task.isSuccessful()) {
+                                Toast.makeText(getActivity(), "Account Unlocked Successfully",
+                                        Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(getActivity(), "Failed to Unlock Account",
+                                        Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    });
+                    builder.create().show();
+                }
             }
-
         });
+//        binding.SwLockAccount.setOnCheckedChangeListener((buttonView, isChecked) -> {
+//            if (isChecked) {
+//                AlertDialog.Builder builder = new AlertDialog.Builder(requireActivity());
+//                builder.setTitle("LOCK ACCOUNT");
+//                builder.setMessage("Are you sure to lock this staff?");
+//
+//                builder.setNegativeButton("NO", (dialog, which) -> {
+////                    binding.SwLockAccount.setChecked(false);
+//                    builder.create().dismiss();
+//                });
+//                builder.setPositiveButton("YES", (dialog, which) -> {
+//                    Bundle bundle = getArguments();
+//                    String staffId = bundle.getString("staffId");
+//                    DatabaseReference staffRef = databaseReference.child(staffId);
+//                    staffRef.child("active").setValue("Not working").addOnCompleteListener(task -> {
+//                        if (task.isSuccessful()) {
+//                            Toast.makeText(getActivity(), "Account Locked Successfully", Toast.LENGTH_SHORT).show();
+//                        } else {
+//                            Toast.makeText(getActivity(), "Failed to Lock Account", Toast.LENGTH_SHORT).show();
+//                        }
+//                    });
+//                });
+//                builder.create().show();
+//            } else {
+//                AlertDialog.Builder builder = new AlertDialog.Builder(requireActivity());
+//                builder.setTitle("UNLOCK ACCOUNT");
+//                builder.setMessage("Are you sure to unlock this account?");
+//
+//                builder.setNegativeButton("NO", (dialog, which) -> {
+////                    binding.SwLockAccount.setChecked(true);
+//                    builder.create().dismiss();
+//                });
+//                builder.setPositiveButton("YES", (dialog, which) -> {
+//                    Bundle bundle = getArguments();
+//                    String staffId = bundle.getString("staffId");
+//                    DatabaseReference staffRef = databaseReference.child(staffId);
+//                    staffRef.child("active").setValue("Working").addOnCompleteListener(task -> {
+//                        if (task.isSuccessful()) {
+//                            Toast.makeText(getActivity(), "Account Unlocked Successfully",
+//                                    Toast.LENGTH_SHORT).show();
+//                        } else {
+//                            Toast.makeText(getActivity(), "Failed to Unlock Account",
+//                                    Toast.LENGTH_SHORT).show();
+//                        }
+//                    });
+//                });
+//                builder.create().show();
+//            }
+//
+//        });
         binding.layoutStaffPass.setOnClickListener(v -> {
             changeStaffPass();
         });

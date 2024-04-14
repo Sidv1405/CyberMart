@@ -116,6 +116,7 @@ public class FragmentLogIn extends Fragment {
                                             String avatar = userSnapshot.child("avatar").getValue(String.class);
                                             /*String Address = userSnapshot.child("address").getValue(String.class);*/
                                             String phoneNumber = userSnapshot.child("phoneNumber").getValue(String.class);
+                                            String active = userSnapshot.child("active").getValue(String.class);
 
                                             editor.putString("ID", ID);
                                             editor.putString("fullName", fullName);
@@ -130,7 +131,11 @@ public class FragmentLogIn extends Fragment {
                                                 Log.d("Avatar", "Avatar is empty");
                                             }
                                             /*editor.putString("address", Address);*/
-
+                                            if (active != null && active.equals("Not working")) {
+                                                progressDialog.dismiss();
+                                                Toast.makeText(requireActivity(), "Your account has been locked. Please contact support.", Toast.LENGTH_SHORT).show();
+                                                return;
+                                            }
                                             progressDialog.dismiss();
                                             Toast.makeText(requireActivity(), "Log in Successful", Toast.LENGTH_SHORT).show();
                                             rememberUser(email, password, binding.chkRemember.isChecked());

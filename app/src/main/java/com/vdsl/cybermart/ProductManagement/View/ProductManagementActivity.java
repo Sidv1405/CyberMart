@@ -1,9 +1,12 @@
 package com.vdsl.cybermart.ProductManagement.View;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.Spinner;
@@ -41,7 +44,8 @@ public class ProductManagementActivity extends AppCompatActivity {
     private ProdManageAdapter adapter;
     private RecyclerView rcvProduct;
     private Spinner spinnerCategory;
-
+    SharedPreferences sharedPreferences;
+    FloatingActionButton btnAdd;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,9 +59,14 @@ public class ProductManagementActivity extends AppCompatActivity {
 
         ImageButton btnBack = findViewById(R.id.btn_back);
         btnBack.setOnClickListener(v -> finish());
+        sharedPreferences = getSharedPreferences("Users", Context.MODE_PRIVATE);
 
         rcvProduct = findViewById(R.id.rcv_product_management);
-
+        btnAdd = findViewById(R.id.btn_add_product);
+        String role = sharedPreferences.getString("role", "");
+        if(role.equals("Customer")){
+            btnAdd.setVisibility(View.GONE);
+        }
         readDataProduct();
 
         createDataProduct();
@@ -89,7 +98,7 @@ public class ProductManagementActivity extends AppCompatActivity {
     }
 
     private void createDataProduct() {
-        FloatingActionButton btnAdd = findViewById(R.id.btn_add_product);
+//        FloatingActionButton btnAdd = findViewById(R.id.btn_add_product);
         btnAdd.setOnClickListener(v -> {
 
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
