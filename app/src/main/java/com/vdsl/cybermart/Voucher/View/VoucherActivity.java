@@ -1,5 +1,6 @@
 package com.vdsl.cybermart.Voucher.View;
 
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -10,7 +11,6 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.View;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
@@ -29,6 +29,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.saadahmedsoft.popupdialog.listener.OnDialogButtonClickListener;
+import com.vdsl.cybermart.Cart.View.CartActivity;
 import com.vdsl.cybermart.General;
 import com.vdsl.cybermart.R;
 import com.vdsl.cybermart.Voucher.Adapter.VoucherListAdapter;
@@ -37,6 +38,7 @@ import com.vdsl.cybermart.databinding.ActivityVoucherBinding;
 import com.vdsl.cybermart.databinding.UpdateVoucherBinding;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class VoucherActivity extends AppCompatActivity {
 
@@ -75,8 +77,9 @@ public class VoucherActivity extends AppCompatActivity {
 
         writeUserVoucher();
 
-        binding.btnBack.setOnClickListener(v -> {
-            super.onBackPressed();
+        binding.btnBack.setOnClickListener(v ->{
+            startActivity(new Intent(this, CartActivity.class));
+            finish();
         });
 
         binding.search.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -100,6 +103,7 @@ public class VoucherActivity extends AppCompatActivity {
         DatabaseReference reference = firebaseDatabase.getReference("Voucher");
 
         reference.addValueEventListener(new ValueEventListener() {
+            @SuppressLint("NotifyDataSetChanged")
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 voucherList.clear();
@@ -129,7 +133,7 @@ public class VoucherActivity extends AppCompatActivity {
         builder.setView(updateVoucherBinding.getRoot());
         Dialog dialog = builder.create();
 
-        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         dialog.show();
 
         if (voucher != null) {
@@ -222,7 +226,7 @@ public class VoucherActivity extends AppCompatActivity {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(VoucherActivity.this, LinearLayoutManager.VERTICAL, false);
         binding.rcvVoucher.setLayoutManager(linearLayoutManager);
 
-        if (role.equals("Admin")){
+        if (role.equals("Admin")) {
             voucherRef.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -231,7 +235,7 @@ public class VoucherActivity extends AppCompatActivity {
                         Voucher voucher = dataSnapshot.getValue(Voucher.class);
                         if (voucher != null) {
                             voucherList.add(voucher);
-                            Log.e("check63", "onDataChange: " + voucherList.toString() );
+                            Log.e("check63", "onDataChange: " + voucherList.toString());
                         }
                     }
                     // Sau khi đã thêm hết dữ liệu vào danh sách, set adapter cho RecyclerView
@@ -246,7 +250,7 @@ public class VoucherActivity extends AppCompatActivity {
                     Log.e("readDataVoucher", "Database Error: " + error.getMessage());
                 }
             });
-        }else{
+        } else {
             voucherCustomer();
         }
     }
@@ -296,7 +300,7 @@ public class VoucherActivity extends AppCompatActivity {
     }
 
 
-    public void voucherCustomer(){
+    public void voucherCustomer() {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         SharedPreferences sharedPreferences = getSharedPreferences("Users", Context.MODE_PRIVATE);
         String accountId = sharedPreferences.getString("ID", "");
@@ -313,6 +317,7 @@ public class VoucherActivity extends AppCompatActivity {
 
                     if (!isUsed && voucherCode != null) {
                         voucherRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @SuppressLint("NotifyDataSetChanged")
                             @Override
                             public void onDataChange(@NonNull DataSnapshot snapshot) {
                                 for (DataSnapshot voucherSnapshot : snapshot.getChildren()) {
@@ -321,7 +326,7 @@ public class VoucherActivity extends AppCompatActivity {
                                         if (voucher != null && voucher.getCode().equals(voucherCode)) {
                                             // Nếu trùng khớp, thêm vào danh sách
                                             voucherList.add(voucher);
-                                            Log.e("check65", "onDataChange: " + voucherCode + isUsed + voucher.toString());
+                                            Log.e("check65", "onDataChange: " + voucherCode + isUsed + voucher);
                                             Log.e("check66", "onDataChange: " + voucherList.toString());
                                             /*break;*/
                                         }

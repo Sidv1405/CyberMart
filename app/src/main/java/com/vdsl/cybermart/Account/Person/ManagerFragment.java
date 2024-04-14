@@ -68,4 +68,5 @@ public class ManagerFragment extends Fragment {
             binding.CvCreateStaff.setVisibility(View.VISIBLE);
         }
     }
+    
 }
