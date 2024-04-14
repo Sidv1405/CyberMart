@@ -114,7 +114,8 @@ public class FragmentSetting extends Fragment {
                                 String fullName =
                                         preferencesGetInfor.getString("fullName",null);
                                 String email =  preferencesGetInfor.getString("email",null);
-                                String phoneNumber = preferencesGetInfor.getString("phoneNumber",null);
+                                String phoneNumber =
+                                        dataSnapshot.child("phoneNumber").getValue(String.class);
                                 long addressCount = dataSnapshot.child("address").getChildrenCount();
                                 String address = addressPref.getString("address", "No address yet");
 
