@@ -91,10 +91,11 @@ public class FragmentManagementStaff extends Fragment {
                         FirebaseRecyclerOptions<UserModel> options = new FirebaseRecyclerOptions.Builder<UserModel>()
                                 .setQuery(searchQuery, UserModel.class)
                                 .build();
-
-                        StaffMangeAdapter staffMangeAdapter = new StaffMangeAdapter(options, requireActivity());
-                        binding.rcvStaff.setAdapter(staffMangeAdapter);
-                        staffMangeAdapter.startListening();
+                        if (requireActivity() != null) {
+                            StaffMangeAdapter staffMangeAdapter = new StaffMangeAdapter(options, requireActivity());
+                            binding.rcvStaff.setAdapter(staffMangeAdapter);
+                            staffMangeAdapter.startListening();
+                        }
                     }
 
                     @Override

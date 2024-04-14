@@ -80,27 +80,8 @@ public class AddressAdapter extends FirebaseRecyclerAdapter<AddressModel, Addres
             txtFullName = itemView.findViewById(R.id.txtFullName);
             txtAddress = itemView.findViewById(R.id.txtAddress);
             CvItemAddress = itemView.findViewById(R.id.CvItemAddress);
-//            chkUseAddress.setOnClickListener(v -> {
-//                boolean isChecked = chkUseAddress.isChecked();
-//                SharedPreferences.Editor editor = addressPref.edit();
-//                if (isChecked) {
-//                    int position = getAdapterPosition();
-//                    if (position != RecyclerView.NO_POSITION) {
-//                        selectedPosition = position;
-//                        editor.putString("address", txtAddress.getText().toString());
-//                        saveSelectedPosition(selectedPosition);
-//                        notifyDataSetChanged();
-//                    }
-//                } else if(!isChecked){
-//                    selectedPosition = -1;
-//                    editor.putString("address", null);
-//                    saveSelectedPosition(selectedPosition);
-//                    notifyDataSetChanged();
-//                }
-//                editor.apply();
-//            });
-
-            chkUseAddress.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            chkUseAddress.setOnClickListener(v -> {
+                boolean isChecked = chkUseAddress.isChecked();
                 SharedPreferences.Editor editor = addressPref.edit();
                 if (isChecked) {
                     int position = getAdapterPosition();
@@ -108,14 +89,33 @@ public class AddressAdapter extends FirebaseRecyclerAdapter<AddressModel, Addres
                         selectedPosition = position;
                         editor.putString("address", txtAddress.getText().toString());
                         saveSelectedPosition(selectedPosition);
+                        notifyDataSetChanged();
                     }
                 } else if(!isChecked){
                     selectedPosition = -1;
                     editor.putString("address", null);
                     saveSelectedPosition(selectedPosition);
+                    notifyDataSetChanged();
                 }
                 editor.apply();
             });
+
+//            chkUseAddress.setOnCheckedChangeListener((buttonView, isChecked) -> {
+//                SharedPreferences.Editor editor = addressPref.edit();
+//                if (isChecked) {
+//                    int position = getAdapterPosition();
+//                    if (position != RecyclerView.NO_POSITION) {
+//                        selectedPosition = position;
+//                        editor.putString("address", txtAddress.getText().toString());
+//                        saveSelectedPosition(selectedPosition);
+//                    }
+//                } else if(!isChecked){
+//                    selectedPosition = -1;
+//                    editor.putString("address", null);
+//                    saveSelectedPosition(selectedPosition);
+//                }
+//                editor.apply();
+//            });
         }
 
         public void bind(AddressModel item, int position) {
