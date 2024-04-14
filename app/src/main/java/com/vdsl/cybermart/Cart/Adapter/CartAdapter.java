@@ -64,14 +64,14 @@ public class CartAdapter extends FirebaseRecyclerAdapter<ProductModel, CartAdapt
 
         SharedPreferences preferences = mContext.getSharedPreferences("price",MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
-        String  discount =preferences.getString("discount","");
+
         String price =preferences.getString("oldPrice","");
         /*String voucherCode =preferences.getString("voucherCode","");*/
 
 
 
-
         cartViewHolder.binding.imgDelete.setOnClickListener(v -> {
+            String  discount =preferences.getString("discount","");
             Boolean isUse = preferences.getBoolean("isUse",true);
             Log.e("check59", "onBindViewHolder: " + discount + isUse);
             if (!discount.isEmpty()){
@@ -127,7 +127,9 @@ public class CartAdapter extends FirebaseRecyclerAdapter<ProductModel, CartAdapt
 
 
         cartViewHolder.binding.imgPlusCart.setOnClickListener(v -> {
+            String  discount =preferences.getString("discount","");
             Boolean isUse = preferences.getBoolean("isUse",true);
+            Log.e("check59", "onBindViewHolder: " + discount + isUse);
             long currentTime = SystemClock.elapsedRealtime();
             if (currentTime - lastPlusButtonClickTime > DEBOUNCE_INTERVAL) {
                 lastPlusButtonClickTime = currentTime;
@@ -189,7 +191,9 @@ public class CartAdapter extends FirebaseRecyclerAdapter<ProductModel, CartAdapt
         });
 
         cartViewHolder.binding.imgMinusCart.setOnClickListener(v -> {
+            String  discount =preferences.getString("discount","");
             Boolean isUse = preferences.getBoolean("isUse",true);
+            Log.e("check59", "onBindViewHolder: " + discount + isUse);
             long currentTime = SystemClock.elapsedRealtime();
             if (currentTime - lastMinusButtonClickTime > DEBOUNCE_INTERVAL){
                 lastMinusButtonClickTime = currentTime;

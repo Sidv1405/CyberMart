@@ -92,6 +92,14 @@ public class CartActivity extends AppCompatActivity implements CartAdapter.Total
             }
 
         });
+
+        final boolean[] isUse = {true};
+        SharedPreferences pref = getSharedPreferences("price",MODE_PRIVATE);
+        SharedPreferences.Editor editor = pref.edit();
+        editor.putBoolean("isUse",isUse[0]);
+        editor.commit();
+        Log.e("check61", "applyVoucher: " + isUse[0] );
+
         binding.btnVoucher.setOnClickListener(v1 -> {
             String promoCode = binding.textPromoCode.getText().toString().trim();
             DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Voucher");
@@ -114,6 +122,7 @@ public class CartActivity extends AppCompatActivity implements CartAdapter.Total
 
                 }
             });
+            editor.putBoolean("isUse", isUse[0]);
         });
 
 
