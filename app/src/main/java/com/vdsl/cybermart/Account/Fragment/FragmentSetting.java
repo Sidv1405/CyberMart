@@ -111,10 +111,11 @@ public class FragmentSetting extends Fragment {
                             String userId = preferencesGetInfor.getString("ID",null);
                             if (userId != null) {
                                 String password = preferencesGetPass.getString("password", "nothing to show");
-                                String fullName =
-                                        preferencesGetInfor.getString("fullName",null);
+//                                String fullName =preferencesGetInfor.getString("fullName",null);
+                                String fullName =dataSnapshot.child("fullName").getValue(String.class);
                                 String email =  preferencesGetInfor.getString("email",null);
-                                String phoneNumber = preferencesGetInfor.getString("phoneNumber",null);
+//                                String phoneNumber = preferencesGetInfor.getString("phoneNumber",null);
+                                String phoneNumber = dataSnapshot.child("phoneNumber").getValue(String.class);
                                 long addressCount = dataSnapshot.child("address").getChildrenCount();
                                 String address = addressPref.getString("address", "No address yet");
 
