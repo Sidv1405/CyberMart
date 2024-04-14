@@ -24,6 +24,8 @@ import com.vdsl.cybermart.Product.Model.ProductModel;
 import com.vdsl.cybermart.R;
 import com.vdsl.cybermart.databinding.ActivityOrderBinding;
 
+import java.util.HashMap;
+
 public class OrderActivity extends AppCompatActivity {
     ActivityOrderBinding binding;
     Query query;
@@ -151,7 +153,12 @@ public class OrderActivity extends AppCompatActivity {
                                         AlertDialog.Builder builder = new AlertDialog.Builder(OrderActivity.this);
                                         builder.setTitle("Thông báo");
                                         builder.setMessage("Thao tác thành công");
-                                        builder.setNegativeButton("OK", ((dialog, which) -> finish()));
+                                        builder.setNegativeButton("OK", ((dialog, which) -> {
+                                            cartModel.setCartDetail(new HashMap<>());
+                                            cartModel.setTotalPrice(0);
+                                            cartRef.setValue(cartModel);
+                                            finish();
+                                        }));
                                         AlertDialog dialog = builder.create();
                                         dialog.show();
                                     }
