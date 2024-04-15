@@ -39,7 +39,7 @@ public class CanceledOrderFragment extends Fragment {
         sharedPreferences = requireActivity().getSharedPreferences("Users", Context.MODE_PRIVATE);
         String id = sharedPreferences.getString("ID", "");
         String role = sharedPreferences.getString("role", "");
-        if (role.equals("Customers")) {
+        if (role.equals("Customer")) {
             query = FirebaseDatabase.getInstance().getReference("Orders")
                     .orderByChild("statusId").equalTo("Canceled"+id);
         } else {
