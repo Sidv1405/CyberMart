@@ -70,8 +70,6 @@ public class VoucherActivity extends AppCompatActivity {
         SharedPreferences preferences = VoucherActivity.this.getSharedPreferences("Users", MODE_PRIVATE);
         role = preferences.getString("role", "");
 
-
-
         writeUserVoucher();
 
         readDataVoucher();
@@ -93,7 +91,11 @@ public class VoucherActivity extends AppCompatActivity {
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                searchVoucher(newText);
+                if(role.equals("Admin")){
+                    searchVoucher(newText);
+                }else{
+                    searchVoucherCustomer(newText);
+                }
                 return false;
             }
         });
@@ -127,6 +129,56 @@ public class VoucherActivity extends AppCompatActivity {
             }
         });
     }
+
+    private void searchVoucherCustomer(String query) {
+        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+        DatabaseReference voucherRef = firebaseDatabase.getReference("Voucher");
+
+        SharedPreferences sharedPreferences = getSharedPreferences("Users", Context.MODE_PRIVATE);
+        String accountId = sharedPreferences.getString("ID", "");
+        DatabaseReference userVoucherRef = firebaseDatabase.getReference("UserVouchers").child(accountId);
+
+        userVoucherRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                ArrayList<String> usedVoucherCodes = new ArrayList<>();
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    if (snapshot.getValue(Boolean.class)) {
+                        // Nếu voucher đã được sử dụng, thêm mã code vào danh sách
+                        usedVoucherCodes.add(snapshot.getKey());
+                    }
+                }
+
+                voucherRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        voucherList.clear();
+                        for (DataSnapshot snapshot1 : snapshot.getChildren()) {
+                            Voucher voucher = snapshot1.getValue(Voucher.class);
+                            if (voucher != null && !usedVoucherCodes.contains(voucher.getCode()) && voucher.getCode().contains(query)) {
+                                // Chỉ thêm voucher không được sử dụng và mã code chứa từ khóa tìm kiếm vào danh sách
+                                voucherList.add(voucher);
+                            }
+                        }
+                        adapter = new VoucherListAdapter(voucherList, VoucherActivity.this);
+                        binding.rcvVoucher.setAdapter(adapter);
+                        adapter.notifyDataSetChanged();
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        Log.e("searchVoucher", "Database Error: " + error.getMessage());
+                    }
+                });
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.e("searchVoucher", "Database Error: " + error.getMessage());
+            }
+        });
+    }
+
 
     private void showDialogDetail(Voucher voucher) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
